@@ -1,0 +1,496 @@
+[W 151208 07:45:23 web:1908] 405 GET /create_group (127.0.0.1) 0.75ms
+[I 151208 07:45:42 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:45:44 web:1908] 200 GET /create_group (127.0.0.1) 1.18ms
+[I 151208 07:46:01 web:1908] 200 GET /create_group?owner=919999823930 (127.0.0.1) 0.56ms
+[I 151208 07:47:06 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:47:08 web:1908] 304 GET /create_group?owner=919999823930 (127.0.0.1) 1.12ms
+[I 151208 07:47:16 web:1908] 304 GET /create_group?owner=919999823930 (127.0.0.1) 0.43ms
+[I 151208 07:47:30 web:1908] 304 GET /create_group?owner=919999823930 (127.0.0.1) 0.72ms
+[I 151208 07:48:01 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:48:07 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:48:19 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:48:27 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:48:35 web:1908] 200 GET /create_group?owner=919999823930 (127.0.0.1) 1.17ms
+[I 151208 07:49:16 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:49:20 web:1908] 304 GET /create_group?owner=919999823930 (127.0.0.1) 0.75ms
+[I 151208 07:49:40 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:49:46 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:49:51 web:1908] 304 GET /create_group?owner=919999823930 (127.0.0.1) 1.08ms
+[I 151208 07:50:08 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:50:12 autoreload:204] group_chat.py modified; restarting server
+[I 151208 07:50:16 web:1908] 200 GET /create_group?owner=919999823930 (127.0.0.1) 0.89ms
+[I 151208 07:50:35 web:1908] 200 GET /create_group?owner=919999823930&name=group1 (127.0.0.1) 0.66ms
+[I 151208 07:51:18 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875] (127.0.0.1) 16.80ms
+[I 151208 07:52:27 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875] (127.0.0.1) 9.90ms
+[I 151208 11:06:11 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:06:27 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:06:36 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875] (127.0.0.1) 15.19ms
+[I 151208 11:06:49 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[%2791854329875%27] (127.0.0.1) 13.48ms
+[I 151208 11:07:38 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:07:58 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:08:04 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[%2791854329875%27] (127.0.0.1) 14.90ms
+[I 151208 11:09:21 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:09:24 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[%2791854329875%27] (127.0.0.1) 12.19ms
+[I 151208 11:09:54 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:10:01 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[%2791854329875%27] (127.0.0.1) 11.71ms
+[I 151208 11:10:50 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:10:55 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[%2791854329875%27] (127.0.0.1) 2.24ms
+[I 151208 11:11:09 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:11:14 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[%2791854329875%27] (127.0.0.1) 10.39ms
+[I 151208 11:11:33 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875] (127.0.0.1) 8.77ms
+[I 151208 11:12:03 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:12:18 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:12:22 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875] (127.0.0.1) 1.24ms
+[I 151208 11:12:38 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:13:17 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:13:22 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875] (127.0.0.1) 9.71ms
+[I 151208 11:13:37 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:13:55 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:14:49 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:14:58 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:15:01 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875] (127.0.0.1) 14.93ms
+[I 151208 11:15:21 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:15:24 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:15:27 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:15:32 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875] (127.0.0.1) 14.83ms
+[I 151208 11:15:59 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,%20910564327612] (127.0.0.1) 13.29ms
+[I 151208 11:16:13 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 13.44ms
+[I 151208 11:16:49 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:17:06 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:18:03 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:18:17 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:18:44 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:19:16 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 19.52ms
+[I 151208 11:20:26 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:20:34 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:20:57 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:21:03 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:21:09 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 15.04ms
+[I 151208 11:21:58 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:22:14 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:22:19 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 13.17ms
+[I 151208 11:22:34 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:22:40 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:22:58 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:23:00 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:23:05 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:23:09 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:23:13 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:23:25 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 17.17ms
+[I 151208 11:24:28 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:24:44 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 18.62ms
+[I 151208 11:25:12 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:25:32 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 17.62ms
+[I 151208 11:27:09 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:27:53 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 18.31ms
+[I 151208 11:31:45 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:32:18 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:32:23 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 20.61ms
+[I 151208 11:32:33 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:33:04 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/db_handler.py modified; restarting server
+[I 151208 11:33:11 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 22.09ms
+[I 151208 11:33:37 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:33:41 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 18.75ms
+[I 151208 11:34:46 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:35:04 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 24.73ms
+[I 151208 11:35:29 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:37:05 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 19.13ms
+[I 151208 11:37:28 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:37:32 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 40.19ms
+[I 151208 11:38:07 autoreload:204] group_chat.py modified; restarting server
+[I 151208 11:38:17 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 48.58ms
+[I 151208 15:21:42 web:1908] 200 GET /get_groups (127.0.0.1) 14.43ms
+[I 151208 15:22:00 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:22:03 web:1908] 200 GET /get_groups (127.0.0.1) 1.07ms
+[I 151208 15:22:10 web:1908] 304 GET /get_groups (127.0.0.1) 0.72ms
+[I 151208 15:22:12 web:1908] 304 GET /get_groups (127.0.0.1) 0.71ms
+[I 151208 15:22:33 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:22:48 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:23:00 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:23:02 web:1908] 200 GET /get_groups (127.0.0.1) 10.65ms
+[I 151208 15:23:13 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:23:16 web:1908] 200 GET /get_groups (127.0.0.1) 0.73ms
+[I 151208 15:23:35 web:1908] 200 GET /get_groups?user=91999982393 (127.0.0.1) 9.51ms
+[E 151208 15:23:39 web:1496] Uncaught exception GET /get_groups?user=919999823930 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/get_groups?user=919999823930', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 197, in get
+        self.write(response)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 697, in write
+        chunk = escape.json_encode(chunk)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/escape.py", line 88, in json_encode
+        return json.dumps(value).replace("</", "<\\/")
+      File "/usr/lib/python2.7/json/__init__.py", line 243, in dumps
+        return _default_encoder.encode(obj)
+      File "/usr/lib/python2.7/json/encoder.py", line 207, in encode
+        chunks = self.iterencode(o, _one_shot=True)
+      File "/usr/lib/python2.7/json/encoder.py", line 270, in iterencode
+        return _iterencode(o, 0)
+      File "/usr/lib/python2.7/json/encoder.py", line 184, in default
+        raise TypeError(repr(o) + " is not JSON serializable")
+    TypeError: datetime.datetime(2015, 12, 8, 11, 38, 17, 714962) is not JSON serializable
+[E 151208 15:23:39 web:1908] 500 GET /get_groups?user=919999823930 (127.0.0.1) 54.07ms
+[I 151208 15:24:29 autoreload:204] group_chat.py modified; restarting server
+[E 151208 15:24:32 web:1496] Uncaught exception GET /get_groups?user=919999823930 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/get_groups?user=919999823930', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 198, in get
+        self.write(response)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 697, in write
+        chunk = escape.json_encode(chunk)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/escape.py", line 88, in json_encode
+        return json.dumps(value).replace("</", "<\\/")
+      File "/usr/lib/python2.7/json/__init__.py", line 243, in dumps
+        return _default_encoder.encode(obj)
+      File "/usr/lib/python2.7/json/encoder.py", line 207, in encode
+        chunks = self.iterencode(o, _one_shot=True)
+      File "/usr/lib/python2.7/json/encoder.py", line 270, in iterencode
+        return _iterencode(o, 0)
+      File "/usr/lib/python2.7/json/encoder.py", line 184, in default
+        raise TypeError(repr(o) + " is not JSON serializable")
+    TypeError: datetime.datetime(2015, 12, 8, 11, 38, 17, 714962) is not JSON serializable
+[E 151208 15:24:32 web:1908] 500 GET /get_groups?user=919999823930 (127.0.0.1) 33.93ms
+[I 151208 15:24:39 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:24:52 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:24:59 autoreload:204] group_chat.py modified; restarting server
+[E 151208 15:25:02 web:1496] Uncaught exception GET /get_groups?user=919999823930 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/get_groups?user=919999823930', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Cache-Control': 'max-age=0', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 198, in get
+        self.write(response)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 697, in write
+        chunk = escape.json_encode(chunk)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/escape.py", line 88, in json_encode
+        return json.dumps(value).replace("</", "<\\/")
+      File "/usr/lib/python2.7/json/__init__.py", line 243, in dumps
+        return _default_encoder.encode(obj)
+      File "/usr/lib/python2.7/json/encoder.py", line 207, in encode
+        chunks = self.iterencode(o, _one_shot=True)
+      File "/usr/lib/python2.7/json/encoder.py", line 270, in iterencode
+        return _iterencode(o, 0)
+      File "/usr/lib/python2.7/json/encoder.py", line 184, in default
+        raise TypeError(repr(o) + " is not JSON serializable")
+    TypeError: datetime.datetime(2015, 12, 8, 11, 38, 17, 714962) is not JSON serializable
+[E 151208 15:25:02 web:1908] 500 GET /get_groups?user=919999823930 (127.0.0.1) 40.94ms
+[I 151208 15:25:24 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:25:28 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:25:38 autoreload:204] group_chat.py modified; restarting server
+[E 151208 15:25:41 web:1496] Uncaught exception GET /get_groups?user=919999823930 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/get_groups?user=919999823930', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 199, in get
+        return self.write(response)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 697, in write
+        chunk = escape.json_encode(chunk)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/escape.py", line 88, in json_encode
+        return json.dumps(value).replace("</", "<\\/")
+      File "/usr/lib/python2.7/json/__init__.py", line 243, in dumps
+        return _default_encoder.encode(obj)
+      File "/usr/lib/python2.7/json/encoder.py", line 207, in encode
+        chunks = self.iterencode(o, _one_shot=True)
+      File "/usr/lib/python2.7/json/encoder.py", line 270, in iterencode
+        return _iterencode(o, 0)
+      File "/usr/lib/python2.7/json/encoder.py", line 184, in default
+        raise TypeError(repr(o) + " is not JSON serializable")
+    TypeError: datetime.datetime(2015, 12, 8, 11, 38, 17, 714962) is not JSON serializable
+[E 151208 15:25:41 web:1908] 500 GET /get_groups?user=919999823930 (127.0.0.1) 29.46ms
+[I 151208 15:25:57 autoreload:204] group_chat.py modified; restarting server
+[E 151208 15:26:02 web:1496] Uncaught exception GET /get_groups?user=919999823930 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/get_groups?user=919999823930', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 199, in get
+        return self.write(response)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 697, in write
+        chunk = escape.json_encode(chunk)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/escape.py", line 88, in json_encode
+        return json.dumps(value).replace("</", "<\\/")
+      File "/usr/lib/python2.7/json/__init__.py", line 243, in dumps
+        return _default_encoder.encode(obj)
+      File "/usr/lib/python2.7/json/encoder.py", line 207, in encode
+        chunks = self.iterencode(o, _one_shot=True)
+      File "/usr/lib/python2.7/json/encoder.py", line 270, in iterencode
+        return _iterencode(o, 0)
+      File "/usr/lib/python2.7/json/encoder.py", line 184, in default
+        raise TypeError(repr(o) + " is not JSON serializable")
+    TypeError: datetime.datetime(2015, 12, 8, 11, 38, 17, 714962) is not JSON serializable
+[E 151208 15:26:02 web:1908] 500 GET /get_groups?user=919999823930 (127.0.0.1) 28.60ms
+[I 151208 15:26:44 autoreload:204] group_chat.py modified; restarting server
+[E 151208 15:26:47 web:1496] Uncaught exception GET /get_groups?user=919999823930 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/get_groups?user=919999823930', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Cache-Control': 'max-age=0', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 200, in get
+        return self.write(response)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 697, in write
+        chunk = escape.json_encode(chunk)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/escape.py", line 88, in json_encode
+        return json.dumps(value).replace("</", "<\\/")
+      File "/usr/lib/python2.7/json/__init__.py", line 243, in dumps
+        return _default_encoder.encode(obj)
+      File "/usr/lib/python2.7/json/encoder.py", line 207, in encode
+        chunks = self.iterencode(o, _one_shot=True)
+      File "/usr/lib/python2.7/json/encoder.py", line 270, in iterencode
+        return _iterencode(o, 0)
+      File "/usr/lib/python2.7/json/encoder.py", line 184, in default
+        raise TypeError(repr(o) + " is not JSON serializable")
+    TypeError: datetime.datetime(2015, 12, 8, 11, 38, 17, 714962) is not JSON serializable
+[E 151208 15:26:47 web:1908] 500 GET /get_groups?user=919999823930 (127.0.0.1) 33.48ms
+[I 151208 15:27:14 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:27:26 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 27.34ms
+[I 151208 15:28:25 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:28:38 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:28:42 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:29:00 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:29:07 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:29:22 autoreload:204] group_chat.py modified; restarting server
+[I 151208 15:29:32 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 26.54ms
+[I 151208 15:51:38 autoreload:204] group_chat.py modified; restarting server
+[W 151208 15:51:57 web:1908] 405 GET /create_group (127.0.0.1) 0.50ms
+[W 151208 15:54:16 web:1908] 405 GET /create_group?method=POST (127.0.0.1) 0.36ms
+[I 151208 16:00:55 autoreload:204] group_chat.py modified; restarting server
+[I 151208 16:02:41 autoreload:204] group_chat.py modified; restarting server
+[I 151208 16:03:09 autoreload:204] group_chat.py modified; restarting server
+[I 151208 16:03:36 autoreload:204] group_chat.py modified; restarting server
+[I 151208 16:03:56 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:08:35 web:1908] 200 GET /create_group (127.0.0.1) 9.86ms
+[I 151209 13:10:01 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:10:07 web:1908] 304 GET /create_group (127.0.0.1) 10.49ms
+[I 151209 13:10:20 web:1908] 304 GET /create_group?owner=919999823930 (127.0.0.1) 10.20ms
+[I 151209 13:10:28 web:1908] 200 GET /create_group?owner=919999823930&name=group1 (127.0.0.1) 9.66ms
+[I 151209 13:11:15 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:11:20 web:1908] 304 GET /create_group?owner=919999823930&name=group1 (127.0.0.1) 10.29ms
+[I 151209 13:12:38 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:12:43 web:1908] 200 GET /create_group?owner=919999823930&name=group1 (127.0.0.1) 1.26ms
+[I 151209 13:13:00 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[91854329875,910564327612] (127.0.0.1) 10.05ms
+[I 151209 13:13:36 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[919716671667,%20919958776104] (127.0.0.1) 12.09ms
+[I 151209 13:14:30 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:14:33 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[919716671667,%20919958776104] (127.0.0.1) 16.89ms
+[I 151209 13:15:27 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:15:58 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[919716671667,919958776104] (127.0.0.1) 12.13ms
+[I 151209 13:17:24 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:17:38 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:17:43 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[919716671667,919958776104] (127.0.0.1) 10.05ms
+[I 151209 13:18:13 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:18:27 web:1908] 304 GET /create_group?owner=919999823930&name=group1&members=[919716671667,919958776104] (127.0.0.1) 12.73ms
+[I 151209 13:19:20 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:20:20 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:20:26 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[919716671667,919958776104] (127.0.0.1) 87.88ms
+[I 151209 13:28:00 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[919716671667,919958776104] (127.0.0.1) 58.30ms
+[I 151209 13:28:44 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:28:49 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:28:59 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:29:36 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[919716671667,919958776104] (127.0.0.1) 53.63ms
+[I 151209 13:30:12 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:30:40 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:30:58 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[919716671667,919958776104] (127.0.0.1) 53.18ms
+[I 151209 13:31:10 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:31:35 web:1908] 200 GET /create_group?owner=919999823930&name=group1&members=[919716671667,919958776104] (127.0.0.1) 88.82ms
+[I 151209 13:34:08 web:1908] 200 GET /send_message (127.0.0.1) 0.70ms
+[I 151209 13:34:40 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:34:49 web:1908] 304 GET /send_message (127.0.0.1) 1.11ms
+[I 151209 13:35:06 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:35:17 web:1908] 200 GET /send_message (127.0.0.1) 10.53ms
+[I 151209 13:36:49 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:36:55 web:1908] 304 GET /send_message (127.0.0.1) 10.36ms
+[I 151209 13:37:23 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:37:27 web:1908] 304 GET /send_message (127.0.0.1) 13.79ms
+[I 151209 13:37:56 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:37:58 web:1908] 304 GET /send_message (127.0.0.1) 22.24ms
+[I 151209 13:38:08 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:38:22 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:38:24 web:1908] 200 GET /send_message (127.0.0.1) 1.38ms
+[I 151209 13:38:37 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:39:15 web:1908] 200 GET /send_message?sender=919958776104&group_name=group1 (127.0.0.1) 1.19ms
+[I 151209 13:39:19 web:1908] 200 GET /send_message?sender=919958776104&group_name=group2 (127.0.0.1) 0.57ms
+[I 151209 13:39:27 web:1908] 304 GET /send_message?sender=919958776104&group_name=group2 (127.0.0.1) 0.59ms
+[I 151209 13:40:08 autoreload:204] group_chat.py modified; restarting server
+[I 151209 13:40:27 web:1908] 304 GET /send_message?sender=919958776104&group_name=group2 (127.0.0.1) 0.74ms
+[I 151209 13:50:34 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:04:30 web:1908] 304 GET /send_message?sender=919958776104&group_name=group2 (127.0.0.1) 0.93ms
+[I 151209 14:04:55 web:1908] 200 GET /send_message?sender=919958776104&group_name=group2&message=hello (127.0.0.1) 18.54ms
+[I 151209 14:05:08 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:05:12 web:1908] 200 GET /send_message?sender=919958776104&group_name=group2&message=hello (127.0.0.1) 26.06ms
+[I 151209 14:05:36 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:05:39 web:1908] 200 GET /send_message?sender=919958776104&group_name=group2&message=hello (127.0.0.1) 27.42ms
+[I 151209 14:05:45 web:1908] 200 GET /send_message?sender=919958776179&group_name=group2&message=hello (127.0.0.1) 8.96ms
+[I 151209 14:05:51 web:1908] 304 GET /send_message?sender=919958776104&group_name=group2&message=hello (127.0.0.1) 19.00ms
+[I 151209 14:05:55 web:1908] 200 GET /send_message?sender=919958776104&group_name=group1&message=hello (127.0.0.1) 30.34ms
+[I 151209 14:06:53 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:07:09 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:08:22 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/errors.py modified; restarting server
+[I 151209 14:12:16 web:1908] 200 GET /get_groups (127.0.0.1) 0.69ms
+[I 151209 14:13:08 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:13:11 web:1908] 304 GET /get_groups (127.0.0.1) 0.83ms
+[I 151209 14:13:29 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:13:32 web:1908] 200 GET /get_groups (127.0.0.1) 12.53ms
+[I 151209 14:13:37 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:13:43 autoreload:204] group_chat.py modified; restarting server
+[E 151209 14:13:48 web:1496] Uncaught exception GET /get_groups (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/get_groups', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'If-None-Match': '"aa166fc12c08e3dd25005e6bd5c4676a2271a5e8"', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1417, in _execute
+        raise TypeError("Expected None, got %r" % result)
+    TypeError: Expected None, got {'info': "Please provide user's contact number", 'status': 400}
+[E 151209 14:13:48 web:1908] 500 GET /get_groups (127.0.0.1) 1.55ms
+[I 151209 14:14:04 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:14:08 web:1908] 200 GET /get_groups (127.0.0.1) 2.04ms
+[I 151209 14:14:17 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 0.45ms
+[I 151209 14:14:42 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:14:46 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 9.88ms
+[I 151209 14:15:50 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:15:55 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:16:16 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:16:29 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:16:34 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 13.55ms
+[I 151209 14:16:54 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:16:56 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 21.06ms
+[I 151209 14:17:04 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:17:17 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:17:23 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:17:29 web:1908] 304 GET /get_groups?user=919999823930 (127.0.0.1) 17.32ms
+[I 151209 14:17:55 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:17:57 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 17.43ms
+[I 151209 14:18:16 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:18:19 web:1908] 304 GET /get_groups?user=919999823930 (127.0.0.1) 10.01ms
+[I 151209 14:18:32 autoreload:204] group_chat.py modified; restarting server
+[I 151209 14:18:36 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 25.23ms
+[I 151209 14:20:29 web:1908] 200 GET /create_group?owner=919958776104&name=group1&members=[91854329875,910564327612] (127.0.0.1) 8.98ms
+[I 151209 14:21:14 web:1908] 200 GET /create_group?owner=919958776104&name=group1&members=[919716671667,919999823930] (127.0.0.1) 85.75ms
+[I 151209 14:22:20 web:1908] 200 GET /create_group?owner=919958776104&name=group2&members=[919716671667,919999823930] (127.0.0.1) 74.08ms
+[I 151209 14:22:47 web:1908] 200 GET /send_message?sender=919811389321 (127.0.0.1) 0.57ms
+[I 151209 14:23:49 web:1908] 200 GET /send_message?sender=919811389321&group_name=group1&message=200 (127.0.0.1) 19.13ms
+[I 151209 14:24:41 web:1908] 200 GET /send_message?sender=919958776104&group_name=group1&message=200 (127.0.0.1) 28.19ms
+[I 151209 14:27:27 web:1908] 200 GET /get_groups?user=919999823930 (127.0.0.1) 35.10ms
+[I 151209 14:28:18 web:1908] 200 GET /create_group?owner=919811389321&name=group3&members=[919999823930] (127.0.0.1) 76.07ms
+[I 151209 14:28:45 web:1908] 200 GET /send_message?sender=919958776104&group_name=group2 (127.0.0.1) 0.54ms
+[I 151209 14:29:01 web:1908] 200 GET /send_message?sender=919811389321&group_name=group4 (127.0.0.1) 0.47ms
+[I 151209 14:29:15 web:1908] 200 GET /send_message?sender=919811389321&group_name=group4&message=how%20%20are%20you (127.0.0.1) 23.23ms
+[I 151209 14:29:22 web:1908] 200 GET /send_message?sender=919811389321&group_name=group3&message=how%20%20are%20you (127.0.0.1) 34.79ms
+[I 151209 14:29:56 web:1908] 200 GET /send_message?sender=919811389321&group_name=group3&message=how+are+you (127.0.0.1) 28.08ms
+[I 151209 14:30:24 web:1908] 200 GET /send_message?sender=919811389321&group_name=group3&message=how (127.0.0.1) 35.17ms
+[I 151209 14:32:57 web:1908] 304 GET /send_message?sender=919811389321&group_name=group3&message=how (127.0.0.1) 35.92ms
+[I 151209 14:33:38 web:1908] 200 GET /send_message?sender=919999823930&group_name=group3&message=yayeee (127.0.0.1) 28.13ms
+[I 151209 14:36:48 web:1908] 304 GET /create_group?owner=919811389321&name=group3&members=[919999823930] (127.0.0.1) 69.89ms
+[I 151209 14:37:21 web:1908] 200 GET /send_message?sender=919811389321&group_name=group3&message=heheh (127.0.0.1) 29.01ms
+[I 151209 14:40:16 web:1908] 304 GET /create_group?owner=919811389321&name=group3&members=[919999823930] (127.0.0.1) 85.88ms
+[I 151209 14:40:47 web:1908] 200 GET /send_message?sender=919811389321&group_name=group3 (127.0.0.1) 0.72ms
+[I 151209 14:40:51 web:1908] 304 GET /send_message?sender=919811389321&group_name=group3&message=how (127.0.0.1) 28.43ms
+[I 151209 14:45:00 web:1908] 304 GET /create_group?owner=919811389321&name=group3&members=[919999823930] (127.0.0.1) 81.32ms
+[I 151209 14:45:29 web:1908] 304 GET /send_message?sender=919811389321&group_name=group3 (127.0.0.1) 1.68ms
+[I 151209 14:45:40 web:1908] 200 GET /send_message?sender=919811389321&group_name=group3&message=how=aakarshi (127.0.0.1) 33.65ms
+[I 151209 14:46:35 web:1908] 200 GET /get_groups?user=919811389321 (127.0.0.1) 44.10ms
+[I 151209 14:58:39 web:1908] 304 GET /send_message?sender=919811389321&group_name=group3&message=how (127.0.0.1) 32.19ms
+[I 151209 15:05:21 web:1908] 200 GET /create_group?owner=919811389321&name=group4&members=[919999823930] (127.0.0.1) 81.43ms
+[I 151209 15:06:49 autoreload:204] group_chat.py modified; restarting server
+[I 151209 15:50:00 autoreload:204] group_chat.py modified; restarting server
+[I 151209 15:52:15 web:1908] 200 GET /create_group?owner=919999823930&name=group4&members=[919811389321] (127.0.0.1) 84.97ms
+[I 151209 15:53:13 web:1908] 200 GET /send_message?sender=919811389321&group_name=group4&message=heyi (127.0.0.1) 28.24ms
+[I 151209 16:49:07 web:1908] 200 GET /create_group?owner=919999823930&name=grp1&members=[919811389321] (127.0.0.1) 97.71ms
+[I 151209 16:51:07 web:1908] 200 GET /send_message?sender=919999823930&group_name=grp1&message=group1itis (127.0.0.1) 31.66ms
+[I 151209 16:52:28 web:1908] 304 GET /send_message?sender=919999823930&group_name=grp1&message=group1itis (127.0.0.1) 29.55ms
+[I 151209 16:54:33 web:1908] 200 GET /send_message?sender=919999823930&group_name=grp1&message=HEHEHEHEHEH (127.0.0.1) 30.26ms
+[I 151209 16:55:42 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151209 16:56:00 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151209 16:59:04 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151209 17:01:53 web:1908] 304 GET /send_message?sender=919999823930&group_name=grp1&message=HEHEHEHEHEH (127.0.0.1) 28.08ms
+[I 151209 17:13:39 web:1908] 200 GET /create_group?owner=916543789203&name=group8&members=[910987654321] (127.0.0.1) 10.29ms
+[I 151209 17:14:11 web:1908] 200 GET /create_group?owner=916543789203&name=group8&members=[910987654321] (127.0.0.1) 69.60ms
+[I 151209 17:14:46 web:1908] 200 GET /send_message?sender=916543789203&group_name=group8&message=how (127.0.0.1) 31.58ms
+[I 151209 17:42:38 web:1908] 200 GET /create_group?owner=client1&name=group1&members=[client2,client3] (127.0.0.1) 9.89ms
+[I 151209 17:42:53 autoreload:204] group_chat.py modified; restarting server
+[I 151209 17:42:58 web:1908] 200 GET /create_group?owner=client1&name=group1&members=[client2,client3] (127.0.0.1) 11.45ms
+[I 151209 17:43:50 autoreload:204] group_chat.py modified; restarting server
+[I 151209 17:43:54 web:1908] 200 GET /create_group?owner=client1&name=group1&members=[client2,client3] (127.0.0.1) 87.66ms
+[I 151209 17:44:46 web:1908] 200 GET /send_message?sender=client2&group_name=group1&message=hello1 (127.0.0.1) 26.08ms
+[I 151209 18:15:26 web:1908] 304 GET /send_message?sender=client2&group_name=group1&message=hello1 (127.0.0.1) 31.05ms
+[I 151209 18:18:27 web:1908] 304 GET /send_message?sender=client2&group_name=group1&message=hello1 (127.0.0.1) 30.78ms
+[I 151209 18:31:13 web:1908] 304 GET /send_message?sender=client2&group_name=group1&message=hello1 (127.0.0.1) 28.86ms
+[I 151209 18:48:51 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151209 18:49:36 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151209 18:51:32 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151209 18:51:52 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151210 06:24:41 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151210 06:27:06 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151210 06:29:45 web:1908] 200 GET /create_group?owner=client4&name=g1&members=[client2] (127.0.0.1) 70.42ms
+[I 151210 06:32:07 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 06:33:03 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 06:33:29 web:1908] 304 GET /create_group?owner=client4&name=g1&members=[client2] (127.0.0.1) 78.52ms
+[I 151210 06:34:37 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 06:35:11 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 06:35:27 web:1908] 304 GET /create_group?owner=client4&name=g1&members=[client2] (127.0.0.1) 71.28ms
+[I 151210 06:36:19 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 06:36:34 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 06:36:37 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 06:36:51 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 06:36:58 web:1908] 200 GET /create_group?owner=client4&name=g1&members=[client2] (127.0.0.1) 27.01ms
+[I 151210 06:37:09 web:1908] 200 GET /create_group?owner=client4&name=g1&members=[client2] (127.0.0.1) 177.49ms
+[I 151210 06:38:25 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151210 06:40:40 web:1908] 304 GET /create_group?owner=client4&name=g1&members=[client2] (127.0.0.1) 59.83ms
+[I 151210 06:41:47 web:1908] 200 GET /send_message?sender=client4&group_name=g1&message=msg1 (127.0.0.1) 27.45ms
+[I 151210 06:42:39 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151210 06:43:57 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/publisher.py modified; restarting server
+[I 151210 06:45:00 web:1908] 304 GET /send_message?sender=client4&group_name=g1&message=msg1 (127.0.0.1) 34.09ms
+[I 151210 06:45:30 web:1908] 200 GET /send_message?sender=client3&group_name=g1&message=msg1 (127.0.0.1) 21.32ms
+[I 151210 06:46:36 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/errors.py modified; restarting server
+[I 151210 06:46:41 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/errors.py modified; restarting server
+[I 151210 06:46:51 autoreload:204] group_chat.py modified; restarting server
+[I 151210 06:48:18 web:1908] 200 GET /create_group?owner=client3&name=g2&members=[client1] (127.0.0.1) 85.64ms
+[I 151210 06:49:15 web:1908] 200 GET /send_message?sender=client3&group_name=g2&message=message1 (127.0.0.1) 25.94ms
+[I 151210 06:56:36 web:1908] 200 GET /create_group?owner=client3&name=g3&members=[client1] (127.0.0.1) 69.21ms
+[I 151210 07:05:34 web:1908] 200 GET /create_group?owner=client5&name=grp4&members=[client6] (127.0.0.1) 75.32ms
+[I 151210 07:06:30 web:1908] 200 GET /send_message?sender=client2&group_name=grp41&message=message1 (127.0.0.1) 18.47ms
+[I 151210 07:06:39 web:1908] 200 GET /send_message?sender=client6&group_name=grp41&message=message1 (127.0.0.1) 17.91ms
+[I 151210 07:06:53 web:1908] 200 GET /send_message?sender=client6&group_name=grp4&message=message1 (127.0.0.1) 30.07ms
+[I 151210 07:07:58 web:1908] 200 GET /send_message?sender=client5&group_name=grp4&message=message2 (127.0.0.1) 26.62ms
+[I 151210 07:11:57 web:1908] 200 GET /create_group?owner=c1&name=g1&members=[c2] (127.0.0.1) 75.83ms
+[I 151210 07:12:32 web:1908] 200 GET /send_message?sender=c2&group_name=g1&message=h1 (127.0.0.1) 25.83ms
+[I 151210 07:14:13 web:1908] 200 GET /send_message?sender=c1&group_name=g1&message=h2 (127.0.0.1) 26.55ms
+[I 151210 07:14:46 web:1908] 200 GET /send_message?sender=c1&group_name=g1&message=h3 (127.0.0.1) 34.15ms
+[I 151210 07:14:59 web:1908] 200 GET /send_message?sender=c2&group_name=g1&message=h4 (127.0.0.1) 29.90ms
+[I 151210 07:16:22 web:1908] 200 GET /create_group?owner=c3&name=g2&members=[c4,c5] (127.0.0.1) 89.40ms
+[I 151210 07:17:04 web:1908] 200 GET /send_message?sender=c4&group_name=g2&message=msg1 (127.0.0.1) 32.09ms
+[I 151210 07:17:25 web:1908] 200 GET /send_message?sender=c5&group_name=g2&message=msg2 (127.0.0.1) 32.56ms
+[I 151210 07:17:35 web:1908] 200 GET /send_message?sender=c3&group_name=g2&message=msg3 (127.0.0.1) 27.33ms
+[I 151210 07:17:46 web:1908] 200 GET /send_message?sender=c4&group_name=g2&message=msg4 (127.0.0.1) 39.99ms
+[I 151210 07:18:31 web:1908] 200 GET /create_group?owner=c2&name=g3&members=[c3,c5] (127.0.0.1) 88.62ms
+[I 151210 07:19:00 web:1908] 200 GET /send_message?sender=c3&group_name=g3&message=hehe1 (127.0.0.1) 28.32ms
+[I 151210 07:19:18 web:1908] 200 GET /send_message?sender=c2&group_name=g3&message=hehe2 (127.0.0.1) 27.21ms
+[I 151210 07:19:48 web:1908] 200 GET /send_message?sender=c5&group_name=g3&message=hehe3 (127.0.0.1) 34.18ms
+[I 151210 07:20:25 web:1908] 200 GET /send_message?sender=c5&group_name=g3&message=hehe4 (127.0.0.1) 39.83ms
+[I 151210 07:20:44 web:1908] 200 GET /send_message?sender=c5&group_name=g3&message=hehe5 (127.0.0.1) 29.44ms
+[I 151210 07:35:59 web:1908] 200 GET /send_message?sender=c1&group_name=g1&message=hehe5 (127.0.0.1) 26.32ms
+[I 151210 07:42:56 web:1908] 200 GET /send_message?sender=c1&group_name=g1&message=hehe6 (127.0.0.1) 38.52ms
+[I 151210 07:43:45 web:1908] 200 GET /send_message?sender=c1&group_name=g1&message=hehe7 (127.0.0.1) 34.95ms
+[I 151210 08:28:39 web:1908] 200 GET /send_message?sender=c2&group_name=g3&message=hehe6 (127.0.0.1) 28.08ms
+[I 151210 08:29:31 web:1908] 200 GET /create_group?owner=c1&name=g5&members=[c2,c3] (127.0.0.1) 88.90ms
+[I 151210 08:30:16 web:1908] 200 GET /send_message?sender=c3&group_name=g5&message=heqqqq1 (127.0.0.1) 29.57ms
+[I 151210 08:31:34 web:1908] 200 GET /create_group?owner=c5&name=group1&members=[c4] (127.0.0.1) 66.02ms
+[I 151210 08:34:08 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 08:34:33 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 08:35:09 web:1908] 200 GET /create_group?owner=c5&name=group1&members=[c4] (127.0.0.1) 23.61ms
+[I 151210 08:35:19 web:1908] 200 GET /create_group?owner=c5&name=g10&members=[c4] (127.0.0.1) 69.14ms
+[I 151210 08:35:49 web:1908] 200 GET /send_message?sender=c4&group_name=g10&message=h1 (127.0.0.1) 30.83ms
+[I 151210 08:37:48 autoreload:204] /home/mama20/Documents/sportsUnity/group_chat/subscriber.py modified; restarting server
+[I 151210 11:21:14 web:1908] 200 GET /send_message?sender=c4&group_name=g10&message=h2 (127.0.0.1) 28.82ms
+[I 151210 11:22:31 web:1908] 200 GET /create_group?owner=c4&name=g6&members=[c1,c3] (127.0.0.1) 82.27ms
+[I 151210 11:23:04 web:1908] 200 GET /send_message?sender=c1&group_name=g6&message=hie1 (127.0.0.1) 31.67ms
+[I 151210 11:31:18 web:1908] 200 GET /create_group?owner=c1&name=group1&members=[c2,c3] (127.0.0.1) 85.01ms
+[I 151210 11:31:41 web:1908] 304 GET /create_group?owner=c1&name=group1&members=[c2,c3] (127.0.0.1) 77.83ms
+[I 151210 11:32:25 web:1908] 200 GET /send_message?sender=c2&group_name=group1&message=msg1 (127.0.0.1) 30.67ms
+[I 151210 11:33:03 web:1908] 200 GET /send_message?sender=c4&group_name=group1&message=msg2 (127.0.0.1) 17.75ms
+[I 151210 11:33:06 web:1908] 200 GET /send_message?sender=c3&group_name=group1&message=msg2 (127.0.0.1) 26.21ms
+[I 151210 11:33:41 web:1908] 200 GET /create_group?owner=919999823930&name=group2&members=[919716671667] (127.0.0.1) 69.47ms
+[I 151210 11:34:16 web:1908] 200 GET /send_message?sender=919999823930&group_name=group2&message=msg3 (127.0.0.1) 26.42ms
+[I 151210 11:34:44 web:1908] 200 GET /send_message?sender=919716671667&group_name=group2&message=msg4 (127.0.0.1) 37.12ms
+[I 151210 11:37:37 web:1908] 200 GET /send_message?sender=919716671667&group_name=group2&message=msg5 (127.0.0.1) 29.28ms
