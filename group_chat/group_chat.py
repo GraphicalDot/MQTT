@@ -24,11 +24,11 @@ class CreateGroup(tornado.web.RequestHandler):
             response['status'] = 400
             return response
 
-        # if len(owner) != 12:
-        #     print 'if length is not 12'
-        #     response['info'] = GROUP_OWNER_INVALID_CONTACT_ERR
-        #     response['status'] = 400
-        #     return response
+        if len(owner) != 12:
+            print 'if length is not 12'
+            response['info'] = GROUP_OWNER_INVALID_CONTACT_ERR
+            response['status'] = 400
+            return response
         return response
 
     def validate_group_name(self, name):
