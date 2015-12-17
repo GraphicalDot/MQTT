@@ -13,6 +13,7 @@ def on_publisher_connect(client, user_data, flags, rc):
         raise e
 
 
+# event handler called when message has reached to the server.
 def on_publisher_message(client, user_data, mid):
     print "ON PUBLISHER MESSAGE"
     try:
@@ -22,6 +23,13 @@ def on_publisher_message(client, user_data, mid):
                      user_data.get('message'))
         LocalQueryHandler.execute(query, variables)
         print "MESSAGE SENT TO THE BROKER!"
+
+        ## code for single quotes
+        single_tick_userdata = {}
+
+        # single_tick_userdata = {'topic': '$SYS/sportsunity/chat/group_acks', 'group_owner': user_data.get('group_owner'),
+        #                         'group_name': user_data.get('group_name')}
+        # group_chat_subscriber(client_id="", clean_session=False, userdata=single_tick_user_data)
 
         # stop the publishing thread
         client.loop_stop()
@@ -41,7 +49,7 @@ def group_chat_publisher(client_id, user_data):
     client.on_publish = on_publisher_message
     try:
         client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
-        client.connect_async(host='localhost', port=1883)
+        client.connect_async(host=MOSQUITTO_IP, port=MOSQUITTO_PORT)
         client.loop_start()
         print 'publisher started'
     except Exception as e:

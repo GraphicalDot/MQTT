@@ -494,3 +494,958 @@
 [I 151210 11:34:16 web:1908] 200 GET /send_message?sender=919999823930&group_name=group2&message=msg3 (127.0.0.1) 26.42ms
 [I 151210 11:34:44 web:1908] 200 GET /send_message?sender=919716671667&group_name=group2&message=msg4 (127.0.0.1) 37.12ms
 [I 151210 11:37:37 web:1908] 200 GET /send_message?sender=919716671667&group_name=group2&message=msg5 (127.0.0.1) 29.28ms
+[I 151211 14:09:34 autoreload:204] /home/mama20/Documents/MQTT/group_chat/publisher.py modified; restarting server
+[I 151214 16:07:05 web:1908] 200 GET /call_method (127.0.0.1) 0.72ms
+[E 151214 16:07:21 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 289, in get
+        CreateGroup.get(args, kwargs)
+    TypeError: unbound method get() must be called with CreateGroup instance as first argument (got tuple instance instead)
+[E 151214 16:07:21 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 36.38ms
+[I 151214 16:08:05 autoreload:204] group_chat.py modified; restarting server
+[E 151214 16:08:11 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Cache-Control': 'max-age=0', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 289, in get
+        CreateGroup().get(args, kwargs)
+    TypeError: __init__() takes exactly 3 arguments (1 given)
+[E 151214 16:08:11 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 2.37ms
+[I 151214 16:08:32 autoreload:204] group_chat.py modified; restarting server
+[E 151214 16:08:37 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Cache-Control': 'max-age=0', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 289, in get
+        CreateGroup.get(self, args, kwargs)
+    TypeError: unbound method get() must be called with CreateGroup instance as first argument (got callMethod instance instead)
+[E 151214 16:08:37 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 2.31ms
+[I 151214 16:08:57 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:09:04 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:09:52 autoreload:204] /home/mama20/Documents/MQTT/group_chat/settings.py modified; restarting server
+[I 151214 16:10:21 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:10:31 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:10:32 autoreload:204] group_chat.py modified; restarting server
+[E 151214 16:12:10 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 289, in get
+        request.get('http://' + SERVER_IP + ':' + SERVER_PORT + '/create_group', data=kwargs)
+    NameError: global name 'request' is not defined
+[E 151214 16:12:10 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 2.56ms
+[I 151214 16:13:00 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:13:05 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:13:20 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:13:36 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:13:42 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:14:16 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:14:58 autoreload:204] group_chat.py modified; restarting server
+[E 151214 16:15:06 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 289, in get
+        request.get('http://' + SERVER_IP + ':' + SERVER_PORT + '/create_group',
+    NameError: global name 'request' is not defined
+[E 151214 16:15:06 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 1.66ms
+[I 151214 16:15:14 autoreload:204] group_chat.py modified; restarting server
+[E 151214 16:15:22 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Cache-Control': 'max-age=0', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 289, in get
+        requests.get('http://' + SERVER_IP + ':' + SERVER_PORT + '/create_group',
+    TypeError: cannot concatenate 'str' and 'int' objects
+[E 151214 16:15:22 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 4.51ms
+[I 151214 16:15:41 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:15:49 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:18:58 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 291, in get
+        'members': self.get_argument('members', '')})
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 55, in get
+        return request('get', url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[I 151214 16:18:58 web:1908] 200 GET /create_group (127.0.0.1) 1.12ms
+[I 151214 16:18:58 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:19:17 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 291, in get
+        'members': self.get_argument('members', '')})
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 55, in get
+        return request('get', url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[I 151214 16:19:17 web:1908] 200 GET /create_group (127.0.0.1) 0.86ms
+[I 151214 16:19:30 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:24:48 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 291, in get
+        #             data={'owner': self.get_argument('owner', ''), 'name': self.get_argument('owner', ''),
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 55, in get
+        return request('get', url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[I 151214 16:24:48 web:1908] 200 GET /create_group (127.0.0.1) 1.01ms
+[I 151214 16:24:48 autoreload:204] group_chat.py modified; restarting server
+[E 151214 16:25:01 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 289, in get
+        CreateGroup().get(args, kwargs)
+    TypeError: __init__() takes exactly 3 arguments (1 given)
+[E 151214 16:25:01 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 2.29ms
+[I 151214 16:26:17 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:29:11 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:29:13 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:29:27 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:31:40 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:32:29 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 288, in get
+        requests.get(url, data={'owner': self.get_argument('owner', ''), 'name': self.get_argument('name', ''),
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 55, in get
+        return request('get', url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[I 151214 16:32:29 web:1908] 200 GET /create_group (127.0.0.1) 0.81ms
+[I 151214 16:32:29 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:34:05 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 288, in get
+        requests.post(url, data={'owner': self.get_argument('owner', ''), 'name': self.get_argument('name', ''),
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 55, in get
+        return request('get', url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[I 151214 16:34:05 web:1908] 200 GET /create_group (127.0.0.1) 0.46ms
+[I 151214 16:34:05 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:34:12 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 288, in get
+        requests.post(url, data={'owner': self.get_argument('owner', ''), 'name': self.get_argument('name', ''),
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 55, in get
+        return request('get', url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[I 151214 16:34:12 web:1908] 200 GET /create_group (127.0.0.1) 1.98ms
+[I 151214 16:34:12 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:34:28 web:1908] 200 GET /call_method?method=CreateGroup?owner=1 (127.0.0.1) 0.83ms
+[I 151214 16:35:16 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:35:25 web:1908] 304 GET /call_method?method=CreateGroup?owner=1 (127.0.0.1) 0.66ms
+[I 151214 16:36:53 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:38:07 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 290, in get
+        'members': self.get_argument('members', '')})
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 88, in post
+        return request('post', url, data=data, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[I 151214 16:38:07 web:1908] 200 POST /create_group (127.0.0.1) 0.45ms
+[I 151214 16:38:07 autoreload:204] group_chat.py modified; restarting server
+[E 151214 16:38:21 web:1496] Uncaught exception GET /call_method?method=CreateGroup&owner=1 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup&owner=1', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 290, in get
+        'members': self.get_argument('members', '')})
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 88, in post
+        return request('post', url, data=data, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 421, in request
+        prep = self.prepare_request(req)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 359, in prepare_request
+        hooks=merge_hooks(request.hooks, self.hooks),
+      File "/usr/lib/python2.7/dist-packages/requests/models.py", line 287, in prepare
+        self.prepare_url(url, params)
+      File "/usr/lib/python2.7/dist-packages/requests/models.py", line 338, in prepare_url
+        "Perhaps you meant http://{0}?".format(url))
+    MissingSchema: Invalid URL u'/create_group': No schema supplied. Perhaps you meant http:///create_group?
+[E 151214 16:38:21 web:1908] 500 GET /call_method?method=CreateGroup&owner=1 (127.0.0.1) 16.56ms
+[I 151214 16:38:37 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:40:00 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:40:15 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:55:51 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 290, in get
+        #     url = 'http://localhost:3000/create_group'
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 88, in post
+        return request('post', url, data=data, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[I 151214 16:55:51 web:1908] 200 POST /create_group (127.0.0.1) 0.57ms
+[I 151214 16:55:51 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 16:55:55 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 290, in get
+        #     url = 'http://localhost:3000/create_group'
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 88, in post
+        return request('post', url, data=data, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[W 151214 16:55:55 web:1908] 405 GET /create_group (127.0.0.1) 0.59ms
+[I 151214 16:55:55 web:1908] 200 POST /create_group (127.0.0.1) 0.41ms
+[I 151214 16:55:55 autoreload:204] group_chat.py modified; restarting server
+[I 151214 16:56:55 web:1908] 200 GET /create_group?owner=c1&name=group1&members=[c2,c3] (127.0.0.1) 1.36ms
+[I 151214 17:03:54 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:04:14 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:07:09 web:1908] 304 GET /create_group?owner=c1&name=group1&members=[c2,c3] (127.0.0.1) 1.76ms
+[I 151214 17:08:10 autoreload:204] group_chat.py modified; restarting server
+[W 151214 17:15:52 web:1908] 404 GET /call_method?method=CreateGroup (127.0.0.1) 0.99ms
+[I 151214 17:16:01 autoreload:204] group_chat.py modified; restarting server
+[E 151214 17:16:04 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 308, in get
+        client = tornado.httpclient.HTTPClient()
+    AttributeError: 'module' object has no attribute 'httpclient'
+[E 151214 17:16:04 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 1.63ms
+[I 151214 17:16:44 autoreload:204] group_chat.py modified; restarting server
+[E 151214 17:16:51 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 313, in get
+        body = urllib.urlencode({'owner': self.get_argument('owner', ''), 'name': self.get_argument('name', ''),
+    NameError: global name 'urllib' is not defined
+[E 151214 17:16:51 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 2.92ms
+[I 151214 17:17:15 autoreload:204] group_chat.py modified; restarting server
+[E 151214 17:17:22 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 318, in get
+        res = client.fetch(req)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpclient.py", line 102, in fetch
+        self._async_client.fetch, request, **kwargs))
+      File "/usr/local/lib/python2.7/dist-packages/tornado/ioloop.py", line 445, in run_sync
+        return future_cell[0].result()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/concurrent.py", line 215, in result
+        raise_exc_info(self._exc_info)
+      File "<string>", line 3, in raise_exc_info
+    ValueError: Body must be None for method GET (unless allow_nonstandard_methods is true)
+[E 151214 17:17:22 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 55.18ms
+[I 151214 17:18:08 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:18:16 autoreload:204] group_chat.py modified; restarting server
+[E 151214 17:18:41 web:1496] Uncaught exception GET /call_method?method=CreateGroup (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 318, in get
+        res = client.fetch(req)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpclient.py", line 102, in fetch
+        self._async_client.fetch, request, **kwargs))
+      File "/usr/local/lib/python2.7/dist-packages/tornado/ioloop.py", line 445, in run_sync
+        return future_cell[0].result()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/concurrent.py", line 215, in result
+        raise_exc_info(self._exc_info)
+      File "<string>", line 3, in raise_exc_info
+    HTTPError: HTTP 599: Timeout
+[E 151214 17:18:41 web:1908] 500 GET /call_method?method=CreateGroup (127.0.0.1) 20024.70ms
+[I 151214 17:18:41 web:1908] 200 POST /create_group (127.0.0.1) 1.59ms
+[I 151214 17:19:32 web:1908] 200 GET /call_method?method=CreateGroup?owner=a (127.0.0.1) 0.67ms
+[I 151214 17:20:07 web:1908] 304 GET /call_method?method=CreateGroup?owner=a (127.0.0.1) 2.19ms
+[E 151214 17:21:02 web:1496] Uncaught exception GET /call_method?method=CreateGroup&owner=a (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/call_method?method=CreateGroup&owner=a', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 318, in get
+        res = client.fetch(req)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpclient.py", line 102, in fetch
+        self._async_client.fetch, request, **kwargs))
+      File "/usr/local/lib/python2.7/dist-packages/tornado/ioloop.py", line 445, in run_sync
+        return future_cell[0].result()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/concurrent.py", line 215, in result
+        raise_exc_info(self._exc_info)
+      File "<string>", line 3, in raise_exc_info
+    HTTPError: HTTP 599: Timeout
+[E 151214 17:21:02 web:1908] 500 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 20023.92ms
+[I 151214 17:21:02 web:1908] 200 POST /create_group (127.0.0.1) 1.08ms
+[I 151214 17:22:20 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:22:25 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:22:50 web:1908] 200 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 20013.63ms
+[I 151214 17:22:50 web:1908] 200 POST /create_group (127.0.0.1) 1.60ms
+[I 151214 17:23:32 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:24:36 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:24:45 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:25:10 web:1908] 304 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 20010.19ms
+[I 151214 17:25:10 web:1908] 200 POST /create_group (127.0.0.1) 0.83ms
+[I 151214 17:32:08 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:32:29 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:32:55 web:1908] 304 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 20015.42ms
+[E 151214 17:32:55 web:1496] Uncaught exception POST /create_group (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='POST', uri='/create_group', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Content-Length': '22', 'Connection': 'close', 'Content-Type': 'application/x-www-form-urlencoded', 'Host': 'localhost:3000', 'Accept-Encoding': 'gzip'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1417, in _execute
+        raise TypeError("Expected None, got %r" % result)
+    TypeError: Expected None, got {'info': ' Bad Request: Please provide a valid phone number of group owner!', 'status': 400}
+[E 151214 17:32:55 web:1908] 500 POST /create_group (127.0.0.1) 2.11ms
+[I 151214 17:55:43 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:56:10 web:1908] 304 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 20022.06ms
+[E 151214 17:56:10 web:1496] Uncaught exception POST /create_group (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='POST', uri='/create_group', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Content-Length': '22', 'Connection': 'close', 'Content-Type': 'application/x-www-form-urlencoded', 'Host': 'localhost:3000', 'Accept-Encoding': 'gzip'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1417, in _execute
+        raise TypeError("Expected None, got %r" % result)
+    TypeError: Expected None, got {'info': ' Bad Request: Please provide a valid phone number of group owner!', 'status': 400}
+[E 151214 17:56:10 web:1908] 500 POST /create_group (127.0.0.1) 2.12ms
+[I 151214 17:56:45 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:57:09 web:1908] 304 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 20022.76ms
+[E 151214 17:57:09 web:1496] Uncaught exception POST /create_group (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='POST', uri='/create_group', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Content-Length': '22', 'Connection': 'close', 'Content-Type': 'application/x-www-form-urlencoded', 'Host': 'localhost:3000', 'Accept-Encoding': 'gzip'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1417, in _execute
+        raise TypeError("Expected None, got %r" % result)
+    TypeError: Expected None, got {'info': ' Bad Request: Please provide a valid phone number of group owner!', 'status': 400}
+[E 151214 17:57:09 web:1908] 500 POST /create_group (127.0.0.1) 3.44ms
+[I 151214 17:57:16 autoreload:204] group_chat.py modified; restarting server
+[I 151214 17:59:17 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:00:34 web:1908] 304 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 1.70ms
+[I 151214 18:01:10 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:02:48 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:03:07 web:1908] 304 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 3.08ms
+[I 151214 18:03:43 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:04:09 web:1908] 304 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 20022.70ms
+[E 151214 18:04:09 web:1496] Uncaught exception POST /create_group (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='POST', uri='/create_group', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Content-Length': '22', 'Connection': 'close', 'Content-Type': 'application/x-www-form-urlencoded', 'Host': 'localhost:3000', 'Accept-Encoding': 'gzip'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1417, in _execute
+        raise TypeError("Expected None, got %r" % result)
+    TypeError: Expected None, got {'info': ' Bad Request: Please provide a valid phone number of group owner!', 'status': 400}
+[E 151214 18:04:09 web:1908] 500 POST /create_group (127.0.0.1) 2.06ms
+[I 151214 18:15:56 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:16:24 web:1908] 304 GET /call_method?method=CreateGroup&owner=a (127.0.0.1) 20022.58ms
+[E 151214 18:16:24 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 185, in _read_message
+        header_future = delegate.headers_received(start_line, headers)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 276, in headers_received
+        return self.delegate.headers_received(start_line, headers)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1925, in headers_received
+        headers=headers))
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1933, in set_request
+        self.stream_request_body = _has_stream_request_body(self.handler_class)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1625, in _has_stream_request_body
+        raise TypeError("expected subclass of RequestHandler, got %r", cls)
+    TypeError: ('expected subclass of RequestHandler, got %r', <class '__main__.CreateGroup'>)
+[E 151214 18:16:24 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 259, in _read_message
+        delegate.on_connection_close()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 297, in on_connection_close
+        self.delegate.on_connection_close()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1987, in on_connection_close
+        if self.stream_request_body:
+    AttributeError: '_RequestDispatcher' object has no attribute 'stream_request_body'
+[I 151214 18:17:13 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:17:45 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:19:13 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:19:36 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:19:45 autoreload:204] group_chat.py modified; restarting server
+[I 151214 18:20:15 connectionpool:259] Starting new HTTP connection (1): localhost
+[E 151214 18:21:21 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 238, in _read_message
+        delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 290, in finish
+        self.delegate.finish()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1984, in finish
+        self.execute()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 2017, in execute
+        **self.path_kwargs)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/gen.py", line 230, in wrapper
+        yielded = next(result)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 292, in get
+        res = requests.post('http://localhost:3000/create_group', data=data)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 88, in post
+        return request('post', url, data=data, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 330, in send
+        timeout=timeout
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 557, in urlopen
+        body=body, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 409, in _make_request
+        httplib_response = conn.getresponse(buffering=True)
+      File "/usr/lib/python2.7/httplib.py", line 1051, in getresponse
+        response.begin()
+      File "/usr/lib/python2.7/httplib.py", line 415, in begin
+        version, status, reason = self._read_status()
+      File "/usr/lib/python2.7/httplib.py", line 371, in _read_status
+        line = self.fp.readline(_MAXLINE + 1)
+      File "/usr/lib/python2.7/socket.py", line 476, in readline
+        data = self._sock.recv(self._rbufsize)
+    KeyboardInterrupt
+[E 151214 18:21:21 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 185, in _read_message
+        header_future = delegate.headers_received(start_line, headers)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 276, in headers_received
+        return self.delegate.headers_received(start_line, headers)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1925, in headers_received
+        headers=headers))
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1933, in set_request
+        self.stream_request_body = _has_stream_request_body(self.handler_class)
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1625, in _has_stream_request_body
+        raise TypeError("expected subclass of RequestHandler, got %r", cls)
+    TypeError: ('expected subclass of RequestHandler, got %r', <class '__main__.CreateGroup'>)
+[E 151214 18:21:21 http1connection:54] Uncaught exception
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/http1connection.py", line 259, in _read_message
+        delegate.on_connection_close()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/httpserver.py", line 297, in on_connection_close
+        self.delegate.on_connection_close()
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1987, in on_connection_close
+        if self.stream_request_body:
+    AttributeError: '_RequestDispatcher' object has no attribute 'stream_request_body'
+[I 151214 18:21:21 autoreload:204] group_chat.py modified; restarting server
+[I 151215 15:27:54 autoreload:204] group_chat.py modified; restarting server
+[I 151215 15:28:02 autoreload:204] group_chat.py modified; restarting server
+[I 151215 15:28:26 autoreload:204] group_chat.py modified; restarting server
+[I 151215 15:45:51 web:1908] 200 GET /start_stop_app (127.0.0.1) 0.95ms
+[E 151215 15:46:11 web:1496] Uncaught exception GET /start_stop_app?user=717818 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=717818', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 392, in get
+        res =  self.data_validation(user, contacts)
+      File "group_chat.py", line 359, in data_validation
+        if len(owner) != 12:
+    NameError: global name 'owner' is not defined
+[E 151215 15:46:11 web:1908] 500 GET /start_stop_app?user=717818 (127.0.0.1) 2.66ms
+[I 151215 15:46:21 autoreload:204] group_chat.py modified; restarting server
+[I 151215 15:46:27 web:1908] 200 GET /start_stop_app?user=717818 (127.0.0.1) 0.74ms
+[I 151215 15:49:55 web:1908] 200 GET /start_stop_app?user=919876543213 (127.0.0.1) 10.71ms
+[I 151215 15:50:31 autoreload:204] group_chat.py modified; restarting server
+[E 151215 15:50:35 web:1496] Uncaught exception GET /start_stop_app?user=919876543213 (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919876543213', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'If-None-Match': '"0ec71684e8d92d90e5d90cb1df3a3ade59b283a9"', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 393, in get
+        return self.write(res)
+    UnboundLocalError: local variable 'res' referenced before assignment
+[E 151215 15:50:35 web:1908] 500 GET /start_stop_app?user=919876543213 (127.0.0.1) 4.78ms
+[I 151215 15:51:24 autoreload:204] group_chat.py modified; restarting server
+[I 151215 15:51:26 web:1908] 200 GET /start_stop_app?user=919876543213 (127.0.0.1) 0.67ms
+[I 151215 15:51:37 web:1908] 200 GET /start_stop_app? (127.0.0.1) 0.35ms
+[I 151215 15:51:39 web:1908] 200 GET /start_stop_app (127.0.0.1) 0.41ms
+[W 151215 15:51:43 web:1908] 404 GET / (127.0.0.1) 0.31ms
+[I 151215 15:51:48 web:1908] 304 GET /start_stop_app (127.0.0.1) 0.48ms
+[I 151215 15:52:00 web:1908] 200 GET /start_stop_app?user=919876543213&event=start (127.0.0.1) 9.76ms
+[E 151215 15:52:46 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 407, in get
+        self.publish_presence_notification(client_id, user_data)
+    TypeError: publish_presence_notification() takes exactly 2 arguments (3 given)
+[E 151215 15:52:46 web:1908] 500 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 14.17ms
+[I 151215 15:53:18 autoreload:204] group_chat.py modified; restarting server
+[E 151215 15:53:25 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 414, in get
+        self.subscribe_contacts_presence(client_id, user_data)  ## will be a frontend function
+    TypeError: subscribe_contacts_presence() takes exactly 2 arguments (3 given)
+[E 151215 15:53:25 web:1908] 500 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 11.29ms
+[I 151215 15:53:43 autoreload:204] group_chat.py modified; restarting server
+[E 151215 15:53:58 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 423, in get
+        friends_status[friend] = result[0]['status']
+    IndexError: list index out of range
+[E 151215 15:53:58 web:1908] 500 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 21.95ms
+[I 151215 15:59:31 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:00:05 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:00:09 autoreload:204] group_chat.py modified; restarting server
+[E 151215 16:00:16 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 424, in get
+        friends_status[friend] = result[0]['status']
+    IndexError: list index out of range
+[E 151215 16:00:16 web:1908] 500 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 20.32ms
+[I 151215 16:00:54 autoreload:204] group_chat.py modified; restarting server
+[E 151215 16:01:02 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 425, in get
+        friends_status[friend] = result[0]['status']
+    IndexError: list index out of range
+[E 151215 16:01:02 web:1908] 500 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 21.87ms
+[I 151215 16:01:45 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:01:52 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:01:54 web:1908] 200 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 22.19ms
+[I 151215 16:02:04 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:02:18 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:02:25 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:02:34 web:1908] 200 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 10.73ms
+[I 151215 16:04:12 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:04:27 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:04:59 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:05:04 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:05:16 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:05:21 autoreload:204] /home/mama20/Documents/MQTT/group_chat/errors.py modified; restarting server
+[I 151215 16:05:31 autoreload:204] /home/mama20/Documents/MQTT/group_chat/errors.py modified; restarting server
+[I 151215 16:05:32 autoreload:204] /home/mama20/Documents/MQTT/group_chat/errors.py modified; restarting server
+[I 151215 16:09:45 autoreload:204] group_chat.py modified; restarting server
+[E 151215 16:28:33 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'If-None-Match': '"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f"', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 398, in get
+        res =  self.data_validation(user, event, contacts)
+    TypeError: data_validation() takes exactly 3 arguments (4 given)
+[E 151215 16:28:33 web:1908] 500 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 1.58ms
+[I 151215 16:28:49 autoreload:204] group_chat.py modified; restarting server
+[E 151215 16:28:58 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 404, in get
+        print 'TOPIC:', topic
+    NameError: global name 'topic' is not defined
+[E 151215 16:28:58 web:1908] 500 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 14.20ms
+[I 151215 16:29:11 autoreload:204] group_chat.py modified; restarting server
+[I 151215 16:29:16 web:1908] 200 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 10.65ms
+[I 151215 16:33:07 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:33:24 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:33:54 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:34:16 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:34:41 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:35:33 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:35:41 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:36:03 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:36:42 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:37:14 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:37:40 autoreload:204] /usr/local/lib/python2.7/dist-packages/paho/mqtt/client.py modified; restarting server
+[I 151215 16:37:54 web:1908] 304 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 13.28ms
+[E 151215 16:58:54 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'If-None-Match': '"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f"', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 337, in get
+        publish_presence_notification(client_id, user_data)
+      File "/home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py", line 32, in publish_presence_notification
+        client.on_connect = self.on_connect
+    NameError: global name 'self' is not defined
+[E 151215 16:58:54 web:1908] 500 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 11.37ms
+[I 151215 16:59:22 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151215 16:59:36 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151215 16:59:45 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151215 16:59:51 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151215 17:00:00 web:1908] 200 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 13.53ms
+[I 151215 17:17:06 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:17:41 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:18:05 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:21:58 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:22:14 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:22:16 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:22:23 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:24:01 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:25:17 autoreload:204] group_chat.py modified; restarting server
+[I 151215 17:27:59 web:1908] 304 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 10.90ms
+[I 151215 17:28:57 web:1908] 200 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 11.49ms
+[I 151215 17:34:19 web:1908] 304 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 9.39ms
+[I 151215 18:10:42 autoreload:204] group_chat.py modified; restarting server
+[I 151215 18:14:27 autoreload:204] group_chat.py modified; restarting server
+[I 151215 18:16:12 web:1908] 304 GET /start_stop_app?user=919999823930&event=start (127.0.0.1) 14.08ms
+[I 151215 18:17:13 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 9.95ms
+[I 151215 18:17:47 web:1908] 200 GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1) 22.45ms
+[I 151215 18:18:17 autoreload:204] group_chat.py modified; restarting server
+[I 151215 18:18:22 web:1908] 200 GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1) 25.38ms
+[I 151216 11:13:22 web:1908] 200 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 21.60ms
+[I 151216 11:14:01 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:14:15 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 20.22ms
+[I 151216 11:15:00 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:15:07 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 19.23ms
+[I 151216 11:15:22 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:16:24 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:16:30 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 19.12ms
+[I 151216 11:17:28 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:17:32 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 17.85ms
+[I 151216 11:18:24 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 17.32ms
+[I 151216 11:19:00 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:19:34 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 18.34ms
+[I 151216 11:19:57 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:20:16 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:20:23 web:1908] 200 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 13.45ms
+[I 151216 11:23:36 web:1908] 304 GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1) 17.46ms
+[I 151216 11:24:36 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:24:44 web:1908] 304 GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1) 22.26ms
+[I 151216 11:25:52 autoreload:204] group_chat.py modified; restarting server
+[I 151216 11:26:05 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 14.85ms
+[E 151216 11:28:40 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start&contacts=[919811389321]', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'If-None-Match': '"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f"', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 352, in get
+        subscribe_contacts_presence(client_id, user_data)  ## will be a frontend function
+    TypeError: subscribe_contacts_presence() takes exactly 3 arguments (2 given)
+[E 151216 11:28:40 web:1908] 500 GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1) 19.74ms
+[I 151216 11:29:11 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 11:29:14 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 11:30:20 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 10.87ms
+[E 151216 11:30:38 web:1496] Uncaught exception GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1)
+    HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/start_stop_app?user=919999823930&event=start&contacts=[919811389321]', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate', 'Host': 'localhost:3000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "group_chat.py", line 352, in get
+        subscribe_contacts_presence(client_id, user_data)  ## will be a frontend function
+      File "/home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py", line 68, in subscribe_contacts_presence
+        client.on_connect = self.on_subscriber_connect
+    NameError: global name 'self' is not defined
+[E 151216 11:30:38 web:1908] 500 GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1) 24.07ms
+[I 151216 11:30:54 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 11:31:34 web:1908] 304 GET /start_stop_app?user=919999823930&event=stop (127.0.0.1) 11.08ms
+[I 151216 11:31:39 web:1908] 200 GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1) 37.86ms
+[I 151216 11:31:56 web:1908] 200 GET /start_stop_app?user=919811389321&event=start (127.0.0.1) 13.34ms
+[I 151216 11:32:12 web:1908] 200 GET /start_stop_app?user=919999823930&event=start&contacts=[919811389321] (127.0.0.1) 31.37ms
+[I 151216 11:32:20 web:1908] 200 GET /start_stop_app?user=919999823930&event=stop&contacts=[919811389321] (127.0.0.1) 26.83ms
+[I 151216 11:37:07 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 11:40:25 web:1908] 200 GET /start_stop_app?user=919999823930&event=start&contacts=[919958776104] (127.0.0.1) 33.01ms
+[I 151216 12:19:58 web:1908] 200 GET /start_stop_app?user=919876543210&event=stop (127.0.0.1) 10.51ms
+[I 151216 12:20:36 web:1908] 200 GET /start_stop_app?user=919876543210&event=stop&contacts=[918765432109] (127.0.0.1) 28.38ms
+[I 151216 12:29:39 web:1908] 200 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 36.36ms
+[I 151216 13:40:13 web:1908] 304 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 30.90ms
+[I 151216 13:41:17 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:41:25 web:1908] 304 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 27.57ms
+[I 151216 13:42:09 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:42:19 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:42:23 web:1908] 304 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 28.64ms
+[I 151216 13:42:41 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:42:48 web:1908] 304 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 30.28ms
+[I 151216 13:52:43 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:52:56 web:1908] 304 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 34.24ms
+[I 151216 13:53:21 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:53:28 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:53:55 web:1908] 304 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 40.89ms
+[I 151216 13:54:05 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:54:12 web:1908] 304 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 34.79ms
+[I 151216 13:56:42 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:57:27 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:57:30 autoreload:204] /home/mama20/Documents/MQTT/group_chat/utils/presence_notification.py modified; restarting server
+[I 151216 13:57:39 web:1908] 304 GET /start_stop_app?user=916543210987&event=start&contacts=[917654321098] (127.0.0.1) 30.44ms

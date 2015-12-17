@@ -1,5 +1,5 @@
 from paho.mqtt.client import Client
-from settings import *
+from app_settings import *
 
 
 # class MQTTPublishClient(Client):

@@ -1,14 +1,17 @@
 import json
 import tornado
+import tornado.escape
+import tornado.httpclient
 import tornado.ioloop
 import tornado.web
-import tornado.escape
+
 from tornado.log import enable_pretty_logging
 from tornado.options import options
-from db_handler import *
+
+from errors import *
 from publisher import *
 from subscriber import *
-from errors import *
+from utils.presence_notification import *
 
 
 class CreateGroup(tornado.web.RequestHandler):
@@ -59,10 +62,6 @@ class CreateGroup(tornado.web.RequestHandler):
         users_result = LocalQueryHandler.get_results(query, variables)
         users = list(user['username'] for user in users_result) if users_result else []
 
-        print '%%%%%%%%%%%%%'
-        print 'users:', users
-        print 'members:', members
-
         if not set(members).issubset(users):
             print "if group member is not registered!"
             response['info'] = NON_REGISTERED_MEMBER_ERR
@@ -109,7 +108,7 @@ class CreateGroup(tornado.web.RequestHandler):
         except Exception as e:
             raise e
 
-    def get(self):
+    def get(self, *args, **kwargs):
         response = {}
         print "inside get of CreateGroup"
         try:
@@ -119,7 +118,7 @@ class CreateGroup(tornado.web.RequestHandler):
             group_members = str(self.get_argument('members', ''))
             res = self.data_validation(group_owner, group_name, group_members)
             if res['status'] in [400, 404]:
-                return self.write(res)
+                return res
 
             group_members = res['members']
             group_members.append(str(group_owner))
@@ -271,11 +270,105 @@ class GetGroupsInfo(tornado.web.RequestHandler):
             return self.write(response)
 
 
+class StartStopApp(tornado.web.RequestHandler):
+    topic = None
+    status = None
+
+    def data_validation(self, user, event, contacts):
+        print 'inside data validation'
+        response = {'info': '', 'status': 0}
+        if not user:
+            print 'if user not provided'
+            response['info'] = INCOMPLETE_USER_INFO_ERR
+            response['status'] = 400
+            return response
+
+        if len(user) != 12:
+            print 'if length is not 12'
+            response['info'] = INVALID_USER_CONTACT_ERR
+            response['status'] = 400
+            return response
+
+        query = " SELECT id FROM users WHERE username=%s;"
+        variables = (user,)
+        result = LocalQueryHandler.get_results(query, variables)
+        if not result:
+            response['info'] = USER_NOT_REGISTERED_ERR
+            response ['status'] = 400
+            return response
+
+        if not event:
+            response['info'] = EVENT_NOT_PROVIDED_ERR
+            response['status'] = 400
+            return response
+
+        print 'contacts:', contacts
+        if contacts:
+            for contact in contacts:
+                query = " SELECT id FROM users WHERE username=%s;"
+                variables = (contact,)
+                result = LocalQueryHandler.get_results(query, variables)
+                if not result:
+                    response['info'] = NON_REGISTERED_CONTACT_ERR
+                    response ['status'] = 400
+                    return response
+        return response
+
+    def get(self, *args, **kwags):
+        print "inside get of StartApp"
+        user = str(self.get_argument('user', ''))
+        event = str(self.get_argument('event', ''))
+        contacts = str(self.get_argument('contacts', '')).replace(" ", "")
+        print 'contacts:', contacts[1:-1]
+        friends = contacts[1:-1].split(',') if contacts else ''
+        print 'user:', user
+        print 'event:', event
+        print 'friends:', friends
+
+        res =  self.data_validation(user, event, friends)
+        if res['status'] == 400:
+            return self.write(res)
+
+        client_id = user + '_presence'
+        self.topic = '$SYS/sportsunity/client/' + client_id
+        print 'TOPIC:', self.topic
+
+        # TODO: make an entry into ACL file for this topic in registeration process
+
+        # publish presence status for the client.
+        self.status = '1' if event == 'start' else '0'
+        user_data = {'topic': self.topic, 'event': event, 'status': self.status, 'user': user}
+        publish_presence_notification(client_id, user_data)
+
+        friends_status = dict()
+        if friends:
+            print 'inside if'
+            # Subscribe to all contacts so as to get notified if user comes online/offline.
+            for friend in friends:
+                print 'for friend:', friend
+                client_id = user + 'subscribes_to_' + friend + '_presence'
+                print 'client_id:', client_id
+                user_data = {'topic': '$SYS/sportsunity/client/' +  friend + '_presence'}
+                subscribe_contacts_presence(client_id, user_data)  ## will be a frontend function
+            print 'modified user data:', user_data
+
+            # Get all contacts status
+            for friend in friends:
+                query = " SELECT status FROM users WHERE username=%s;"
+                variables = (friend,)
+                result = LocalQueryHandler.get_results(query, variables)
+                friends_status[friend] = result[0]['status']
+            print 'status dictionary:', friends_status
+        return self.write(friends_status)
+
+
 def make_app():
     return tornado.web.Application([
         (r"/create_group", CreateGroup),
         (r"/send_message", SendMessageToGroup),
         (r"/get_groups", GetGroupsInfo),
+        # (r"/call_method", callMethod),
+        (r"/start_stop_app", StartStopApp),
     ],
         autoreload=True,
     )

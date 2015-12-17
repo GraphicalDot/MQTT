@@ -29,9 +29,8 @@ def group_chat_subscriber(client_id, user_data):
 
     try:
         client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
-        client.connect_async(host='localhost', port=1883)
+        client.connect_async(host=MOSQUITTO_IP, port=MOSQUITTO_PORT)
         client.loop_start()
         print 'SUBSCRIBER STARTED!'
     except Exception as e:
         print "inside Exception:", e
-

@@ -8,3 +8,10 @@ local_db_pswd = 'test'
 
 BROKER_USERNAME = 'aakarshi'
 BROKER_PASSWORD = 'password'
+
+SERVER_IP = 'localhost'
+SERVER_PORT = 3000
+
+
+MOSQUITTO_IP = 'localhost'
+MOSQUITTO_PORT = 1883
