@@ -59,7 +59,6 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
-    options.log_file_prefix = "tornado_log"
     enable_pretty_logging(options=options)
     app.listen(3000)
     tornado.ioloop.IOLoop.current().start()

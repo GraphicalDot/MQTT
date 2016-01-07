@@ -1,17 +1,19 @@
 
-publish_client_id = 'sportsunity@mm'
+LOCAL_DB_HOST = 'localhost'
+LOCAL_DB_NAME = 'test'
+LOCAL_DB_USER = 'test'
+LOCAL_DB_PSWD = 'test'
 
-local_db_host = 'localhost'
-local_db_name = 'test'
-local_db_user = 'test'
-local_db_pswd = 'test'
+BROKER_USERNAME = 'guest'
+BROKER_PASSWORD = 'guest'
 
-BROKER_USERNAME = 'aakarshi'
-BROKER_PASSWORD = 'password'
+EXPIRY_PERIOD_SEC=1800
 
-SERVER_IP = 'localhost'
-SERVER_PORT = 3000
+REGISTRATION_MESSAGE='Welcome to Sports Unity App. Your authorization code is'
+GUPSHUP_ID=2000147230
+GUPSHUP_PASSWORD='6u71LGpxDq'
+GUPSHUP_MESSAGE_GATEWAY='http://enterprise.smsgupshup.com/GatewayAPI/rest'
 
+## RabbitMQ Exchange(s)
+GROUP_CHAT_MESSAGES_EXCHANGE = 'group_chat_messages'
 
-MOSQUITTO_IP = 'localhost'
-MOSQUITTO_PORT = 1883

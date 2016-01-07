@@ -4,14 +4,86 @@ import tornado.escape
 import tornado.httpclient
 import tornado.ioloop
 import tornado.web
+import pika
+from pika.exceptions import *
 
 from tornado.log import enable_pretty_logging
 from tornado.options import options
 
+from chat.utils import *
+from db_handler import *
 from errors import *
-from publisher import *
-from subscriber import *
-from utils.presence_notification import *
+from mqtt_publisher import *
+from mqtt_subscriber import *
+from rabbitmq_utils import *
+from app_settings import *
+
+
+class SendMessageToGroup(tornado.web.RequestHandler):
+    topic = None
+
+    def data_validations(self, sender, group_name, message):
+        response = {'info': '', 'status': 0}
+        print "inside data validations"
+        print 'sender:', sender
+        print 'name:', group_name
+        print 'message:', message
+        if (not sender) or (not group_name) or (not message):
+            response['info'] = SEND_MESSAGE_INCOMPLETE_INFO_ERR
+            response['status'] = 400
+            return response
+
+        query = " SELECT id FROM users WHERE username=%s;"
+        variables = (sender,)
+        user = LocalQueryHandler.get_results(query, variables)
+        if not user:
+            response['info'] = SEND_MESSAGE_NO_USER_PROVIDED_ERR
+            response['status'] = 404
+            return response
+
+        query = " SELECT id FROM groups_info WHERE name=%s AND %s=ANY(members);"
+        variables = (group_name, sender)
+        group = LocalQueryHandler.get_results(query, variables)
+        if not group:
+            response['info'] = SEND_MESSAGE_INVALID_GROUP_DETAILS_ERR
+            response['status'] = 404
+            return response
+        return response
+
+    def get(self, *args, **kwargs):
+        print "inside get of SendMessageToGroup"
+        response = {}
+        try:
+            sender = str(self.get_argument('sender', ''))
+            group_name = str(self.get_argument('group_name', ''))
+            message = str(self.get_argument('message', ''))
+
+            # data validations
+            res = self.data_validations(sender, group_name, message)
+            print 'res:', res
+            if res['status'] in [400, 404]:
+                return self.write(res)
+
+            # Get group's owner
+            query = " SELECT id,owner FROM groups_info WHERE name=%s AND %s=ANY(members);"
+            variables = (group_name, sender)
+            group = LocalQueryHandler.get_results(query, variables)
+            owner = str(group[0]['owner'])
+            print 'group details:', group
+
+            channel = get_rabbitmq_connection()
+            self.topic = 'group_chat.' + owner + '.' + group_name
+            user_data = {'topic': self.topic + '.' + sender, 'group_owner': owner, 'group_name': group_name, 'sender': sender,
+                         'message': message}
+            group_id = str(group[0]['id'])
+            client_id = 'pub_' + sender[2:] + '_' + group_id
+            group_chat_publisher(client_id , user_data)
+        except Exception as e:
+            print "inside exception:", e
+            response['info'] = " Error: %s" % e
+            response['status'] = 500
+        finally:
+            self.write(response)
 
 
 class CreateGroup(tornado.web.RequestHandler):
@@ -108,6 +180,18 @@ class CreateGroup(tornado.web.RequestHandler):
         except Exception as e:
             raise e
 
+    def create_queue(self, topic):
+        print "inside create queue"
+        try:
+            routing_key = topic + '.*'
+            channel = get_rabbitmq_connection()
+            result = channel.queue_declare()
+            channel.queue_bind(exchange=GROUP_CHAT_MESSAGES_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
+        except Exception as e:
+            print "inside exception"
+            raise e
+
+
     def get(self, *args, **kwargs):
         response = {}
         print "inside get of CreateGroup"
@@ -134,87 +218,21 @@ class CreateGroup(tornado.web.RequestHandler):
             # update group-membership details in "users" table
             group_id = self.add_groups_for_users(group_owner, group_name, group_members)
 
+            self.topic = 'group_chat.' + str(group_owner) + '.' + str(group_name)
+            self.create_queue(self.topic)
+
             # Create new topic in mqtt, add subscribers
-            # self.topic = '$SYS/sportsunity/group_chat/' + str(group_owner) + '/' + str(group_name)
-            self.topic = '$SYS/sportsunity/chat'
-            user_data = {'topic': self.topic}
+            user_data = {'topic': self.topic + '.*'}
             for member in group_members:
                 client_id = str(member) + '_' + str(group_id)
                 group_chat_subscriber(client_id, user_data)
-
+            response['info'] = "Success"
+            response['status'] = 200
         except Exception as e:
             print 'inside Exception:', e
             response['info'] = " Error: %s" % e
             response['status'] = 500
         self.write(response)
-
-
-class SendMessageToGroup(tornado.web.RequestHandler):
-    topic = None
-
-    def data_validations(self, sender, group_name, message):
-        response = {'info': '', 'status': 0}
-        print "inside data validations"
-        print 'sender:', sender
-        print 'name:', group_name
-        print 'message:', message
-        if (not sender) or (not group_name) or (not message):
-            response['info'] = SEND_MESSAGE_INCOMPLETE_INFO_ERR
-            response['status'] = 400
-            return response
-
-        query = " SELECT id FROM users WHERE username=%s;"
-        variables = (sender,)
-        user = LocalQueryHandler.get_results(query, variables)
-        if not user:
-            response['info'] = SEND_MESSAGE_NO_USER_PROVIDED_ERR
-            response['status'] = 404
-            return response
-
-        query = " SELECT id FROM groups_info WHERE name=%s AND %s=ANY(members);"
-        variables = (group_name, sender)
-        group = LocalQueryHandler.get_results(query, variables)
-        if not group:
-            response['info'] = SEND_MESSAGE_INVALID_GROUP_DETAILS_ERR
-            response['status'] = 404
-            return response
-        return response
-
-    def get(self, *args, **kwargs):
-        print "inside get of SendMessageToGroup"
-        response = {}
-        try:
-            sender = str(self.get_argument('sender', ''))
-            group_name = str(self.get_argument('group_name', ''))
-            message = str(self.get_argument('message', ''))
-
-            # data validations
-            res = self.data_validations(sender, group_name, message)
-            print 'res:', res
-            if res['status'] in [400, 404]:
-                return self.write(res)
-
-            # Get group's owner
-            query = " SELECT id,owner FROM groups_info WHERE name=%s AND %s=ANY(members);"
-            variables = (group_name, sender)
-            group = LocalQueryHandler.get_results(query, variables)
-            owner = str(group[0]['owner'])
-            print 'group details:', group
-
-            # self.topic = '$SYS/sportsunity/group_chat/' + owner + '/' + group_name
-            self.topic = '$SYS/sportsunity/chat'
-            user_data = {'topic': self.topic, 'group_owner': owner, 'group_name': group_name, 'sender': sender,
-                         'message': message}
-            group_id = str(group[0]['id'])
-            client_id = sender + '_' + group_id
-            group_chat_publisher(client_id , user_data)
-
-        except Exception as e:
-            print "inside exception:", e
-            response['info'] = " Error: %s" % e
-            response['status'] = 500
-        finally:
-            self.write(response)
 
 
 class GetGroupsInfo(tornado.web.RequestHandler):
@@ -232,8 +250,7 @@ class GetGroupsInfo(tornado.web.RequestHandler):
         query = " SELECT member_of_groups FROM users WHERE username=%s;"
         variables = (user,)
         user_groups = LocalQueryHandler.get_results(query, variables)
-        print 'user groups:', user_groups[0]['member_of_groups']
-        return user_groups[0]['member_of_groups']
+        return user_groups[0]['member_of_groups'] if user_groups else []
 
     def get(self, *args, **kwargs):
         print "inside get of GetGroupsInfo"
@@ -270,113 +287,60 @@ class GetGroupsInfo(tornado.web.RequestHandler):
             return self.write(response)
 
 
-class StartStopApp(tornado.web.RequestHandler):
-    topic = None
-    status = None
+class CreateExchanges(tornado.web.RequestHandler):
 
-    def data_validation(self, user, event, contacts):
-        print 'inside data validation'
-        response = {'info': '', 'status': 0}
-        if not user:
-            print 'if user not provided'
-            response['info'] = INCOMPLETE_USER_INFO_ERR
-            response['status'] = 400
-            return response
+    def get(self):
+        response = {}
+        try:
+            print 'inside get of CreateExchanges'
+            channel = get_rabbitmq_connection()
 
-        if len(user) != 12:
-            print 'if length is not 12'
-            response['info'] = INVALID_USER_CONTACT_ERR
-            response['status'] = 400
-            return response
+            # user presence exchange
+            channel.exchange_declare(exchange=CHAT_PRESENCE_EXCHANGE, type='topic', durable=True, auto_delete=False)
 
-        query = " SELECT id FROM users WHERE username=%s;"
-        variables = (user,)
-        result = LocalQueryHandler.get_results(query, variables)
-        if not result:
-            response['info'] = USER_NOT_REGISTERED_ERR
-            response ['status'] = 400
-            return response
+            # simple chat related exchanges
+            channel.exchange_declare(exchange=SIMPLE_CHAT_MESSAGES_EXCHANGE, type='topic', durable=True,
+                                     auto_delete=False)
+            channel.exchange_declare(exchange=SIMPLE_CHAT_MEDIA_EXCHANGE, type='topic', durable=True,
+                                     auto_delete=False)
 
-        if not event:
-            response['info'] = EVENT_NOT_PROVIDED_ERR
-            response['status'] = 400
-            return response
-
-        print 'contacts:', contacts
-        if contacts:
-            for contact in contacts:
-                query = " SELECT id FROM users WHERE username=%s;"
-                variables = (contact,)
-                result = LocalQueryHandler.get_results(query, variables)
-                if not result:
-                    response['info'] = NON_REGISTERED_CONTACT_ERR
-                    response ['status'] = 400
-                    return response
-        return response
-
-    def get(self, *args, **kwags):
-        print "inside get of StartApp"
-        user = str(self.get_argument('user', ''))
-        event = str(self.get_argument('event', ''))
-        contacts = str(self.get_argument('contacts', '')).replace(" ", "")
-        print 'contacts:', contacts[1:-1]
-        friends = contacts[1:-1].split(',') if contacts else ''
-        print 'user:', user
-        print 'event:', event
-        print 'friends:', friends
-
-        res =  self.data_validation(user, event, friends)
-        if res['status'] == 400:
-            return self.write(res)
-
-        client_id = user + '_presence'
-        self.topic = '$SYS/sportsunity/client/' + client_id
-        print 'TOPIC:', self.topic
-
-        # TODO: make an entry into ACL file for this topic in registeration process
-
-        # publish presence status for the client.
-        self.status = '1' if event == 'start' else '0'
-        user_data = {'topic': self.topic, 'event': event, 'status': self.status, 'user': user}
-        publish_presence_notification(client_id, user_data)
-
-        friends_status = dict()
-        if friends:
-            print 'inside if'
-            # Subscribe to all contacts so as to get notified if user comes online/offline.
-            for friend in friends:
-                print 'for friend:', friend
-                client_id = user + 'subscribes_to_' + friend + '_presence'
-                print 'client_id:', client_id
-                user_data = {'topic': '$SYS/sportsunity/client/' +  friend + '_presence'}
-                subscribe_contacts_presence(client_id, user_data)  ## will be a frontend function
-            print 'modified user data:', user_data
-
-            # Get all contacts status
-            for friend in friends:
-                query = " SELECT status FROM users WHERE username=%s;"
-                variables = (friend,)
-                result = LocalQueryHandler.get_results(query, variables)
-                friends_status[friend] = result[0]['status']
-            print 'status dictionary:', friends_status
-        return self.write(friends_status)
+            channel.exchange_declare(exchange=SIMPLE_CHAT_SINGLE_TICK_EXCHANGE, type='topic', durable=True,
+                                     auto_delete=False)
+            channel.exchange_declare(exchange=SIMPLE_CHAT_DOUBLE_TICK_EXCHANGE, type='topic', durable=True,
+                                     auto_delete=False)
+            # channel.exchange_declare(exchange=SIMPLE_CHAT_COLORED_DOUBLE_TICK_EXCHANGE, type='topic', durable=True,
+            #                          auto_delete=False)
 
 
-def make_app():
-    return tornado.web.Application([
-        (r"/create_group", CreateGroup),
-        (r"/send_message", SendMessageToGroup),
-        (r"/get_groups", GetGroupsInfo),
-        # (r"/call_method", callMethod),
-        (r"/start_stop_app", StartStopApp),
-    ],
-        autoreload=True,
-    )
+            # group chat related exchanges
+            channel.exchange_declare(exchange=GROUP_CHAT_MESSAGES_EXCHANGE, type='topic', durable=True, auto_delete=False)
 
 
-if __name__ == "__main__":
-    app = make_app()
-    options.log_file_prefix = "tornado_log"
-    enable_pretty_logging(options=options)
-    app.listen(3000)
-    tornado.ioloop.IOLoop.current().start()
+            # channel.exchange_declare(exchange=CHAT_PRESENCE_EXCHANGE, type='direct', durable=True, auto_delete=False)
+            # channel.exchange_bind(destination=CHAT_PRESENCE_EXCHANGE, source=GROUP_CHAT_MESSAGES_EXCHANGE,
+            #                       routing_key='chat_presence.*')
+
+            response['status'] = 200
+            response['info'] = 'Success'
+        except Exception as e:
+            response['status'] = 500
+            response['info'] = "Some Internal Error occured! Please try again later!"
+        return self.write(response)
+
+
+# def make_app():
+#     return tornado.web.Application([
+#         (r"/", CreateExchanges),
+#         (r"/create_group", CreateGroup),
+#         (r"/send_message", SendMessageToGroup),
+#         (r"/get_groups", GetGroupsInfo),
+#     ],
+#         autoreload=True,
+#     )
+
+#
+# if __name__ == "__main__":
+#     app = make_app()
+#     enable_pretty_logging(options=options)
+#     app.listen(3000)
+#     tornado.ioloop.IOLoop.current().start()

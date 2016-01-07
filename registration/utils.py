@@ -1,4 +1,7 @@
 from db_handler import *
+import random
+import requests
+import time
 
 
 class User:
@@ -40,7 +43,7 @@ class User:
 
     def exists(self):
         query = " SELECT * FROM users WHERE username = %s;"
-        variables = (str.split(self.username, '@')[0],)
+        variables = (self.username,)
         user_info = QueryHandler.get_results(query, variables)
         if len(user_info) == 0:
             registered = False
@@ -93,10 +96,12 @@ class User:
             'v': '1.1',
             'format': 'text',
         }
-        response = requests.get(GUPSHUP_MESSAGE_GATEWAY, params=payload)
-        response = str.split(str(response.text),'|')
-        if str.strip(str.lower(response[0])) == "success":
-            return "Success", 200
-        else:
-            error = response[2]
-            return error, 500
+        return "SUccess", 200
+        # response = requests.get(GUPSHUP_MESSAGE_GATEWAY, params=payload)
+        # response = str.split(str(response.text),'|')
+        # if str.strip(str.lower(response[0])) == "success":
+        #     return "Success", 200
+        # else:
+        #     error = response[2]
+        #     return error, 500
+

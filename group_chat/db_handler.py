@@ -7,7 +7,7 @@ class LocalQueryHandler(object):
     @classmethod
     def get_connection(cls):
         connection = psycopg2.connect("dbname=%s host=%s user=%s password=%s"
-                                      % (local_db_name, local_db_host, local_db_user, local_db_pswd))
+                                      % (LOCAL_DB_NAME, LOCAL_DB_HOST, LOCAL_DB_USER, LOCAL_DB_PSWD))
         return connection
 
     @classmethod
