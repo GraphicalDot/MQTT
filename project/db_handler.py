@@ -1,6 +1,7 @@
 import psycopg2
 import psycopg2.extras
-from app_settings import *
+
+from project.app_settings import *
 
 
 class QueryHandler(object):

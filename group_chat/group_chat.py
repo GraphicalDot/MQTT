@@ -1,22 +1,16 @@
 import json
+
 import tornado
 import tornado.escape
 import tornado.httpclient
 import tornado.ioloop
 import tornado.web
-import pika
-from pika.exceptions import *
 
-from tornado.log import enable_pretty_logging
-from tornado.options import options
-
-from chat.utils import *
-from db_handler import *
 from errors import *
 from mqtt_publisher import *
 from mqtt_subscriber import *
-from rabbitmq_utils import *
-from app_settings import *
+from project.app_settings import *
+from project.rabbitmq_utils import *
 
 
 class SendMessageToGroup(tornado.web.RequestHandler):
@@ -24,10 +18,6 @@ class SendMessageToGroup(tornado.web.RequestHandler):
 
     def data_validations(self, sender, group_name, message):
         response = {'info': '', 'status': 0}
-        print "inside data validations"
-        print 'sender:', sender
-        print 'name:', group_name
-        print 'message:', message
         if (not sender) or (not group_name) or (not message):
             response['info'] = SEND_MESSAGE_INCOMPLETE_INFO_ERR
             response['status'] = 400
@@ -51,7 +41,6 @@ class SendMessageToGroup(tornado.web.RequestHandler):
         return response
 
     def get(self, *args, **kwargs):
-        print "inside get of SendMessageToGroup"
         response = {}
         try:
             sender = str(self.get_argument('sender', ''))
@@ -60,7 +49,6 @@ class SendMessageToGroup(tornado.web.RequestHandler):
 
             # data validations
             res = self.data_validations(sender, group_name, message)
-            print 'res:', res
             if res['status'] in [400, 404]:
                 return self.write(res)
 
@@ -69,7 +57,6 @@ class SendMessageToGroup(tornado.web.RequestHandler):
             variables = (group_name, sender)
             group = LocalQueryHandler.get_results(query, variables)
             owner = str(group[0]['owner'])
-            print 'group details:', group
 
             channel = get_rabbitmq_connection()
             self.topic = 'group_chat.' + owner + '.' + group_name
@@ -79,7 +66,6 @@ class SendMessageToGroup(tornado.web.RequestHandler):
             client_id = 'pub_' + sender[2:] + '_' + group_id
             group_chat_publisher(client_id , user_data)
         except Exception as e:
-            print "inside exception:", e
             response['info'] = " Error: %s" % e
             response['status'] = 500
         finally:
@@ -90,27 +76,21 @@ class CreateGroup(tornado.web.RequestHandler):
     topic = None
 
     def validate_group_owner(self, owner):
-        print "inside validate_group_owner"
-        print "owner:", owner
         response = {'info': '', 'status': 0}
         if not owner:
-            print 'if no owner provided'
             response['info'] = GROUP_OWNER_NOT_PROVIDED_ERR
             response['status'] = 400
             return response
 
         if len(owner) != 12:
-            print 'if length is not 12'
             response['info'] = GROUP_OWNER_INVALID_CONTACT_ERR
             response['status'] = 400
             return response
         return response
 
     def validate_group_name(self, name):
-        print "inside validate_group_name"
         response = {'info': '', 'status': 0}
         if not name:
-            print 'no name'
             response['info'] = GROUP_NAME_NOT_PROVIDED_ERR
             response['status'] = 400
 
@@ -118,11 +98,8 @@ class CreateGroup(tornado.web.RequestHandler):
         return response
 
     def validate_group_members(self, group_members):
-        print "inside validate_group_members"
         response = {'info': '', 'status': 0}
-        print 'initial members:', group_members
         members = group_members[1:-1].split(',')
-        print 'members:', members, type(members)
         if not group_members:
             response['info'] = NO_GROUP_MEMBER_ADDED_ERR
             response['status'] = 400
@@ -135,7 +112,6 @@ class CreateGroup(tornado.web.RequestHandler):
         users = list(user['username'] for user in users_result) if users_result else []
 
         if not set(members).issubset(users):
-            print "if group member is not registered!"
             response['info'] = NON_REGISTERED_MEMBER_ERR
             response['status'] = 404
             return response
@@ -144,16 +120,12 @@ class CreateGroup(tornado.web.RequestHandler):
         return response
 
     def data_validation(self, group_owner, group_name, group_members):
-        print "inside validate data"
         res = {}
         owner_response = self.validate_group_owner(group_owner)
-        print 'owner response:', owner_response
 
         name_response = self.validate_group_name(group_name)
-        print 'name response:', name_response
 
         members_response = self.validate_group_members(group_members)
-        print "members response:", members_response
 
         if owner_response['status'] == 400:
             return owner_response
@@ -163,16 +135,12 @@ class CreateGroup(tornado.web.RequestHandler):
             return members_response
 
     def add_groups_for_users(self, owner, name, members):
-        print "inside add groups for users"
         try:
             query = " SELECT id FROM groups_info WHERE name=%s AND owner=%s;"
             variables = (name, owner,)
             group_id = LocalQueryHandler.get_results(query, variables)[0]['id']
-            print "group id:", group_id
 
             for member in members:
-                print '************************************'
-                print 'member:', group_id
                 query = " UPDATE users SET member_of_groups = array_append(member_of_groups, %s) WHERE username=%s;"
                 variables = (str(group_id), member)
                 LocalQueryHandler.execute(query, variables)
@@ -181,20 +149,17 @@ class CreateGroup(tornado.web.RequestHandler):
             raise e
 
     def create_queue(self, topic):
-        print "inside create queue"
         try:
             routing_key = topic + '.*'
             channel = get_rabbitmq_connection()
             result = channel.queue_declare()
             channel.queue_bind(exchange=GROUP_CHAT_MESSAGES_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
         except Exception as e:
-            print "inside exception"
             raise e
 
 
     def get(self, *args, **kwargs):
         response = {}
-        print "inside get of CreateGroup"
         try:
             # data validations
             group_owner = self.get_argument('owner', '')
@@ -206,13 +171,11 @@ class CreateGroup(tornado.web.RequestHandler):
 
             group_members = res['members']
             group_members.append(str(group_owner))
-            print 'NOW GROUP MEMBERS:', group_members
 
             # add group details in "groups_info" table
             query = " INSERT INTO groups_info (name, owner, admins, members, total_members) " \
                     "VALUES (%s, %s, %s, %s, %s);"
             variables = (group_name, group_owner, [group_owner], group_members, int(len(group_members)))
-            print 'variables:', variables
             LocalQueryHandler.execute(query, variables)
 
             # update group-membership details in "users" table
@@ -229,7 +192,6 @@ class CreateGroup(tornado.web.RequestHandler):
             response['info'] = "Success"
             response['status'] = 200
         except Exception as e:
-            print 'inside Exception:', e
             response['info'] = " Error: %s" % e
             response['status'] = 500
         self.write(response)
@@ -238,7 +200,6 @@ class CreateGroup(tornado.web.RequestHandler):
 class GetGroupsInfo(tornado.web.RequestHandler):
 
     def user_validation(self, user):
-        print "inside user_validation"
         response = {'info': '', 'status': 0}
         if not user:
             response['info'] = INCOMPLETE_USER_INFO_ERR
@@ -246,14 +207,12 @@ class GetGroupsInfo(tornado.web.RequestHandler):
         return response
 
     def get_user_groups(self, user):
-        print "inside get_user_groups"
         query = " SELECT member_of_groups FROM users WHERE username=%s;"
         variables = (user,)
         user_groups = LocalQueryHandler.get_results(query, variables)
         return user_groups[0]['member_of_groups'] if user_groups else []
 
     def get(self, *args, **kwargs):
-        print "inside get of GetGroupsInfo"
         response = {}
         try:
             groups = []
@@ -261,19 +220,15 @@ class GetGroupsInfo(tornado.web.RequestHandler):
 
             # data validation
             res = self.user_validation(current_user)
-            print 'res:', res
             if res['status'] == 400:
                 return self.write(res)
 
             user_groups = self.get_user_groups(current_user)
-            print 'type of user groups:', type(user_groups)
             if user_groups:
                 for group_id in user_groups:
-                    print 'group id:', group_id
                     query = " SELECT total_members,name,admins,members,owner FROM groups_info WHERE id=%s;"
                     variables = (int(group_id),)
                     groups.extend(LocalQueryHandler.get_results(query, variables))
-                print 'FINAL GROUP DETAILS:', groups
                 response['groups'] = json.dumps(groups)
                 response['info'] = ''
                 response['status'] = 200
@@ -292,39 +247,15 @@ class CreateExchanges(tornado.web.RequestHandler):
     def get(self):
         response = {}
         try:
-            print 'inside get of CreateExchanges'
             channel = get_rabbitmq_connection()
-
-            # user presence exchange
-            channel.exchange_declare(exchange=CHAT_PRESENCE_EXCHANGE, type='topic', durable=True, auto_delete=False)
-
-            # simple chat related exchanges
-            channel.exchange_declare(exchange=SIMPLE_CHAT_MESSAGES_EXCHANGE, type='topic', durable=True,
-                                     auto_delete=False)
-            channel.exchange_declare(exchange=SIMPLE_CHAT_MEDIA_EXCHANGE, type='topic', durable=True,
-                                     auto_delete=False)
-
-            channel.exchange_declare(exchange=SIMPLE_CHAT_SINGLE_TICK_EXCHANGE, type='topic', durable=True,
-                                     auto_delete=False)
-            channel.exchange_declare(exchange=SIMPLE_CHAT_DOUBLE_TICK_EXCHANGE, type='topic', durable=True,
-                                     auto_delete=False)
-            # channel.exchange_declare(exchange=SIMPLE_CHAT_COLORED_DOUBLE_TICK_EXCHANGE, type='topic', durable=True,
-            #                          auto_delete=False)
-
-
-            # group chat related exchanges
-            channel.exchange_declare(exchange=GROUP_CHAT_MESSAGES_EXCHANGE, type='topic', durable=True, auto_delete=False)
-
-
-            # channel.exchange_declare(exchange=CHAT_PRESENCE_EXCHANGE, type='direct', durable=True, auto_delete=False)
-            # channel.exchange_bind(destination=CHAT_PRESENCE_EXCHANGE, source=GROUP_CHAT_MESSAGES_EXCHANGE,
-            #                       routing_key='chat_presence.*')
+            for name in RABBITMQ_EXCHANGES:
+                channel.exchange_declare(exchange=name, type='topic', durable=True, auto_delete=False)
 
             response['status'] = 200
-            response['info'] = 'Success'
+            response['info'] = SUCCESS_RESPONSE
         except Exception as e:
             response['status'] = 500
-            response['info'] = "Some Internal Error occured! Please try again later!"
+            response['info'] = INTERNAL_ERROR
         return self.write(response)
 
 

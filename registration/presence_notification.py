@@ -1,13 +1,11 @@
 import tornado
 import tornado.web
-from paho.mqtt.client import Client
 
-from app_settings import *
-from db_handler import *
 from errors import *
-from utils import *
-from group_chat.mqtt_subscriber import *
 from group_chat.mqtt_publisher import *
+from group_chat.mqtt_subscriber import *
+from utils import *
+
 
 def on_connect(client, user_data, flags, rc):
     print "ON PUBLISHER CONNECT"
@@ -55,7 +53,7 @@ def publish_self_presence(client_id, user_data):
         raise e
 
 
-def on_subscriber_message(client, user_data, message):
+def on_contacts_presence_subscriber_message(client, user_data, message):
     try:
         print 'ON SUBSCRIBER MESSAGE!!'
         print 'MESSAGE:', message.payload
@@ -64,7 +62,7 @@ def on_subscriber_message(client, user_data, message):
         raise e
 
 
-def on_subscriber_connect(client, user_data, flags, rc):
+def on_contacts_presence_subscriber_connect(client, user_data, flags, rc):
     print "ON SUBSCRIBER CONNECT"
     username = user_data.get('user', '')
     query = " SELECT contacts FROM users WHERE username = %s;"
@@ -82,8 +80,8 @@ def on_subscriber_connect(client, user_data, flags, rc):
 def subscribe_contacts_presence(client_id, user_data):
     print "inside subscribe contacts presence"
     client = Client(client_id=client_id, clean_session=False, userdata=user_data)
-    client.on_connect = on_subscriber_connect
-    client.on_message = on_subscriber_message
+    client.on_connect = on_contacts_presence_subscriber_connect
+    client.on_message = on_contacts_presence_subscriber_message
 
     try:
         client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
@@ -105,31 +103,31 @@ class StartStopApp(tornado.web.RequestHandler):
             result = QueryHandler.get_results(query, variables)
             if not result:
                 response['info'] = INVALID_USER_ERR
-                response['status'] = 404
+                response['status'] = STATUS_404
 
-            if event not in ['0', '1']:
-                response['info'] = INVALID_EVENT_ERR
-                response['status'] = 404
-
-            if not event:
+            if response['status'] == 0 and not event:
                 response['info'] = EVENT_NOT_PROVIDED_ERR
-                response['status'] = 400
+                response['status'] = STATUS_400
+
+            if response['status'] == 0 and event not in ['0', '1']:
+                response['info'] = INVALID_EVENT_ERR
+                response['status'] = STATUS_400
 
             return (response['info'], response['status'])
         except Exception as e:
             raise e
 
-    def get(self):
+    def post(self):
         print "inside get of StartApp"
         response = {}
         try:
             user = str(self.get_argument('user', '')).strip()
             event = str(self.get_argument('event', '')).strip()
             print 'user:', user
-            (response['info'], response['status']) = self.data_validation(user, event)
+            response['info'], response['status'] = self.data_validation(user, event)
             print 'response of validation:', response['info']
 
-            if response['status'] not in [404, 400]:
+            if response['status'] not in ERROR_CODES_LIST:
                 if event == '1':
                     message = user + ':1'
                     presence_type = "on_"
@@ -144,18 +142,14 @@ class StartStopApp(tornado.web.RequestHandler):
 
                 # subscribe to its contacts presence queues
                 if event == '1':
-                    print "inside ifffffffffff!!"
                     client_id = "paho/" + 'prsnce' + user
-                    print 'client id:', client_id, len(client_id)
                     user_data = {'user': user}
                     subscribe_contacts_presence(client_id, user_data)
 
-
-                response['info'] = "Success"
-                response['status'] = 200
+                response['info'] = SUCCESS_RESPONSE
+                response['status'] = STATUS_200
         except Exception as e:
             response['info'] = " Error: %s" % e
-            response['status'] = 500
+            response['status'] = STATUS_500
         finally:
             self.write(response)
-

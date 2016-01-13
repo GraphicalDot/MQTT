@@ -1,15 +1,17 @@
+import os
+import sys
 import tornado
 import tornado.ioloop
 import tornado.web
 from tornado.log import enable_pretty_logging
 from tornado.options import options
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
+
 from chat.simple_chat import *
 from registration.register import *
 from group_chat.group_chat import *
 from registration.presence_notification import *
-
-
 
 
 def make_app():
@@ -26,7 +28,6 @@ def make_app():
         (r"/simple_send_message", SendMessageToContact),
         (r"/simple_send_media", SendMediaToContact),
 
-
         # Group Chat URLs
         (r"/create_group", CreateGroup),
         (r"/group_send_message", SendMessageToGroup),
@@ -40,5 +41,6 @@ if __name__ == "__main__":
     app = make_app()
     options.log_file_prefix = "tornado_log"
     enable_pretty_logging(options=options)
+
     app.listen(3000)
     tornado.ioloop.IOLoop.current().start()

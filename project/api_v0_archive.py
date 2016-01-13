@@ -26,7 +26,6 @@ _test_cricket_data = {
 class StartSubscriber(tornado.web.RequestHandler):
 
     def get(self, *args, **kwargs):
-        print "inside get of StartSubscriber"
         user_data = {'topic': '$SYS/sportsunity/notifications/cricket'}
         mqtt_subscribe_client(client_id='subscriber1', user_data=user_data)
         # MQTTSubscribeClient(client_id='subscriber1', user_data=user_data).connect_to_broker()
@@ -34,12 +33,8 @@ class StartSubscriber(tornado.web.RequestHandler):
 
 class CricketEvents(tornado.web.RequestHandler):
     def get(self):
-        print "inside get of CricketEvents"
-        print '#######', self.get_argument('data')
-        # print 'request body:', self.request.body
         # event = tornado.escape.json_decode(self.request.body)
         event = self.get_argument('data')
-        print 'event:', event
         cricket_data = json.dumps(self.get_argument('data'))
         # cricket_data = json.dumps(_test_cricket_data)
         if event:

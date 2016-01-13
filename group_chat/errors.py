@@ -1,3 +1,6 @@
+INTERNAL_ERROR = "Some Internal Error occured! Please try again later!"
+
+
 GROUP_OWNER_NOT_PROVIDED_ERR = " Bad Request: Please provide group owner's phone number!"
 GROUP_OWNER_INVALID_CONTACT_ERR = " Bad Request: Please provide a valid phone number of group owner!"
 GROUP_NAME_NOT_PROVIDED_ERR = " Bad Request: Please enter a group name!"
