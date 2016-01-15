@@ -1,10 +1,12 @@
 import phonenumbers
 import tornado
 import tornado.web
+# import random
 import string
 
 from chat.media_utils import *
-from chat.utils import *
+# from chat.utils import *
+from chat.simple_chat_utils import *
 from errors import *
 from project.rabbitmq_utils import *
 from utils import *
@@ -142,7 +144,7 @@ class SaveContacts(tornado.web.RequestHandler):
         except Exception as e:
             raise e
 
-    def post(self):
+    def get(self):
         response = {}
         try:
             user = str(self.get_argument('user', '')).strip('')

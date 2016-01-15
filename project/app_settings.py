@@ -76,6 +76,8 @@ REGISTER_URL = 'http://{}:{}/register'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 USER_CREATION_URL = 'http://{}:{}/create'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 SAVE_CONTACTS_URL = 'http://{}:{}/save_contacts'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 START_STOP_APP_URL = 'http://{}:{}/start_stop_app'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+SIMPLE_CHAT_SEND_MESSAGE_URL = 'http://{}:{}/simple_send_message'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+SIMPLE_CHAT_SEND_MEDIA_URL = 'http://{}:{}/simple_send_media'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 
 RABBITMQ_ALL_EXCHANGES_GET_URL = 'http://{}:{}/api/exchanges/'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)
 RABBITMQ_ALL_BINDINGS_GET_URL = 'http://{}:{}/api/bindings'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)

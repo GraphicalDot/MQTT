@@ -42,3 +42,14 @@ def delete_queues():
             channel.queue_delete(queue=queue['name'])
     except Exception as e:
         raise e
+
+
+def create_bind_queue(exchange, routing_key):
+    print "inside create bind queue"
+    try:
+        channel = get_rabbitmq_connection()
+        result = channel.queue_declare()
+        channel.queue_bind(exchange=exchange, queue=result.method.queue, routing_key=routing_key)
+    except Exception as e:
+        print "Inside exception:", e
+        raise e

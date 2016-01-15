@@ -8,6 +8,7 @@ import tornado.httpclient
 import tornado.ioloop
 import tornado.web
 
+from chat.simple_chat_utils import *
 from errors import *
 from media_utils import *
 from project.rabbitmq_utils import *
@@ -25,80 +26,89 @@ class SendMessageToContact(tornado.web.RequestHandler):
             result = QueryHandler.get_results(query, variables)
             if not result:
                 response['info'] = INVALID_SENDER_SIMPLE_CHAT_ERR
-                response['status'] = 404
+                response['status'] = STATUS_404
 
             # Receiver invalid
             query = " SELECT id from users WHERE username = %s;"
             variables = (receiver,)
             result = QueryHandler.get_results(query, variables)
-            if not result:
+            if response['status'] == 0 and not result:
                 response['info'] = INVALID_RECEIVER_SIMPLE_CHAT_ERR
-                response['status'] = 404
+                response['status'] = STATUS_404
 
             # No message present
-            if message == '':
+            if response['status'] == 0 and message == '':
                 response['info'] = INVALID_MESSAGE_SIMPLE_CHAT_ERR
-                response['status'] = 404
+                response['status'] = STATUS_404
 
         except Exception as e:
             response['info'] = " Error: %s" % e
-            response['status'] = 500
+            response['status'] = STATUS_500
         finally:
             return (response['info'], response['status'])
 
-    def generate_random_client_id(self):
-        # return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        return "paho/" + "".join(random.choice("0123456789ADCDEF") for x in range(23-5))
+    def generate_random_client_id(self, len):
+        return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(23-len))
 
-    def initiate_simple_chat_single_tick_subscriber(self):
-        try:
-            routing_key = 'single_tick.' + BROKER_USERNAME
-            channel = get_rabbitmq_connection()
-            result = channel.queue_declare()
-            channel.queue_bind(exchange=SIMPLE_CHAT_SINGLE_TICK_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
-            # client_id = 'single_tick_' + user[2:]
-            client_id = self.generate_random_client_id()
-            subscribe_simple_chat_single_tick(client_id=client_id, user_data={'topic': routing_key})
-        except Exception as e:
-            raise e
+    # def initiate_simple_chat_single_tick_subscriber(self):
+    #     try:
+    #         routing_key = 'single_tick.' + BROKER_USERNAME
+    #         channel = get_rabbitmq_connection()
+    #         result = channel.queue_declare()
+    #         channel.queue_bind(exchange=SIMPLE_CHAT_SINGLE_TICK_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
+    #         # client_id = 'single_tick_' + user[2:]
+    #         client_id = "scst/" + self.generate_random_client_id(len("scst/"))
+    #         subscribe_simple_chat_single_tick(client_id=client_id, user_data={'topic': routing_key})
+    #     except Exception as e:
+    #         raise e
+    #
+    # def initiate_simple_chat_double_tick_subscriber(self):
+    #     try:
+    #         routing_key = 'double_tick.' + BROKER_USERNAME
+    #         channel = get_rabbitmq_connection()
+    #         result = channel.queue_declare()
+    #         channel.queue_bind(exchange=SIMPLE_CHAT_DOUBLE_TICK_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
+    #         # client_id = 'double_tick_' + user[2:]
+    #         client_id = "scdt/" + self.generate_random_client_id(len("scdt/"))
+    #         subscribe_simple_chat_double_tick(client_id=client_id, user_data={'topic': routing_key})
+    #     except Exception as e:
+    #         raise e
 
-    def initiate_simple_chat_double_tick_subscriber(self):
-        try:
-            routing_key = 'double_tick.' + BROKER_USERNAME
-            channel = get_rabbitmq_connection()
-            result = channel.queue_declare()
-            channel.queue_bind(exchange=SIMPLE_CHAT_DOUBLE_TICK_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
-            # client_id = 'double_tick_' + user[2:]
-            client_id = self.generate_random_client_id()
-            subscribe_simple_chat_double_tick(client_id=client_id, user_data={'topic': routing_key})
-        except Exception as e:
-            raise e
-
-    def get(self):
+    def post(self):
+        print 'inside post'
         response = {}
         try:
             sender = str(self.get_argument("sender", ''))
             receiver = str(self.get_argument("receiver", ''))
             message = str(self.get_argument("message", ''))
-            (response['info'], response['status']) = self.data_validation(sender, receiver, message)
+            response['info'], response['status'] = self.data_validation(sender, receiver, message)
 
-            if not response['status'] in [404, 400, 500]:
+            if not response['status'] in ERROR_CODES_LIST:
+
+                msg_data = {'topic': 'simple_chat_' + receiver + '.' + sender, 'sender': sender,
+                            'receiver': receiver, 'message': sender + ':' + receiver + ':' + message}
+
                 # start single tick subscriber for the message
-                self.initiate_simple_chat_single_tick_subscriber()
+                initiate_simple_chat_single_tick_subscriber(msg_data)
 
                 # start double tick subscriber for the message
-                self.initiate_simple_chat_double_tick_subscriber()
+                # self.initiate_simple_chat_double_tick_subscriber()
 
                 # TODO: start double colored tick subscriber for the message
 
-                client_id = sender[2:] + "to" + receiver[2:]
-                user_data = {'topic': 'simple_chat_' + receiver + '.' + sender , 'sender': sender,
-                             'receiver': receiver, 'message': sender + ':' + receiver + ':' + message}
-                publish_to_simple_chat(client_id, user_data)
+                # time.sleep(20)
+                # client_id = sender[2:] + "to" + receiver[2:]
+                # client_id = "send_msg/" + self.generate_random_client_id(len("send_msg/"))
+                # user_data = {'topic': 'simple_chat_' + receiver + '.' + sender , 'sender': sender,
+                #              'receiver': receiver, 'message': sender + ':' + receiver + ':' + message}
+                # publish_to_simple_chat(client_id, user_data)
 
+                # response['info'] = SUCCESS_RESPONSE
+                response['status'] = STATUS_200
         except Exception as e:
+            print "inside exception:", e
             response['info'] = " Error: %s" % e
-            response['status'] = 500
+            response['status'] = STATUS_500
         finally:
             self.write(response)
 
