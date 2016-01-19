@@ -6,17 +6,12 @@ import string
 import sys
 import time
 import unittest
-from tornado.testing import AsyncHTTPTestCase
 from nose.tools import *
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
 
 from chat.errors import *
-# from chat.utils import *
-from chat.simple_chat_utils import *
-from project.app_settings import *
-from project.db_handler import *
-from project.rabbitmq_utils import *
+from chat.mqtt_subscriber import *
 from project.rabbitmq_tests import *
 from project.test_utilities import *
 from registration.errors import *
@@ -168,24 +163,17 @@ class SaveContactsTests(unittest.TestCase):
         except Exception as e:
             raise e
 
-    def delete_registered_users(self):
-        try:
-            query = " DELETE from registered_users;"
-            QueryHandler.execute(query)
-        except Exception as e:
-            raise e
-
     def setUp(self):
         self.url = SAVE_CONTACTS_URL
+
+        delete_registered_users()       # delete registered users
+        delete_users()      # delete users
+        delete_queues()     # delete all created queues
+        delete_exchanges(RABBITMQ_EXCHANGES)
+
         test_create_exchanges()     # create testing exchanges
         users_list = [self.user_number, self.contact_1, self.contact_2]     # create 3 valid users
         self.create_users(users_list)
-
-    def tearDown(self):
-        delete_exchanges(RABBITMQ_EXCHANGES)    # delete exchanges
-        delete_queues()     # delete all created queues
-        self.delete_users()     # delete users
-        self.delete_registered_users()      # delete registered users
 
     def test_validation(self):
 
@@ -252,13 +240,6 @@ class StartStopAppTests(unittest.TestCase):
             except Exception as e:
                 raise e
 
-    def delete_users(self):
-        query = " DELETE FROM users;"
-        try:
-            QueryHandler.execute(query)
-        except Exception as e:
-            raise e
-
     def create_presence_notification_exchange_queue(self, routing_keys):
         self.channel = get_rabbitmq_connection()
         self.channel.exchange_declare(exchange=CHAT_PRESENCE_EXCHANGE, type='topic', durable=True, auto_delete=False)
@@ -281,17 +262,16 @@ class StartStopAppTests(unittest.TestCase):
 
     def setUp(self):
         self.url = START_STOP_APP_URL
+        delete_users()
+        delete_exchanges(RABBITMQ_EXCHANGES)
+        delete_queues()
+
         self.users = [self.valid_user_1, self.valid_user_2, self.valid_user_3]
         self.create_valid_user(self.users)
         self.routing_keys = ['user_presence.' + str(self.valid_user_1) + '_presence',
                         'user_presence.' + str(self.valid_user_2) + '_presence',
                         'user_presence.' + str(self.valid_user_3) + '_presence']
         self.create_presence_notification_exchange_queue(self.routing_keys)
-
-    def tearDown(self):
-        print "inside tearDown of StartStopAppTests"
-        # self.delete_users()
-        # self.delete_presence_notification_exchange()
 
     def test_validation(self):
 
@@ -360,139 +340,3 @@ class StartStopAppTests(unittest.TestCase):
             assert_equal(result[0]['status'], '0')
         except Exception as e:
             raise e
-
-
-class SendMessageToContactTests(unittest.TestCase):
-    url = None
-    sender = 911111111111
-    receiver = 912222222222
-    users = None
-    exchanges = None
-    channel = None
-
-    def create_users(self, users_list):
-        print "inside create users"
-        for user in users_list:
-            query = " INSERT INTO users(username, password, member_of_groups, status, contacts) values (%s, %s, %s, %s, %s);"
-            variables = (str(user), '', '{}', '0', '{}')
-            try:
-                QueryHandler.execute(query, variables)
-            except Exception as e:
-                raise e
-
-    def delete_users(self):
-        print "inside delete users"
-        query = " DELETE FROM users;"
-        try:
-            QueryHandler.execute(query)
-        except Exception as e:
-            raise e
-
-    def create_exchanges(self):
-        print "inside create exchanges"
-        self.channel = get_rabbitmq_connection()
-        for name in self.exchanges:
-            self.channel.exchange_declare(exchange=name, type='topic', durable=True, auto_delete=False)
-
-    def delete_exchanges(self):
-        print "inside delete exchanges"
-        for name in self.exchanges:
-            self.channel.exchange_delete(exchange=name)
-
-    def setUp(self):
-        print "inside setup of SendMessageToContact"
-        self.url = SIMPLE_CHAT_SEND_MESSAGE_URL
-        self.users = [self.sender, self.receiver]
-        self.exchanges = [SIMPLE_CHAT_MESSAGES_EXCHANGE, SIMPLE_CHAT_SINGLE_TICK_EXCHANGE, SIMPLE_CHAT_DOUBLE_TICK_EXCHANGE]
-        self.delete_users()     # delete all users created from any of the previous tests
-        self.create_users(self.users)   # create users
-        self.create_exchanges()
-
-    def tearDown(self):
-        print "inside tearDown of SendMessageToContact"
-        # self.delete_exchanges()
-
-    def test_validation(self):
-        print "inside test validation"
-
-        # Invalid sender
-        response = requests.post(self.url, data={'sender': '', 'receiver': self.receiver, 'message': 'test_message_1'})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_SENDER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], STATUS_404)
-
-        # Invalid receiver
-        response = requests.post(self.url, data={'sender': self.sender, 'receiver': '917777777777', 'message': ''})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_RECEIVER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], STATUS_404)
-
-        # No msg present
-        response = requests.post(self.url, data={'sender': self.sender, 'receiver': self.receiver})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_MESSAGE_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], STATUS_404)
-
-    def test_post(self):
-        print "inside post"
-
-        # start chat message subsriber
-        simple_chat_subscriber(client_id=generate_random_id(), user_data={'topic': 'simple_chat_' + str(self.receiver) + '.*',
-                                                                          'receiver': str(self.receiver)})
-
-        response = requests.post(self.url, data={'sender': str(self.sender), 'receiver': str(self.receiver),
-                                                 'message': 'test_message_2'})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        # assert_equal(res['info'], SUCCESS_RESPONSE)
-        assert_equal(res['status'], STATUS_200)
-
-        time.sleep(15)
-        # check if message reached to the database
-        query = "SELECT single_tick, double_tick FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
-        variables = (str(self.sender), str(self.receiver), 'test_message_2')
-        try:
-            result = QueryHandler.get_results(query, variables)
-            assert_equal(len(result), 1)
-            assert_equal(result[0]['single_tick'], 'done')
-            assert_equal(result[0]['double_tick'], 'done')
-        except Exception as e:
-            raise e
-
-    def test_multiple_msg_single_sender_single_receiver(self):
-        print "inside test_multiple_msg_single_sender_single_receiver"
-
-        # delete chat messages created (if any) from any of the previous tests
-        delete_chat_messages()
-
-        # start chat message subsriber
-        simple_chat_subscriber(client_id=generate_random_id(), user_data={'topic': 'simple_chat_' + str(self.receiver) + '.*',
-                                                                          'receiver': str(self.receiver)})
-        time.sleep(10)
-        msgs_list = ['msg_' + str(index) for index in range(1,51)]
-        for msg in msgs_list:
-            response = requests.post(self.url, data={'sender': str(self.sender), 'receiver': str(self.receiver),
-                                                 'message': msg})
-            time.sleep(5)
-            res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            # assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
-
-        # time.sleep(10)
-        # check if all messages have reached to the server and subscribers.
-        for msg in msgs_list:
-            query = "SELECT single_tick, double_tick FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
-            variables = (str(self.sender), str(self.receiver), msg)
-            try:
-                result = QueryHandler.get_results(query, variables)
-                assert_equal(len(result), 1)
-                assert_equal(result[0]['single_tick'], 'done')
-                assert_equal(result[0]['double_tick'], 'done')
-            except Exception as e:
-                raise e
-
-

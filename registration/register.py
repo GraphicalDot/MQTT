@@ -1,15 +1,15 @@
 import phonenumbers
+import random
+import string
 import tornado
 import tornado.web
-# import random
-import string
 
 from chat.media_utils import *
-# from chat.utils import *
-from chat.simple_chat_utils import *
-from errors import *
+from chat.mqtt_subscriber import *
+from chat.utils import *
 from project.rabbitmq_utils import *
-from utils import *
+from registration.errors import *
+from registration.utils import *
 
 
 class RegisterUser(tornado.web.RequestHandler):
@@ -81,7 +81,6 @@ class CreateUser(tornado.web.RequestHandler):
             result = channel.queue_declare()
             channel.queue_bind(exchange=CHAT_PRESENCE_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
         except Exception as e:
-            print "inside exception, %s"% e
             raise e
 
     def get(self):
@@ -130,6 +129,11 @@ class SaveContacts(tornado.web.RequestHandler):
             channel.queue_bind(exchange=SIMPLE_CHAT_MESSAGES_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
             client_id = "simple_chat/" + "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(23-12))
             simple_chat_subscriber(client_id=client_id, user_data={'topic': routing_key, 'receiver': user})
+
+            # result = channel.queue_declare()
+            # channel.queue_bind(exchange=SIMPLE_CHAT_MESSAGE_RECEIVED_EXCHANGE, queue=result.method.queue,
+            #                    routing_key='msg_received_' + user + '.*' )
+
         except Exception as e:
             raise e
 
@@ -144,7 +148,7 @@ class SaveContacts(tornado.web.RequestHandler):
         except Exception as e:
             raise e
 
-    def get(self):
+    def post(self):
         response = {}
         try:
             user = str(self.get_argument('user', '')).strip('')
@@ -155,7 +159,7 @@ class SaveContacts(tornado.web.RequestHandler):
 
                 self.save_user_contacts(user, contacts_list)
                 self.initiate_simple_chat_user_subscriber(user)     # start simple chat message subscriber
-                self.initiate_media_to_contact_subscriber(user)     # start simple chat media subscriber
+                # self.initiate_media_to_contact_subscriber(user)     # start simple chat media subscriber
 
                 response['info'] = SUCCESS_RESPONSE
                 response['status'] = STATUS_200

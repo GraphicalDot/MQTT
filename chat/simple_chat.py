@@ -1,18 +1,18 @@
 import base64
 import json
 import os
-
+import string
 import tornado
 import tornado.escape
 import tornado.httpclient
 import tornado.ioloop
 import tornado.web
 
-from chat.simple_chat_utils import *
-from errors import *
-from media_utils import *
+from chat.errors import *
+from chat.media_utils import *
+from chat.mqtt_publisher import *
+from chat.utils import *
 from project.rabbitmq_utils import *
-from utils import *
 
 
 class SendMessageToContact(tornado.web.RequestHandler):
@@ -50,32 +50,7 @@ class SendMessageToContact(tornado.web.RequestHandler):
     def generate_random_client_id(self, len):
         return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(23-len))
 
-    # def initiate_simple_chat_single_tick_subscriber(self):
-    #     try:
-    #         routing_key = 'single_tick.' + BROKER_USERNAME
-    #         channel = get_rabbitmq_connection()
-    #         result = channel.queue_declare()
-    #         channel.queue_bind(exchange=SIMPLE_CHAT_SINGLE_TICK_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
-    #         # client_id = 'single_tick_' + user[2:]
-    #         client_id = "scst/" + self.generate_random_client_id(len("scst/"))
-    #         subscribe_simple_chat_single_tick(client_id=client_id, user_data={'topic': routing_key})
-    #     except Exception as e:
-    #         raise e
-    #
-    # def initiate_simple_chat_double_tick_subscriber(self):
-    #     try:
-    #         routing_key = 'double_tick.' + BROKER_USERNAME
-    #         channel = get_rabbitmq_connection()
-    #         result = channel.queue_declare()
-    #         channel.queue_bind(exchange=SIMPLE_CHAT_DOUBLE_TICK_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
-    #         # client_id = 'double_tick_' + user[2:]
-    #         client_id = "scdt/" + self.generate_random_client_id(len("scdt/"))
-    #         subscribe_simple_chat_double_tick(client_id=client_id, user_data={'topic': routing_key})
-    #     except Exception as e:
-    #         raise e
-
     def post(self):
-        print 'inside post'
         response = {}
         try:
             sender = str(self.get_argument("sender", ''))
@@ -84,29 +59,14 @@ class SendMessageToContact(tornado.web.RequestHandler):
             response['info'], response['status'] = self.data_validation(sender, receiver, message)
 
             if not response['status'] in ERROR_CODES_LIST:
+                client_id = "simple_chat/" + generate_random_client_id(12)
+                user_data = msg_data = {'topic': 'simple_chat_' + receiver + '.' + sender, 'sender': sender,
+                                        'receiver': receiver, 'message': sender + ':' + receiver + ':' + message}
+                simple_chat_publisher(client_id, user_data)
 
-                msg_data = {'topic': 'simple_chat_' + receiver + '.' + sender, 'sender': sender,
-                            'receiver': receiver, 'message': sender + ':' + receiver + ':' + message}
-
-                # start single tick subscriber for the message
-                initiate_simple_chat_single_tick_subscriber(msg_data)
-
-                # start double tick subscriber for the message
-                # self.initiate_simple_chat_double_tick_subscriber()
-
-                # TODO: start double colored tick subscriber for the message
-
-                # time.sleep(20)
-                # client_id = sender[2:] + "to" + receiver[2:]
-                # client_id = "send_msg/" + self.generate_random_client_id(len("send_msg/"))
-                # user_data = {'topic': 'simple_chat_' + receiver + '.' + sender , 'sender': sender,
-                #              'receiver': receiver, 'message': sender + ':' + receiver + ':' + message}
-                # publish_to_simple_chat(client_id, user_data)
-
-                # response['info'] = SUCCESS_RESPONSE
                 response['status'] = STATUS_200
+                response['info'] = SUCCESS_RESPONSE
         except Exception as e:
-            print "inside exception:", e
             response['info'] = " Error: %s" % e
             response['status'] = STATUS_500
         finally:
