@@ -4,8 +4,8 @@ import string
 import tornado
 import tornado.web
 
-from chat.media_utils import *
-from chat.mqtt_subscriber import *
+from chat.message_subscriber import *
+from chat.media_subscriber import *
 from chat.utils import *
 from project.rabbitmq_utils import *
 from registration.errors import *
@@ -127,7 +127,7 @@ class SaveContacts(tornado.web.RequestHandler):
             channel = get_rabbitmq_connection()
             result = channel.queue_declare()
             channel.queue_bind(exchange=SIMPLE_CHAT_MESSAGES_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
-            client_id = "simple_chat/" + "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(23-12))
+            client_id = "simple_chat/" + generate_random_client_id(12)
             simple_chat_subscriber(client_id=client_id, user_data={'topic': routing_key, 'receiver': user})
 
             # result = channel.queue_declare()
@@ -137,13 +137,13 @@ class SaveContacts(tornado.web.RequestHandler):
         except Exception as e:
             raise e
 
-    def initiate_media_to_contact_subscriber(self, user):
+    def initiate_simple_media_user_subscriber(self, user):
         try:
-            routing_key = 'group_media_' + user + '.*'
+            routing_key = 'simple_media_' + user + '.*'
             channel = get_rabbitmq_connection()
             result = channel.queue_declare()
             channel.queue_bind(exchange=SIMPLE_CHAT_MEDIA_EXCHANGE, queue=result.method.queue, routing_key=routing_key)
-            client_id = "simple_media/" + "".join(random.choice(user) for x in range(23-13))
+            client_id = "simple_media/" + generate_random_client_id(13)
             simple_chat_media_subscriber(client_id=client_id, user_data={'topic': routing_key, 'receiver': user})
         except Exception as e:
             raise e
@@ -159,7 +159,7 @@ class SaveContacts(tornado.web.RequestHandler):
 
                 self.save_user_contacts(user, contacts_list)
                 self.initiate_simple_chat_user_subscriber(user)     # start simple chat message subscriber
-                # self.initiate_media_to_contact_subscriber(user)     # start simple chat media subscriber
+                self.initiate_simple_media_user_subscriber(user)     # start simple chat media subscriber
 
                 response['info'] = SUCCESS_RESPONSE
                 response['status'] = STATUS_200

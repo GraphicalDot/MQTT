@@ -48,3 +48,13 @@ def delete_users():
         QueryHandler.execute(query)
     except Exception as e:
         raise e
+
+
+def create_users(users_list):
+    for user in users_list:
+        query = " INSERT INTO users(username, password, member_of_groups, status, contacts) values (%s, %s, %s, %s, %s);"
+        variables = (str(user), '', '{}', '0', '{}')
+        try:
+            QueryHandler.execute(query, variables)
+        except Exception as e:
+            raise e

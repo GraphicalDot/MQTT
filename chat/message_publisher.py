@@ -1,6 +1,10 @@
+import os
+import sys
 import time
 import thread
 from paho.mqtt.client import Client
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
 
 from chat.utils import *
 from project.db_handler import *
@@ -33,17 +37,17 @@ def send_message_again_if_unreached(client, user_data, msg_id):
         raise e
 
 
-
 def on_message(client, user_data, mid):
     try:
-        message = str(user_data.get('message', '')).split(':')
+        msg = str(user_data.get('message', '')).split(':')
         result = []
 
-        if len(message) <= 3:
+        if len(msg) <= 3:
             # add message to database
-            query = " INSERT INTO chat_messages(sender, receiver, message, single_tick) VALUES (%s, %s, %s, %s) RETURNING id;"
-            variables = (message[0], message[1], message[2], 'done')
-            result = QueryHandler.get_results(query, variables)
+            query = " INSERT INTO chat_messages(sender, receiver, message, single_tick, is_media_message) " \
+                    "VALUES (%s, %s, %s, %s, %s) RETURNING id;"
+            variables = (msg[0], msg[1], msg[2], 'done', False)
+            QueryHandler.execute(query, variables)
 
         msg_id = result[0]['id'] if result else user_data.get('msg_id', 0)
         thread.start_new_thread(send_message_again_if_unreached, (client, user_data, msg_id))
@@ -53,19 +57,26 @@ def on_message(client, user_data, mid):
         # pass
 
 
-def on_connect(client, user_data, flags, rc):
+def on_publisher_connect(client, user_data, flags, rc):
     try:
         client.publish(topic=user_data['topic'], payload=user_data['message'], qos=1, retain=True)
     except Exception as e:
         raise e
         # pass
 
+
 def simple_chat_publisher(client_id, user_data):
-    user_data['client_id'] = str(client_id)
-    client = Client(client_id=client_id, clean_session=False, userdata=user_data)
-    client.on_connect = on_connect
-    client.on_publish = on_message
-    connect_to_server(client)
+    try:
+        user_data['client_id'] = str(client_id)
+        client = Client(client_id=client_id, clean_session=False, userdata=user_data)
+        client.on_connect = on_publisher_connect
+        client.on_publish = on_message
+        client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
+        client.connect_async(host='localhost', port=1883)
+        client.loop_start()
+    except Exception as e:
+        raise e
+        # pass
 
 
 def check_db(msg):
@@ -94,17 +105,16 @@ def on_msg_received_publisher_message(client, user_data, mid):
         # pass
 
 
-def on_msg_received_publisher_connect(client, user_data, flags, rc):
+def publish_msg_received(client_id, user_data):
     try:
-        client.publish(topic=user_data['topic'], payload=user_data['message'], qos=1, retain=True)
+        user_data['client_id'] = str(client_id)
+        client = Client(client_id=client_id, clean_session=False, userdata=user_data)
+        client.on_connect = on_publisher_connect
+        client.on_publish = on_msg_received_publisher_message
+
+        client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
+        client.connect_async(host='localhost', port=1883)
+        client.loop_start()
     except Exception as e:
         raise e
         # pass
-
-
-def publish_msg_received(client_id, user_data):
-    user_data['client_id'] = str(client_id)
-    client = Client(client_id=client_id, clean_session=False, userdata=user_data)
-    client.on_connect = on_msg_received_publisher_connect
-    client.on_publish = on_msg_received_publisher_message
-    connect_to_server(client)

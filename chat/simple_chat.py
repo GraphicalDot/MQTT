@@ -9,8 +9,8 @@ import tornado.ioloop
 import tornado.web
 
 from chat.errors import *
-from chat.media_utils import *
-from chat.mqtt_publisher import *
+from chat.media_publisher import *
+from chat.message_publisher import *
 from chat.utils import *
 from project.rabbitmq_utils import *
 
@@ -63,7 +63,6 @@ class SendMessageToContact(tornado.web.RequestHandler):
                 user_data = msg_data = {'topic': 'simple_chat_' + receiver + '.' + sender, 'sender': sender,
                                         'receiver': receiver, 'message': sender + ':' + receiver + ':' + message}
                 simple_chat_publisher(client_id, user_data)
-
                 response['status'] = STATUS_200
                 response['info'] = SUCCESS_RESPONSE
         except Exception as e:
@@ -73,7 +72,7 @@ class SendMessageToContact(tornado.web.RequestHandler):
             self.write(response)
 
 
-@tornado.web.stream_request_body
+# @tornado.web.stream_request_body
 class SendMediaToContact(tornado.web.RequestHandler):
 
     def data_validation(self, info):
@@ -85,30 +84,29 @@ class SendMediaToContact(tornado.web.RequestHandler):
             result = QueryHandler.get_results(query, variables)
             if not result:
                 response['info'] = INVALID_SENDER_SIMPLE_CHAT_ERR
-                response['status'] = 404
+                response['status'] = STATUS_404
 
             # Receiver invalid
-            query = " SELECT id FROM users WHERE username = %s;"
-            variables = (info.get('receiver', ''),)
-            result = QueryHandler.get_results(query, variables)
-            if not result:
-                response['info'] = INVALID_RECEIVER_SIMPLE_CHAT_ERR
-                response['status'] = 404
+            if response['status'] == 0:
+                query = " SELECT id FROM users WHERE username = %s;"
+                variables = (info.get('receiver', ''),)
+                result = QueryHandler.get_results(query, variables)
+                if not result:
+                    response['info'] = INVALID_RECEIVER_SIMPLE_CHAT_ERR
+                    response['status'] = STATUS_404
 
             # Invalid filename
-            if not info.get('name'):
-                response['info'] = " Error: Media Name not given!"
-                response['status'] = 404
-
-                # Media already exists with same name
-                # print 'path:', os.path
-                # if os.path.isfile(info.get('name')):
-                #     response['info'] = " Error: Media with same name already exists!"
-                #     response['status'] = 404
+            if response['status'] == 0:
+                if info.get('name') and os.path.exists('media/' + str(info.get('name'))):
+                    response['info'] = SAME_NAME_MEDIA_ALREADY_EXISTS_ERR
+                    response['status'] = STATUS_500
+                elif not info.get('name'):
+                    response['info'] = INVALID_MEDIA_NAME_ERR
+                    response['status'] = STATUS_404
 
         except Exception as e:
             response['info'] = " Error: %s" % e
-            response['status'] = 500
+            response['status'] = STATUS_500
         finally:
             return (response['info'], response['status'])
 
@@ -121,23 +119,23 @@ class SendMediaToContact(tornado.web.RequestHandler):
             file_content = base64.b64decode(request_info.get('body', ''))
             sender = str(request_info.get('sender', ''))
             receiver = str(request_info.get('receiver', ''))
-            if response['status'] not in [404, 500]:
+            if response['status'] not in [STATUS_404, STATUS_500]:
                 media_file = open(file_name, 'w')
                 media_file.write(file_content)
                 media_file.flush()
 
                 # publish the media
-                client_id = 'simple_media/' + "".join(random.choice("0123456789ADCDEF") for x in range(23-13))
-                user_data = {'topic': 'group_media_' + receiver + '.' + sender,
+                client_id = 'simple_media/' + generate_random_client_id(13)
+                user_data = {'topic': 'simple_media_' + receiver + '.' + sender,
                              'message': sender + ':' + receiver + ':' + file_name}
-                publish_simple_chat_media(client_id, user_data)
+                simple_chat_media_publisher(client_id, user_data)
 
-                response['status'] = 200
-                response['info'] = 'Success'
+                response['status'] = STATUS_200
+                response['info'] = SUCCESS_RESPONSE
 
         except Exception as e:
             response['info'] = " Error: %s" % e
-            response['status'] = 500
+            response['status'] = STATUS_500
         finally:
             self.write(response)
 
@@ -155,11 +153,11 @@ class SendMediaToContact(tornado.web.RequestHandler):
                     self.finish()
             else:
                 response['info'] = 'Not Found'
-                response['status'] = 400
+                response['status'] = STATUS_400
                 self.write(response)
         except Exception, e:
-            response['status'] = 500
-            response['info'] = 'error is: %s' % e
+            response['status'] = STATUS_500
+            response['info'] = 'Error is: %s' % e
             self.write(response)
 
     # def get(self):

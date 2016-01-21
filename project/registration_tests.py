@@ -11,7 +11,7 @@ from nose.tools import *
 sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
 
 from chat.errors import *
-from chat.mqtt_subscriber import *
+from chat.message_subscriber import *
 from project.rabbitmq_tests import *
 from project.test_utilities import *
 from registration.errors import *
@@ -219,7 +219,7 @@ class SaveContactsTests(unittest.TestCase):
                    'source': SIMPLE_CHAT_MESSAGES_EXCHANGE, 'destination_type': 'queue'}, bindings_list)
 
     def assert_simple_chat_media_queue_bind(self, bindings_list):
-        assert_in({'routing_key': 'group_media_918888888888.*',
+        assert_in({'routing_key': 'simple_media_918888888888.*',
                    'source': SIMPLE_CHAT_MEDIA_EXCHANGE, 'destination_type': 'queue'}, bindings_list)
 
 
