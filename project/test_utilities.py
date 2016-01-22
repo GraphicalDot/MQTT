@@ -1,8 +1,10 @@
+import os
 import random
+import sys
 from paho.mqtt.client import Client
 
-from project.db_handler import *
-from project.app_settings import *
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
+from project import db_handler, app_settings
 
 
 def on_presence_subscriber_message(client, user_data, message):
@@ -18,7 +20,7 @@ def start_presence_subscriber(client_id, user_data):
     client.on_connect = on_presence_subscriber_connect
     client.on_message = on_presence_subscriber_message
     try:
-        client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
+        client.username_pw_set(username=app_settings.BROKER_USERNAME, password=app_settings.BROKER_PASSWORD)
         client.connect_async(host='localhost', port=1883)
         client.loop_start()
     except Exception as e:
@@ -31,21 +33,21 @@ def generate_random_id():
 def delete_chat_messages():
     query = "DELETE FROM chat_messages;"
     try:
-        QueryHandler.execute(query)
+        db_handler.QueryHandler.execute(query)
     except Exception as e:
         raise e
 
 def delete_registered_users():
     try:
         query = " DELETE from registered_users;"
-        QueryHandler.execute(query)
+        db_handler.QueryHandler.execute(query)
     except Exception as e:
         raise e
 
 def delete_users():
     query = " DELETE FROM users;"
     try:
-        QueryHandler.execute(query)
+        db_handler.QueryHandler.execute(query)
     except Exception as e:
         raise e
 
@@ -55,6 +57,6 @@ def create_users(users_list):
         query = " INSERT INTO users(username, password, member_of_groups, status, contacts) values (%s, %s, %s, %s, %s);"
         variables = (str(user), '', '{}', '0', '{}')
         try:
-            QueryHandler.execute(query, variables)
+            db_handler.QueryHandler.execute(query, variables)
         except Exception as e:
             raise e

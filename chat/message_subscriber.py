@@ -1,10 +1,12 @@
+import os
 import random
+import sys
 import string
 from paho.mqtt.client import Client
 
-from chat.utils import *
-from chat.message_publisher import *
-from project.db_handler import *
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
+import utils, message_publisher
+from project import db_handler, app_settings
 
 
 def on_subscriber_message(client, user_data, message):
@@ -14,9 +16,9 @@ def on_subscriber_message(client, user_data, message):
         receiver = msg[1]
 
         # publish for double tick
-        client_id = 'chat_msg_received/' + generate_random_client_id(18)
+        client_id = 'chat_msg_received/' + utils.generate_random_client_id(18)
         user_data = {'topic': 'msg_received_' + receiver + '.' + sender + ':' + msg[2], 'message': str(message.payload)}
-        publish_msg_received(client_id, user_data)
+        message_publisher.publish_msg_received(client_id, user_data)
 
     except Exception as e:
         raise e
@@ -38,7 +40,7 @@ def simple_chat_subscriber(client_id, user_data):
         client.on_connect = on_subscriber_connect
         client.on_message = on_subscriber_message
 
-        client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
+        client.username_pw_set(username=app_settings.BROKER_USERNAME, password=app_settings.BROKER_PASSWORD)
         client.connect_async(host='localhost', port=1883)
         client.loop_start()
     except Exception as e:

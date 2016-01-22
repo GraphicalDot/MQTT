@@ -11,12 +11,9 @@ import unittest
 from nose.tools import *
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
-
-from chat.errors import *
-from chat.media_subscriber import *
-from chat.message_subscriber import *
-from project.rabbitmq_tests import *
-from project.test_utilities import *
+import test_utilities as utilities
+from chat import errors, media_subscriber, message_subscriber
+from project import rabbitmq_tests, test_utilities, rabbitmq_utils, app_settings, db_handler
 
 
 class SendMessageToContactTests(unittest.TestCase):
@@ -31,7 +28,7 @@ class SendMessageToContactTests(unittest.TestCase):
     receivers_count = 21
 
     def create_exchanges(self):
-        self.channel = get_rabbitmq_connection()
+        self.channel = rabbitmq_utils.get_rabbitmq_connection()
         for name in self.exchanges:
             self.channel.exchange_declare(exchange=name, type='topic', durable=True, auto_delete=False)
 
@@ -40,36 +37,36 @@ class SendMessageToContactTests(unittest.TestCase):
             self.channel.exchange_delete(exchange=name)
 
     def setUp(self):
-        self.url = SIMPLE_CHAT_SEND_MESSAGE_URL
+        self.url = app_settings.SIMPLE_CHAT_SEND_MESSAGE_URL
         self.users = [self.sender, self.receiver]
-        self.exchanges = [SIMPLE_CHAT_MESSAGES_EXCHANGE, SIMPLE_CHAT_MESSAGE_RECEIVED_EXCHANGE]
-        delete_users()     # delete all users created from any of the previous tests
-        create_users(self.users)   # create users
+        self.exchanges = [app_settings.SIMPLE_CHAT_MESSAGES_EXCHANGE, app_settings.SIMPLE_CHAT_MESSAGE_RECEIVED_EXCHANGE]
+        test_utilities.delete_users()     # delete all users created from any of the previous tests
+        test_utilities.create_users(self.users)   # create users
         self.create_exchanges()
-        delete_chat_messages()
+        test_utilities.delete_chat_messages()
 
     def test_validation(self):
 
         # Invalid sender
         response = requests.post(self.url, data={'sender': '', 'receiver': self.receiver, 'message': 'test_message_1'})
         res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_SENDER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], STATUS_404)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_SENDER_SIMPLE_CHAT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
 
         # Invalid receiver
         response = requests.post(self.url, data={'sender': self.sender, 'receiver': '917777777777', 'message': ''})
         res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_RECEIVER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], STATUS_404)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_RECEIVER_SIMPLE_CHAT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
 
         # No msg present
         response = requests.post(self.url, data={'sender': self.sender, 'receiver': self.receiver})
         res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_MESSAGE_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], STATUS_404)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_MESSAGE_SIMPLE_CHAT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
 
     def test_post(self):
 
@@ -78,23 +75,24 @@ class SendMessageToContactTests(unittest.TestCase):
         #                        routing_key='simple_chat_' + str(self.receiver) + '.*' )
 
         # start chat message subscriber
-        simple_chat_subscriber(client_id="testing/" + generate_random_client_id(8), user_data={'topic': 'simple_chat_' + str(self.receiver) + '.*',
-                                                                                               'receiver': str(self.receiver)})
+        message_subscriber.simple_chat_subscriber(client_id=test_utilities.generate_random_id(),
+                                                  user_data={'topic': 'simple_chat_' + str(self.receiver) + '.*',
+                                                             'receiver': str(self.receiver)})
 
         time.sleep(10)
         response = requests.post(self.url, data={'sender': str(self.sender), 'receiver': str(self.receiver),
                                                  'message': 'test_message_3'})
         res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], SUCCESS_RESPONSE)
-        assert_equal(res['status'], STATUS_200)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
 
         time.sleep(20)
         # check if message reached to the database
         query = "SELECT single_tick, double_tick FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
         variables = (str(self.sender), str(self.receiver), 'test_message_3')
         try:
-            result = QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, variables)
             assert_equal(len(result), 1)
             assert_equal(result[0]['single_tick'], 'done')
             assert_equal(result[0]['double_tick'], 'done')
@@ -104,7 +102,7 @@ class SendMessageToContactTests(unittest.TestCase):
     def test_multiple_msg_single_sender_single_receiver(self):
 
         # start chat message subsriber
-        simple_chat_subscriber(client_id="testing/" + generate_random_client_id(8),
+        message_subscriber.simple_chat_subscriber(client_id=test_utilities.generate_random_id(),
                                user_data={'topic': 'simple_chat_' + str(self.receiver) + '.*',
                                           'receiver': str(self.receiver)})
 
@@ -115,9 +113,9 @@ class SendMessageToContactTests(unittest.TestCase):
             response = requests.post(self.url, data={'sender': str(self.sender), 'receiver': str(self.receiver),
                                                      'message': msg})
             res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
 
         time.sleep(20)
         # check if all messages have reached to the server and subscribers.
@@ -125,7 +123,7 @@ class SendMessageToContactTests(unittest.TestCase):
             query = "SELECT single_tick, double_tick FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
             variables = (str(self.sender), str(self.receiver), msg)
             try:
-                result = QueryHandler.get_results(query, variables)
+                result = db_handler.QueryHandler.get_results(query, variables)
                 assert_equal(len(result), 1)
                 assert_equal(result[0]['single_tick'], 'done')
                 assert_equal(result[0]['double_tick'], 'done')
@@ -135,8 +133,9 @@ class SendMessageToContactTests(unittest.TestCase):
     def test_multiple_senders_single_receiver(self):
 
         # start chat message subscriber
-        simple_chat_subscriber(client_id="testing/" + generate_random_client_id(8), user_data={'topic': 'simple_chat_' + str(self.receiver) + '.*',
-                                                                                               'receiver': str(self.receiver)})
+        message_subscriber.simple_chat_subscriber(client_id=test_utilities.generate_random_id(),
+                               user_data={'topic': 'simple_chat_' + str(self.receiver) + '.*',
+                                          'receiver': str(self.receiver)})
 
         message_to_send = 'test_message'
         senders_list = []
@@ -144,15 +143,15 @@ class SendMessageToContactTests(unittest.TestCase):
             senders_list.append('91' + "".join(random.choice(string.digits) for _ in range(10)))
 
         # create senders in 'users' table
-        create_users(senders_list)
+        test_utilities.create_users(senders_list)
 
         for sender in senders_list:
             response = requests.post(self.url, data={'sender': str(sender), 'receiver': str(self.receiver),
                                                      'message': message_to_send})
             res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
 
         time.sleep(20)
         # check if all messages have reached to the server and subscribers.
@@ -160,7 +159,7 @@ class SendMessageToContactTests(unittest.TestCase):
             query = "SELECT single_tick, double_tick FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
             variables = (str(sender), str(self.receiver), message_to_send)
             try:
-                result = QueryHandler.get_results(query, variables)
+                result = db_handler.QueryHandler.get_results(query, variables)
                 assert_equal(len(result), 1)
                 assert_equal(result[0]['single_tick'], 'done')
                 assert_equal(result[0]['double_tick'], 'done')
@@ -174,12 +173,13 @@ class SendMessageToContactTests(unittest.TestCase):
             receivers_list.append('91' + "".join(random.choice(string.digits) for _ in range(10)))
 
         # create receivers in 'users' table
-        create_users(receivers_list)
+        test_utilities.create_users(receivers_list)
 
         # start chat message subscriber for each of the receiver
         for receiver in receivers_list:
-            simple_chat_subscriber(client_id="testing/" + generate_random_client_id(8), user_data={'topic': 'simple_chat_' + str(receiver) + '.*',
-                                                                                               'receiver': str(receiver)})
+            message_subscriber.simple_chat_subscriber(client_id=test_utilities.generate_random_id(),
+                                   user_data={'topic': 'simple_chat_' + str(receiver) + '.*',
+                                              'receiver': str(receiver)})
             time.sleep(5)
 
         message_to_send = 'test_message'
@@ -187,9 +187,9 @@ class SendMessageToContactTests(unittest.TestCase):
             response = requests.post(self.url, data={'sender': str(self.sender), 'receiver': str(receiver),
                                                      'message': message_to_send})
             res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
 
         time.sleep(20)
         # check if all messages have reached to the server and subscribers.
@@ -197,7 +197,7 @@ class SendMessageToContactTests(unittest.TestCase):
             query = "SELECT single_tick, double_tick FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
             variables = (str(self.sender), str(receiver), message_to_send)
             try:
-                result = QueryHandler.get_results(query, variables)
+                result = db_handler.QueryHandler.get_results(query, variables)
                 assert_equal(len(result), 1)
                 assert_equal(result[0]['single_tick'], 'done')
                 assert_equal(result[0]['double_tick'], 'done')
@@ -217,13 +217,14 @@ class SendMessageToContactTests(unittest.TestCase):
         assert_not_equal(senders_list, receivers_list)
 
         # create 'senders' and 'receivers' as valid users
-        create_users(senders_list)
-        create_users(receivers_list)
+        test_utilities.create_users(senders_list)
+        test_utilities.create_users(receivers_list)
 
         # start chat message subscriber for each of the receiver
         for receiver in receivers_list:
-            simple_chat_subscriber(client_id="testing/" + generate_random_client_id(8), user_data={'topic': 'simple_chat_' + str(receiver) + '.*',
-                                                                                               'receiver': str(receiver)})
+            message_subscriber.simple_chat_subscriber(client_id=test_utilities.generate_random_id(),
+                                                      user_data={'topic': 'simple_chat_' + str(receiver) + '.*',
+                                                                 'receiver': str(receiver)})
             time.sleep(5)
 
         for i in range(1, 51):
@@ -234,13 +235,13 @@ class SendMessageToContactTests(unittest.TestCase):
                                                      'message': message})
 
             res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
 
         time.sleep(20)
         query = " SELECT id FROM chat_messages WHERE double_tick='';"
-        result = QueryHandler.get_results(query)
+        result = db_handler.QueryHandler.get_results(query)
         assert_equal(len(result), 0)
 
 
@@ -257,12 +258,12 @@ class SendMediaToContactTests(unittest.TestCase):
     receivers_count = 21
 
     def create_exchanges(self):
-        self.channel = get_rabbitmq_connection()
+        self.channel = rabbitmq_utils.get_rabbitmq_connection()
         for name in self.exchanges:
             self.channel.exchange_declare(exchange=name, type='topic', durable=True, auto_delete=False)
 
     def delete_exchanges(self):
-        self.channel = get_rabbitmq_connection()
+        self.channel = rabbitmq_utils.get_rabbitmq_connection()
         try:
             for name in self.exchanges:
                 self.channel.exchange_delete(exchange=name)
@@ -282,7 +283,7 @@ class SendMediaToContactTests(unittest.TestCase):
         return response
 
     def setUp(self):
-        self.url = SIMPLE_CHAT_SEND_MEDIA_URL
+        self.url = app_settings.SIMPLE_CHAT_SEND_MEDIA_URL
         self.media_path = 'media/'
         self.media_files = {
             'image': 'test_image.jpg',
@@ -292,17 +293,17 @@ class SendMediaToContactTests(unittest.TestCase):
             'rar': 'test_rar.rar',
         }
         self.users = [self.sender, self.receiver]
-        self.exchanges = [SIMPLE_CHAT_MEDIA_EXCHANGE]
+        self.exchanges = [app_settings.SIMPLE_CHAT_MEDIA_EXCHANGE]
 
         # delete irrelevant users, exchanges, queues and chat messages
-        delete_users()
-        delete_chat_messages()
+        test_utilities.delete_users()
         self.delete_exchanges()
-        delete_queues()
+        rabbitmq_utils.delete_queues()
         self.delete_media_files()
+        test_utilities.delete_chat_messages()
 
         # create required users and exchange(s)
-        create_users(self.users)
+        test_utilities.create_users(self.users)
         self.create_exchanges()
 
     def test_validation(self):
@@ -311,34 +312,34 @@ class SendMediaToContactTests(unittest.TestCase):
         content = {'sender': '910000000000', 'receiver': str(self.receiver), 'name': self.media_files['image']}
         response = requests.post(self.url, data=json.dumps(content))
         res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_SENDER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], STATUS_404)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_SENDER_SIMPLE_CHAT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
 
         # Invalid receiver
         content = {'sender': str(self.sender), 'receiver': '910000000000', 'name': self.media_files['image']}
         response = requests.post(self.url, data=json.dumps(content))
         res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_RECEIVER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], STATUS_404)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_RECEIVER_SIMPLE_CHAT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
 
         # Media name not given
         content = {'sender': str(self.sender), 'receiver': str(self.receiver)}
         response = requests.post(self.url, data=json.dumps(content))
         res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], INVALID_MEDIA_NAME_ERR)
-        assert_equal(res['status'], STATUS_404)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_MEDIA_NAME_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
 
         # Same media already exists
         shutil.copyfile('test_image.jpg', 'media/test_image.jpg')
         content = {'sender': str(self.sender), 'receiver': str(self.receiver), 'name': self.media_files['image']}
         response = requests.post(self.url, data=json.dumps(content))
         res = json.loads(response.content)
-        assert_equal(response.status_code, STATUS_200)
-        assert_equal(res['info'], SAME_NAME_MEDIA_ALREADY_EXISTS_ERR)
-        assert_equal(res['status'], STATUS_500)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.SAME_NAME_MEDIA_ALREADY_EXISTS_ERR)
+        assert_equal(res['status'], app_settings.STATUS_500)
 
     def test_post(self):
         # test uploading image, pdf, audio, video, rar
@@ -346,13 +347,13 @@ class SendMediaToContactTests(unittest.TestCase):
             file_name = value
             response = self.make_post_request(file_name)
             res = json.loads(response.content)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
         assert_equal(len(os.listdir(self.media_path)), len(self.media_files))
 
     def test_publisher_subscriber(self):
         # start simple chat media subsciber
-        simple_chat_media_subscriber(client_id="testing/" + generate_random_client_id(8),
+        media_subscriber.simple_chat_media_subscriber(client_id=test_utilities.generate_random_id(),
                                      user_data={'topic': 'simple_media_' + str(self.receiver) + '.*',
                                                 'receiver': str(self.receiver)})
 
@@ -361,15 +362,15 @@ class SendMediaToContactTests(unittest.TestCase):
         file_name = self.media_files['image']
         response = self.make_post_request(file_name)
         res = json.loads(response.content)
-        assert_equal(res['info'], SUCCESS_RESPONSE)
-        assert_equal(res['status'], STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
 
         time.sleep(20)
         # check if media has reached to the server and subcriber.
         query = "SELECT * FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
         variables = (str(self.sender), str(self.receiver), self.media_path + file_name)
         try:
-            result = QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, variables)
             assert_equal(len(result), 1)
             assert_equal(result[0]['is_media_message'], True)
             assert_equal(result[0]['single_tick'], 'done')
@@ -383,7 +384,7 @@ class SendMediaToContactTests(unittest.TestCase):
         assert_not_equal(os.listdir('test_media/'), [])
 
         # start chat message subsriber
-        simple_chat_media_subscriber(client_id="testing/" + generate_random_client_id(8),
+        media_subscriber.simple_chat_media_subscriber(client_id=test_utilities.generate_random_id(),
                                user_data={'topic': 'simple_media_' + str(self.receiver) + '.*',
                                           'receiver': str(self.receiver)})
         time.sleep(5)
@@ -396,9 +397,9 @@ class SendMediaToContactTests(unittest.TestCase):
                        'body': base64.b64encode(file_content)}
             response = requests.post(self.url, data=json.dumps(content))
             res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
 
             # remove the copied media
             os.remove(msg)
@@ -409,7 +410,7 @@ class SendMediaToContactTests(unittest.TestCase):
             query = "SELECT * FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
             variables = (str(self.sender), str(self.receiver), self.media_path + msg)
             try:
-                result = QueryHandler.get_results(query, variables)
+                result = db_handler.QueryHandler.get_results(query, variables)
                 assert_equal(len(result), 1)
                 assert_equal(result[0]['is_media_message'], True)
                 assert_equal(result[0]['single_tick'], 'done')
@@ -420,7 +421,7 @@ class SendMediaToContactTests(unittest.TestCase):
     def test_multiple_senders_single_receiver(self):
 
         # start chat message subscriber
-        simple_chat_media_subscriber(client_id="testing/" + generate_random_client_id(8),
+        media_subscriber.simple_chat_media_subscriber(client_id=test_utilities.generate_random_id(),
                                user_data={'topic': 'simple_media_' + str(self.receiver) + '.*',
                                         'receiver': str(self.receiver)})
 
@@ -434,16 +435,16 @@ class SendMediaToContactTests(unittest.TestCase):
             senders_list.append('91' + "".join(random.choice(string.digits) for _ in range(10)))
 
         # create senders in 'users' table
-        create_users(senders_list)
+        test_utilities.create_users(senders_list)
 
         for sender in senders_list:
             content = {'sender': str(sender), 'receiver': str(self.receiver), 'name': filename,
                        'body': base64.b64encode(file_content)}
             response = requests.post(self.url, data=json.dumps(content))
             res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
             os.remove('media/' + filename)
 
         time.sleep(20)
@@ -452,7 +453,7 @@ class SendMediaToContactTests(unittest.TestCase):
             query = "SELECT single_tick, double_tick FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
             variables = (str(sender), str(self.receiver), 'media/' + filename)
             try:
-                result = QueryHandler.get_results(query, variables)
+                result = db_handler.QueryHandler.get_results(query, variables)
                 assert_equal(len(result), 1)
                 assert_equal(result[0]['single_tick'], 'done')
                 assert_equal(result[0]['double_tick'], 'done')
@@ -467,11 +468,11 @@ class SendMediaToContactTests(unittest.TestCase):
             receivers_list.append('91' + "".join(random.choice(string.digits) for _ in range(10)))
 
         # create receivers in 'users' table
-        create_users(receivers_list)
+        test_utilities.create_users(receivers_list)
 
         # start chat message subscriber for each of the receiver
         for receiver in receivers_list:
-            simple_chat_media_subscriber(client_id="testing/" + generate_random_client_id(8),
+            media_subscriber.simple_chat_media_subscriber(client_id=test_utilities.generate_random_id(),
                                          user_data={'topic': 'simple_media_' + str(receiver) + '.*',
                                                     'receiver': str(receiver)})
             time.sleep(5)
@@ -486,9 +487,9 @@ class SendMediaToContactTests(unittest.TestCase):
                        'body': base64.b64encode(file_content)}
             response = requests.post(self.url, data=json.dumps(content))
             res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
             os.remove('media/' + filename)
 
         time.sleep(20)
@@ -497,7 +498,7 @@ class SendMediaToContactTests(unittest.TestCase):
             query = "SELECT single_tick, double_tick FROM chat_messages WHERE sender=%s AND receiver=%s AND message=%s;"
             variables = (str(self.sender), str(receiver), 'media/' + filename)
             try:
-                result = QueryHandler.get_results(query, variables)
+                result = db_handler.QueryHandler.get_results(query, variables)
                 assert_equal(len(result), 1)
                 assert_equal(result[0]['single_tick'], 'done')
                 assert_equal(result[0]['double_tick'], 'done')
@@ -518,14 +519,14 @@ class SendMediaToContactTests(unittest.TestCase):
         assert_not_equal(senders_list, receivers_list)
 
         # create 'senders' and 'receivers' as valid users
-        create_users(senders_list)
-        create_users(receivers_list)
+        test_utilities.create_users(senders_list)
+        test_utilities.create_users(receivers_list)
 
         media_files = os.listdir('test_media/')
 
         # start chat message subscriber for each of the receiver
         for receiver in receivers_list:
-            simple_chat_subscriber(client_id="testing/" + generate_random_client_id(8),
+            media_subscriber.simple_chat_media_subscriber(client_id=test_utilities.generate_random_id(),
                                    user_data={'topic': 'simple_media_' + str(receiver) + '.*',
                                               'receiver': str(receiver)})
             time.sleep(10)
@@ -540,13 +541,13 @@ class SendMediaToContactTests(unittest.TestCase):
                        'body': base64.b64encode(file_content)}
             response = requests.post(self.url, data=json.dumps(content))
             res = json.loads(response.content)
-            assert_equal(response.status_code, STATUS_200)
-            assert_equal(res['info'], SUCCESS_RESPONSE)
-            assert_equal(res['status'], STATUS_200)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)
             os.remove(filename)
             os.remove('media/' + filename)
 
         time.sleep(20)
         query = " SELECT id FROM chat_messages WHERE double_tick='';"
-        result = QueryHandler.get_results(query)
+        result = db_handler.QueryHandler.get_results(query)
         assert_equal(len(result), 0)

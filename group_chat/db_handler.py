@@ -1,5 +1,9 @@
+import os
 import psycopg2
 import psycopg2.extras
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
 from settings import *
 
 
@@ -14,7 +18,7 @@ class LocalQueryHandler(object):
     def get_results(cls, query, variables=None):
         connection = cls.get_connection()
         cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        # print(cursor.mogrify(query, variables))
+        print(cursor.mogrify(query, variables))
         cursor.execute(query, variables)
         results = cursor.fetchall()
         connection.commit()

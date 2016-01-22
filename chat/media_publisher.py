@@ -1,20 +1,22 @@
+import os
+import sys
 import time
 import thread
 from paho.mqtt.client import Client
 
-from chat.utils import *
-from project.app_settings import *
-from project.db_handler import *
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
+import utils
+from project import app_settings
+from project import db_handler
 
 
 def send_media_again_if_unreached(client, user_data, msg_id):
-    print 'inside send_media_again_if_unreached'
     try:
         message = str(user_data.get('message', '')).split(':')
         for i in range(1, 6):
             query = " SELECT double_tick FROM chat_messages WHERE id=%s;"
             variables = (str(msg_id),)
-            result = QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, variables)
 
             if result and result[0]['double_tick'] == '':
                 time.sleep(5)
@@ -25,7 +27,7 @@ def send_media_again_if_unreached(client, user_data, msg_id):
 
         if i >= 5:
             new_message = message[0] + ':' + message[1] + ':' + message[2] + ':again'
-            client_id = generate_random_client_id(0)
+            client_id = utils.generate_random_client_id(0)
             user_data = {'topic': 'simple_media_' + message[1] + '.' + message[0],
                          'message': new_message, 'msg_id': msg_id}
             simple_chat_media_publisher(client_id, user_data)
@@ -46,7 +48,7 @@ def on_simple_chat_media_publisher_message(client, user_data, mid):
             query = " INSERT INTO chat_messages(sender, receiver, message, single_tick, is_media_message) " \
                     "VALUES (%s, %s, %s, %s, %s) RETURNING id;"
             variables = (msg[0], msg[1], msg[2], 'done', True)
-            QueryHandler.execute(query, variables)
+            db_handler.QueryHandler.execute(query, variables)
 
         msg_id = result[0]['id'] if result else user_data.get('msg_id', 0)
         thread.start_new_thread(send_media_again_if_unreached, (client, user_data, msg_id))
@@ -70,7 +72,7 @@ def simple_chat_media_publisher(client_id, user_data):
         client.on_connect = on_simple_chat_media_publisher_connect
         client.on_publish = on_simple_chat_media_publisher_message
 
-        client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
+        client.username_pw_set(username=app_settings.BROKER_USERNAME, password=app_settings.BROKER_PASSWORD)
         client.connect_async(host='localhost', port=1883)
         client.loop_start()
     except Exception as e:

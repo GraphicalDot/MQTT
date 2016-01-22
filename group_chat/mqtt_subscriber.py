@@ -1,5 +1,9 @@
+import os
+import sys
 from paho.mqtt.client import Client
-from settings import *
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
+import settings
 
 
 def on_subscriber_message(client, user_data, message):
@@ -20,7 +24,7 @@ def group_chat_subscriber(client_id, user_data):
     client.on_message = on_subscriber_message
 
     try:
-        client.username_pw_set(username=BROKER_USERNAME, password=BROKER_PASSWORD)
+        client.username_pw_set(username=settings.BROKER_USERNAME, password=settings.BROKER_PASSWORD)
         client.connect_async(host='localhost', port=1883)
         client.loop_start()
     except Exception as e:

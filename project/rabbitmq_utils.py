@@ -1,9 +1,11 @@
 import json
+import os
 import pika
-import sys
 import requests
+import sys
 
-from project.app_settings import *
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
+from project import app_settings
 
 connection = None
 channel = None
@@ -26,8 +28,8 @@ def delete_exchanges(exchanges_list):
         for exchange in exchanges_list:
             channel.exchange_delete(exchange)
 
-        rabbitmq_api_response = requests.get('http://{}:{}/api/queues'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT),
-                                             auth=(BROKER_USERNAME, BROKER_PASSWORD))
+        rabbitmq_api_response = requests.get('http://{}:{}/api/queues'.format(app_settings.RABBITMQ_HOSTNAME, app_settings.RABBITMQ_PORT),
+                                             auth=(app_settings.BROKER_USERNAME, app_settings.BROKER_PASSWORD))
         res = json.loads(rabbitmq_api_response.content)
     except Exception as e:
         raise e
@@ -35,8 +37,8 @@ def delete_exchanges(exchanges_list):
 def delete_queues():
     try:
         channel = get_rabbitmq_connection()
-        rabbitmq_api_response = requests.get('http://{}:{}/api/queues'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT),
-                                                 auth=(BROKER_USERNAME, BROKER_PASSWORD))
+        rabbitmq_api_response = requests.get('http://{}:{}/api/queues'.format(app_settings.RABBITMQ_HOSTNAME, app_settings.RABBITMQ_PORT),
+                                                 auth=(app_settings.BROKER_USERNAME, app_settings.BROKER_PASSWORD))
         res = json.loads(rabbitmq_api_response.content)
         for queue in res:
             channel.queue_delete(queue=queue['name'])
@@ -45,11 +47,9 @@ def delete_queues():
 
 
 def create_bind_queue(exchange, routing_key):
-    print "inside create bind queue"
     try:
         channel = get_rabbitmq_connection()
         result = channel.queue_declare()
         channel.queue_bind(exchange=exchange, queue=result.method.queue, routing_key=routing_key)
     except Exception as e:
-        print "Inside exception:", e
         raise e

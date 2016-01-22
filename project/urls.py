@@ -8,30 +8,34 @@ from tornado.options import options
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
 
-from chat.simple_chat import *
-from registration.register import *
-from group_chat.group_chat import *
-from registration.presence_notification import *
+from chat import simple_chat
+from group_chat import group_chat
+from registration import register
+from registration import presence_notification
 
 
 def make_app():
     return tornado.web.Application([
-        (r"/", CreateExchanges),
+        (r"/", group_chat.CreateExchanges),
 
         # Registeration URLs
-        (r"/register", RegisterUser),
-        (r"/create", CreateUser),
-        (r"/save_contacts", SaveContacts),
-        (r"/start_stop_app", StartStopApp),
+        (r"/register", register.RegisterUser),
+        (r"/create", register.CreateUser),
+        (r"/save_contacts", register.SaveContacts),
+        (r"/start_stop_app", presence_notification.StartStopApp),
 
         # Normal Chat URLs
-        (r"/simple_send_message", SendMessageToContact),
-        (r"/simple_send_media", SendMediaToContact),
+        (r"/simple_send_message", simple_chat.SendMessageToContact),
+        (r"/simple_send_media", simple_chat.SendMediaToContact),
 
         # Group Chat URLs
-        (r"/create_group", CreateGroup),
-        (r"/group_send_message", SendMessageToGroup),
-        (r"/get_groups", GetGroupsInfo),
+        (r"/create_group", group_chat.CreateGroup),
+        (r"/group_send_message", group_chat.SendMessageToGroup),
+        (r"/get_groups", group_chat.GetGroupsInfo),
+
+        # # Games Notifications
+        # (r"/start_notification_subscribers", StartNotificationSubscribers),
+        # (r"/cricket_notifications", CricketEvents),
     ],
         autoreload=True,
     )

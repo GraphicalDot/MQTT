@@ -1,7 +1,11 @@
+import os
 import random
+import string
+import sys
 import time
 
-from project.db_handler import *
+sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
+from project import db_handler, app_settings
 
 
 class User:
@@ -12,19 +16,19 @@ class User:
     def delete_registered(self):
         query = " DELETE FROM registered_users WHERE username = %s ;"
         variables = (self.username,)
-        QueryHandler.execute(query, variables)
+        db_handler.QueryHandler.execute(query, variables)
 
     def register(self):
         random_integer = random.randint(1000,9999)
-        expiration_time = int(time.time()) + EXPIRY_PERIOD_SEC
+        expiration_time = int(time.time()) + app_settings.EXPIRY_PERIOD_SEC
 
         query = " INSERT INTO registered_users (username, authorization_code, expiration_time) VALUES (%s, %s, %s); "
         variables = (self.username, random_integer, expiration_time)
         try:
-            QueryHandler.execute(query, variables)
+            db_handler.QueryHandler.execute(query, variables)
             return self.send_message(random_integer)
         except Exception, e:
-            return " Error while sending message : % s" % e, STATUS_500
+            return " Error while sending message : % s" % e, app_settings.STATUS_500
 
     def handle_registration(self):
         self.delete_registered()
@@ -34,14 +38,14 @@ class User:
     def is_token_correct(self, auth_code):
         query = " SELECT * FROM registered_users WHERE username = %s AND authorization_code = %s ;"
         variables = (self.username, auth_code,)
-        record = QueryHandler.get_results(query, variables)
+        record = db_handler.QueryHandler.get_results(query, variables)
         is_token_correct = True if record and (record[0]['expiration_time'] > int(time.time())) else False
         return is_token_correct
 
     def exists(self):
         query = " SELECT * FROM users WHERE username = %s;"
         variables = (self.username,)
-        user_info = QueryHandler.get_results(query, variables)
+        user_info = db_handler.QueryHandler.get_results(query, variables)
         if len(user_info) == 0:
             registered = False
             password = None
@@ -55,10 +59,10 @@ class User:
         try:
             query = " INSERT INTO users (username, password, member_of_groups, status, contacts) values (%s, %s, %s, %s, %s);"
             variables = (self.username, self.password, '{}', '0', '{}')
-            QueryHandler.execute(query, variables)
-            response, status = SUCCESS_RESPONSE, STATUS_200
+            db_handler.QueryHandler.execute(query, variables)
+            response, status = app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200
         except Exception as e:
-            response, status = str(e), STATUS_500
+            response, status = str(e), app_settings.STATUS_500
         finally:
             return response, status
 
@@ -69,7 +73,7 @@ class User:
                 response, status = self.create_new()
                 password = self.password
             else:
-                response, status = " User already created ", STATUS_200
+                response, status = " User already created ", app_settings.STATUS_200
                 self.password = password
         else:
             response, status, password = " Wrong or Expired Token ", STATUS_400, None
@@ -78,19 +82,19 @@ class User:
 
     def send_message(self, random_integer):
         number = str.strip(self.username)
-        message = str.strip(REGISTRATION_MESSAGE + "  " + str(random_integer))
+        message = str.strip(app_settings.REGISTRATION_MESSAGE + "  " + str(random_integer))
         payload = {
             'method': 'SendMessage',
             'send_to': number,
             'msg': message,
             'msg_type': 'TEXT',
-            'userid': GUPSHUP_ID,
+            'userid': app_settings.GUPSHUP_ID,
             'auth_scheme': 'plain',
-            'password': GUPSHUP_PASSWORD,
+            'password': app_settings.GUPSHUP_PASSWORD,
             'v': '1.1',
             'format': 'text',
         }
-        return SUCCESS_RESPONSE, STATUS_200
+        return app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200
         # response = requests.get(GUPSHUP_MESSAGE_GATEWAY, params=payload)
         # response = str.split(str(response.text),'|')
         # if str.strip(str.lower(response[0])) == "success":
@@ -98,4 +102,8 @@ class User:
         # else:
         #     error = response[2]
         #     return error, STATUS_500
+
+
+def generate_random_client_id(len):
+    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(23-len))
 
