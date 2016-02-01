@@ -1,9 +1,10 @@
 INTERNAL_ERROR = "Some Internal Error occured! Please try again later!"
 
-
 GROUP_OWNER_NOT_PROVIDED_ERR = " Bad Request: Please provide group owner's phone number!"
+INVALID_GROUP_OWNER_ERR = "  Bad Request: Invalid Group onwer!"
 GROUP_OWNER_INVALID_CONTACT_ERR = " Bad Request: Please provide a valid phone number of group owner!"
 GROUP_NAME_NOT_PROVIDED_ERR = " Bad Request: Please enter a group name!"
+GROUP_NAME_ALREADY_EXISTS_ERR = " Bad Request: Group with same name already exists for the owner!"
 NO_GROUP_MEMBER_ADDED_ERR = " Bad Request: Please add atleast 1 member in the group!"
 NON_REGISTERED_MEMBER_ERR = " Error: One of the group members is not registered! Please specify valid group members!"
 

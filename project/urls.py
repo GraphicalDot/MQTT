@@ -9,6 +9,7 @@ from tornado.options import options
 sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
 
 from chat import simple_chat
+from games_notifications import notifications
 from group_chat import group_chat
 from registration import register
 from registration import presence_notification
@@ -33,9 +34,9 @@ def make_app():
         (r"/group_send_message", group_chat.SendMessageToGroup),
         (r"/get_groups", group_chat.GetGroupsInfo),
 
-        # # Games Notifications
-        # (r"/start_notification_subscribers", StartNotificationSubscribers),
-        # (r"/cricket_notifications", CricketEvents),
+        # Games Notifications
+        (r"/start_notification_subscribers",notifications.StartNotificationSubscribers),
+        (r"/sport_notifications", notifications.SportsNotifications),
     ],
         autoreload=True,
     )

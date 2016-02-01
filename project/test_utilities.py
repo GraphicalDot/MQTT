@@ -60,3 +60,19 @@ def create_users(users_list):
             db_handler.QueryHandler.execute(query, variables)
         except Exception as e:
             raise e
+
+
+def delete_groups():
+    query = " DELETE FROM groups_info;"
+    try:
+        db_handler.QueryHandler.execute(query)
+    except Exception as e:
+        raise e
+
+
+def delete_group_messages():
+    query = " DELETE FROM group_messages;"
+    try:
+        db_handler.QueryHandler.execute(query)
+    except Exception as e:
+        raise e

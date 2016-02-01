@@ -35,6 +35,8 @@ SIMPLE_CHAT_SINGLE_TICK_EXCHANGE = 'simple_chat_single_tick'
 SIMPLE_CHAT_DOUBLE_TICK_EXCHANGE = 'simple_chat_double_tick'
 SIMPLE_CHAT_COLORED_DOUBLE_TICK_EXCHANGE = 'simple_chat_colored_double_tick'
 
+NOTIFICATIONS_EXCHANGE = 'sport_notifications'
+
 RABBITMQ_EXCHANGES = [
     CHAT_PRESENCE_EXCHANGE,
     SIMPLE_CHAT_MESSAGES_EXCHANGE,
@@ -44,6 +46,8 @@ RABBITMQ_EXCHANGES = [
     SIMPLE_CHAT_DOUBLE_TICK_EXCHANGE,
     SIMPLE_CHAT_COLORED_DOUBLE_TICK_EXCHANGE,
     GROUP_CHAT_MESSAGES_EXCHANGE,
+
+    # NOTIFICATIONS_EXCHANGE,
 ]
 
 
@@ -70,6 +74,8 @@ ERROR_CODES_LIST = [
     STATUS_500
 ]
 
+GROUP_MESSAGES_FILE_PATH = 'project/group_msg_config.py'
+
 ###### Testing Constants ########
 TESTING_VALID_CONTACT = '919999823930'
 TESTING_INVALID_CONTACT = '910000000000'
@@ -79,8 +85,16 @@ REGISTER_URL = 'http://{}:{}/register'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 USER_CREATION_URL = 'http://{}:{}/create'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 SAVE_CONTACTS_URL = 'http://{}:{}/save_contacts'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 START_STOP_APP_URL = 'http://{}:{}/start_stop_app'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+
 SIMPLE_CHAT_SEND_MESSAGE_URL = 'http://{}:{}/simple_send_message'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 SIMPLE_CHAT_SEND_MEDIA_URL = 'http://{}:{}/simple_send_media'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+START_NOTIFICATION_SUBSCRIBERS_URL = 'http://{}:{}/start_notification_subscribers'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+
+SPORT_NOTIFICATIONS_URL = 'http://{}:{}/sport_notifications'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+
+CREATE_GROUP_URL = 'http://{}:{}/create_group'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+SEND_MESSAGE_TO_GROP_URL = 'http://{}:{}/group_send_message'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 
 RABBITMQ_ALL_EXCHANGES_GET_URL = 'http://{}:{}/api/exchanges/'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)
+RABBITMQ_GET_ALL_QUEUES_URL = 'http://{}:{}/api/queues/'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)
 RABBITMQ_ALL_BINDINGS_GET_URL = 'http://{}:{}/api/bindings'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)
