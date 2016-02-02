@@ -17,3 +17,4 @@ INVALID_USER_CONTACT_ERR = "Bad Request: Please provide valid contact of the use
 USER_NOT_REGISTERED_ERR = "Bad Request: User is not Registered!"
 NON_REGISTERED_CONTACT_ERR = "Bad Request: One of the contacts is not registered!"
 EVENT_NOT_PROVIDED_ERR = 'Bad Request: Please provide the event type'
+NO_ASSOCIATED_GROPS_ERR = "Bad Request: This user has no associated groups!"

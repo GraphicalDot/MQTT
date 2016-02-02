@@ -187,8 +187,19 @@ class GetGroupsInfo(tornado.web.RequestHandler):
     def user_validation(self, user):
         response = {'info': '', 'status': 0}
         if not user:
-            response['info'] = INCOMPLETE_USER_INFO_ERR
-            response['status'] = 400
+            response['info'] = errors.INCOMPLETE_USER_INFO_ERR
+            response['status'] = app_settings.STATUS_400
+
+        if response['status'] == 0:
+            query = " SELECT id FROM users WHERE username=%s;"
+            variables = (user,)
+            try:
+                result = db_handler.QueryHandler.get_results(query, variables)
+                if len(result) < 1:
+                    response['info'] = errors.USER_NOT_REGISTERED_ERR
+                    response['status'] = app_settings.STATUS_404
+            except Exception as e:
+                raise e
         return response
 
     def get_user_groups(self, user):
@@ -205,7 +216,7 @@ class GetGroupsInfo(tornado.web.RequestHandler):
 
             # data validation
             res = self.user_validation(current_user)
-            if res['status'] == 400:
+            if res['status'] in app_settings.ERROR_CODES_LIST:
                 return self.write(res)
 
             user_groups = self.get_user_groups(current_user)
@@ -215,15 +226,15 @@ class GetGroupsInfo(tornado.web.RequestHandler):
                     variables = (int(group_id),)
                     groups.extend(db_handler.QueryHandler.get_results(query, variables))
                 response['groups'] = json.dumps(groups)
-                response['info'] = ''
-                response['status'] = 200
+                response['info'] = app_settings.SUCCESS_RESPONSE
+                response['status'] = app_settings.STATUS_200
             else:
-                response['info'] = "This user has no associated groups!"
-                response['status'] = 200
+                response['info'] = errors.NO_ASSOCIATED_GROPS_ERR
+                response['status'] = app_settings.STATUS_200
             return self.write(response)
         except Exception as e:
             response['info'] = "ERROR: {}".format(e)
-            response['status'] = 500
+            response['status'] = app_settings.STATUS_500
             return self.write(response)
 
 

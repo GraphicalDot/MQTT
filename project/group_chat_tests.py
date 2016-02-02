@@ -404,3 +404,92 @@ class SendMessageToGroupTests(unittest.TestCase):
                 assert_equal(msg['colored_double_tick'], 'done')
         except Exception as e:
             raise e
+
+
+class GetGroupsInfoTests(unittest.TestCase):
+    url = None
+    groups = []
+    users = []
+    user1 = 914444444444
+    user2 = 915555555555
+    user3 = 916666666666
+    user4 = 917777777777
+
+
+    def create_groups(self, groups_list):
+        for group in groups_list:
+            query = " INSERT INTO groups_info (name, owner, admins, members, total_members) VALUES (%s, %s, %s, %s, %s) RETURNING id;"
+            variables = (str(group['name']), str(group['owner']), [str(group['owner'])], group['members'], len(group['members']))
+            try:
+                result = db_handler.QueryHandler.get_results(query, variables)
+
+                for member in group['members']:
+                    query = " UPDATE users SET member_of_groups = array_append(member_of_groups, %s) WHERE username=%s;"
+                    variables = (str(result[0]['id']), str(member))
+                    db_handler.QueryHandler.execute(query, variables)
+            except Exception as e:
+                raise e
+
+    def setUp(self):
+        self.url = app_settings.GET_GROUPS_INFO_URL
+        self.users = [self.user1, self.user2, self.user3, self.user4]
+        self.groups = [{'owner': self.user1, 'name': 'group_1', 'members': [self.user1, self.user2]},
+                       {'owner': self.user3, 'name': 'group_2', 'members': [self.user2, self.user3, self.user1]},
+                       {'owner': self.user1, 'name': 'group_3', 'members': [self.user1]}]
+        rabbitmq_utils.delete_exchanges(app_settings.RABBITMQ_EXCHANGES)
+        rabbitmq_utils.delete_queues()
+        test_utilities.delete_groups()
+        test_utilities.delete_users()
+
+        test_utilities.create_users(self.users)
+        self.create_groups(groups_list=self.groups)
+
+    def test_validation(self):
+
+        # User not provided
+        response = requests.get(self.url, data={})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['status'], app_settings.STATUS_400)
+        assert_equal(res['info'], errors.INCOMPLETE_USER_INFO_ERR)
+
+        # Non-registered user provided
+        response = requests.get(self.url, data={'user': '910000000000'})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['status'], app_settings.STATUS_404)
+        assert_equal(res['info'], errors.USER_NOT_REGISTERED_ERR)
+
+    def test_get(self):
+
+        # user with some groups associated
+        response = requests.get(self.url, data={'user': str(self.user1)})
+        res = json.loads(response.content)
+
+        try:
+            query = " SELECT member_of_groups FROM users WHERE username=%s;"
+            variables = (str(self.user1),)
+            result = db_handler.QueryHandler.get_results(query, variables)
+            user_groups = []
+
+            for group_id in result[0]['member_of_groups']:
+                query = " SELECT total_members,name,admins,members,owner FROM groups_info WHERE id=%s;"
+                variables = (group_id,)
+                group_result = db_handler.QueryHandler.get_results(query, variables)
+                user_groups.append(group_result[0])
+        except Exception as e:
+            raise e
+
+        assert_equal(len(user_groups), 3)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res.has_key('groups'), True)
+        assert_equal(json.loads(res['groups']), user_groups)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
+
+        # user with no group(s) associated
+        response = requests.get(self.url, data={'user': str(self.user4)})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.NO_ASSOCIATED_GROPS_ERR)
+        assert_equal(res['status'], app_settings.STATUS_200)
