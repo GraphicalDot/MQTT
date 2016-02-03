@@ -12,9 +12,12 @@ SEND_MESSAGE_INCOMPLETE_INFO_ERR = "Error: Please provide sender, group name and
 SEND_MESSAGE_NO_USER_PROVIDED_ERR = " Error: Please provide a valid username!"
 SEND_MESSAGE_INVALID_GROUP_DETAILS_ERR = " Error: Please provide a valid group name and group member!"
 
-INCOMPLETE_USER_INFO_ERR = "Bad Request: Please provide user's contact number!"
-INVALID_USER_CONTACT_ERR = "Bad Request: Please provide valid contact of the user!"
+INCOMPLETE_USER_INFO_ERR = " Bad Request: Please provide user's contact number!"
+INVALID_USER_CONTACT_ERR = " Error: Please provide valid contact of the user!"
 USER_NOT_REGISTERED_ERR = "Bad Request: User is not Registered!"
 NON_REGISTERED_CONTACT_ERR = "Bad Request: One of the contacts is not registered!"
 EVENT_NOT_PROVIDED_ERR = 'Bad Request: Please provide the event type'
 NO_ASSOCIATED_GROPS_ERR = "Bad Request: This user has no associated groups!"
+
+INVALID_GROUP_ID_ERR = " Error: Invalid Group Id!"
+INCOMPLETE_GROUP_INFO_ERR = " Bad Request: Please provide a group_id!"

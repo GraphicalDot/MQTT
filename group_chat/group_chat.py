@@ -53,7 +53,7 @@ class SendMessageToGroup(tornado.web.RequestHandler):
             # data validations
             response = self.data_validations(sender, group_name, message)
             if response['status'] not in app_settings.ERROR_CODES_LIST:
-                # Get group's owner
+                # Get group details
                 query = " SELECT id,owner,members,total_members FROM groups_info WHERE name=%s AND %s=ANY(members);"
                 variables = (group_name, sender)
                 group = db_handler.QueryHandler.get_results(query, variables)
@@ -236,6 +236,87 @@ class GetGroupsInfo(tornado.web.RequestHandler):
             response['info'] = "ERROR: {}".format(e)
             response['status'] = app_settings.STATUS_500
             return self.write(response)
+
+
+class AddContactToGroup(tornado.web.RequestHandler):
+
+    def data_validation(self, user, group_id):
+        response = {'info': '', 'status': 0}
+        try:
+            if user:
+                query = " SELECT id FROM users WHERE username=%s;"
+                variables = (user,)
+                result = db_handler.QueryHandler.get_results(query, variables)
+                if not result:      # Non-registered user
+                    response['info'] = errors.INVALID_USER_CONTACT_ERR
+                    response['status'] = app_settings.STATUS_404
+            else:       # No user data
+                response['info'] = errors.INCOMPLETE_USER_INFO_ERR
+                response['status'] = app_settings.STATUS_400
+
+            if response['status'] == 0:
+                if group_id:    # Invalid group_id
+                    query = " SELECT * FROM groups_info WHERE id=%s;"
+                    variables = (group_id,)
+                    result = db_handler.QueryHandler.get_results(query, variables)
+                    if not result:
+                        response['info'] = errors.INVALID_GROUP_ID_ERR
+                        response['status'] = app_settings.STATUS_404
+                else:       # No group_id
+                    response['info'] = errors.INCOMPLETE_GROUP_INFO_ERR
+                    response['status'] = app_settings.STATUS_400
+
+            return response
+        except Exception as e:
+            raise e
+
+    def get_group_details(self, group_id):
+        query = " SELECT * FROM groups_info WHERE id=%s;"
+        variables = (group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            return result
+        except Exception as e:
+            raise e
+
+    def post(self):
+        response = {}
+        try:
+            user = str(self.get_argument('contact', ''))
+            group_id = str(self.get_argument('group_id', ''))
+
+            # data validations
+            response = self.data_validation(user, group_id)
+            if response['status'] not in app_settings.ERROR_CODES_LIST:
+
+                # update group details
+                query = " UPDATE groups_info SET members = array_append(members, %s), total_members = total_members + 1" \
+                        " WHERE id=%s;"
+                variables = (user, group_id)
+                db_handler.QueryHandler.execute(query, variables)
+
+                # update user's details
+                query = " UPDATE users SET member_of_groups = array_append(member_of_groups, %s)" \
+                        " WHERE username=%s;"
+                variables = (group_id, user)
+                db_handler.QueryHandler.execute(query, variables)
+
+                # start subscriber for the user in this group
+                result = self.get_group_details(group_id)
+                group_owner = str(result[0]['owner'])
+                group_name = str(result[0]['name'])
+                topic = 'group_chat.' + group_owner + '.' + group_name + '.*'
+                user_data = {'topic': topic}
+                client_id = 'sub_' + group_id + utils.generate_random_client_id(len('sub_' + group_id))
+                mqtt_subscriber.group_chat_subscriber(client_id, user_data)
+
+                response['info'] = app_settings.SUCCESS_RESPONSE
+                response['status'] = app_settings.STATUS_200
+        except Exception as e:
+            response['info'] = " Error: %s" % e
+            response['status'] = app_settings.STATUS_500
+        finally:
+            self.write(response)
 
 
 class CreateExchanges(tornado.web.RequestHandler):

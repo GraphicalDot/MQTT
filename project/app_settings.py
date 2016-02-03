@@ -93,8 +93,9 @@ START_NOTIFICATION_SUBSCRIBERS_URL = 'http://{}:{}/start_notification_subscriber
 SPORT_NOTIFICATIONS_URL = 'http://{}:{}/sport_notifications'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 
 CREATE_GROUP_URL = 'http://{}:{}/create_group'.format(TORNADO_HOSTNAME, TORNADO_PORT)
-SEND_MESSAGE_TO_GROP_URL = 'http://{}:{}/group_send_message'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+SEND_MESSAGE_TO_GROUP_URL = 'http://{}:{}/group_send_message'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 GET_GROUPS_INFO_URL = 'http://{}:{}/get_groups'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+ADD_CONTACT_TO_GROUP_URL = 'http://{}:{}/add_contact_to_group'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 
 RABBITMQ_ALL_EXCHANGES_GET_URL = 'http://{}:{}/api/exchanges/'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)
 RABBITMQ_GET_ALL_QUEUES_URL = 'http://{}:{}/api/queues/'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)

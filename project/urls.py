@@ -33,6 +33,7 @@ def make_app():
         (r"/create_group", group_chat.CreateGroup),
         (r"/group_send_message", group_chat.SendMessageToGroup),
         (r"/get_groups", group_chat.GetGroupsInfo),
+        (r"/add_contact_to_group", group_chat.AddContactToGroup),
 
         # Games Notifications
         (r"/start_notification_subscribers",notifications.StartNotificationSubscribers),

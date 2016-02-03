@@ -34,7 +34,6 @@ class CreateGroupTests(unittest.TestCase):
         self.users = [self.user1, self.user2]
         test_utilities.create_users(self.users)
 
-
     def test_validation(self):
 
         # No group owner provided
@@ -133,7 +132,7 @@ class SendMessageToGroupTests(unittest.TestCase):
         assert_equal(response.status_code, app_settings.STATUS_200)
 
     def setUp(self):
-        self.url = app_settings.SEND_MESSAGE_TO_GROP_URL
+        self.url = app_settings.SEND_MESSAGE_TO_GROUP_URL
         test_utilities.delete_users()
         test_utilities.delete_groups()
         test_utilities.delete_group_messages()
@@ -493,3 +492,125 @@ class GetGroupsInfoTests(unittest.TestCase):
         assert_equal(response.status_code, app_settings.STATUS_200)
         assert_equal(res['info'], errors.NO_ASSOCIATED_GROPS_ERR)
         assert_equal(res['status'], app_settings.STATUS_200)
+
+
+class AddContactToGroupTests(unittest.TestCase):
+    url = None
+    users = None
+    data = None
+    group_id = None
+    group_name = None
+    group_owner = None
+    group_members = None
+    user1 = 912222222222
+    user2 = 913333333333
+    user3 = 914444444444
+
+    def create_group(self, name, owner, members):
+        query = " INSERT INTO groups_info (name, owner, admins, members, total_members) VALUES (%s, %s, %s, %s, %s) RETURNING id;"
+        variables = (name, owner, [owner], members, len(members))
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            return result[0]['id']
+        except Exception as e:
+            raise e
+
+    def setUp(self):
+        self.url = app_settings.ADD_CONTACT_TO_GROUP_URL
+        self.users = [self.user1, self.user2, self.user3]
+        rabbitmq_utils.delete_exchanges(app_settings.RABBITMQ_EXCHANGES)
+        rabbitmq_utils.delete_queues()
+        test_utilities.delete_groups()
+        test_utilities.delete_users()
+        test_utilities.delete_group_messages()
+
+        self.users = [self.user1, self.user2, self.user3]
+        test_utilities.create_users(self.users)
+        self.group_name = 'test_group'
+        self.group_owner = str(self.user1)
+        self.group_members = [str(self.user1), str(self.user2)]
+        self.group_id = str(self.create_group(self.group_name, self.group_owner, self.group_members))
+
+    def test_validations(self):
+        # No group_id provided
+        response = requests.post(self.url, data={'contact': str(self.user1)})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_GROUP_INFO_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Invalid group_id provided
+        response = requests.post(self.url, data={'contact': str(self.user1), 'group_id': self.group_id + 200})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_GROUP_ID_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+        # No user data provided
+        response = requests.post(self.url, data={'group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_USER_INFO_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Non-registered user provided
+        response = requests.post(self.url, data={'contact':'910000000000', 'group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_USER_CONTACT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+    def test_post(self):
+
+        # start group-users' subscribers
+        user_data = {'topic': 'group_chat.' + self.group_owner + '.' + self.group_name + '.*'}
+        for user in self.group_members:
+            client_id = 'sub_' + self.group_id + utils.generate_random_client_id(len('sub_' + self.group_id))
+            mqtt_subscriber.group_chat_subscriber(client_id, user_data)
+        time.sleep(10)
+
+        # send message before adding new contact in the group
+        self.data = {'sender': str(self.user1), 'group_name': self.group_name, 'message': 'this is test message!!'}
+        response = requests.post(url=app_settings.SEND_MESSAGE_TO_GROUP_URL, data=self.data)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+
+        time.sleep(20)
+        # check if message reached to the database
+        query = "SELECT single_tick, double_tick, colored_double_tick FROM group_messages WHERE group_owner=%s AND group_name=%s AND " \
+                "sender=%s AND message=%s;"
+        variables = (self.group_owner, self.group_name, str(self.user1), 'this is test message!!')
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(len(result), 1)
+            assert_equal(result[0]['single_tick'], 'done')
+            assert_equal(result[0]['double_tick'], 'done')
+            assert_equal(result[0]['colored_double_tick'], 'done')
+
+        except Exception as e:
+            raise e
+
+        # add new contact to the group
+        response = requests.post(self.url, data={'contact': str(self.user3), 'group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
+
+        # send another message to the same group
+        self.data = {'sender': str(self.user3), 'group_name': self.group_name, 'message': 'this is another test message!!'}
+        response = requests.post(url=app_settings.SEND_MESSAGE_TO_GROUP_URL, data=self.data)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+
+        time.sleep(20)
+        # check if message reached to the database
+        query = "SELECT single_tick, double_tick, colored_double_tick FROM group_messages WHERE group_owner=%s AND group_name=%s AND " \
+                "sender=%s AND message=%s;"
+        variables = (self.group_owner, self.group_name, str(self.user3), 'this is another test message!!')
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(len(result), 1)
+            assert_equal(result[0]['single_tick'], 'done')
+            assert_equal(result[0]['double_tick'], 'done')
+            assert_equal(result[0]['colored_double_tick'], 'done')
+        except Exception as e:
+            raise e
