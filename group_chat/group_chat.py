@@ -319,6 +319,342 @@ class AddContactToGroup(tornado.web.RequestHandler):
             self.write(response)
 
 
+class RemoveContactFromGroup(tornado.web.RequestHandler):
+
+    def data_validations(self, contact, group_id):
+        response = {'info': '', 'status': 0}
+
+        # No user contact provided
+        if not contact:
+            response['info'] = errors.INCOMPLETE_USER_INFO_ERR
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # Non-registered User provided
+        query = " SELECT id FROM users WHERE username=%s;"
+        variables = (contact,)
+        user_result = db_handler.QueryHandler.get_results(query, variables)
+        if len(user_result) < 1:
+            response['info'] = errors.INVALID_USER_CONTACT_ERR
+            response['status'] = app_settings.STATUS_404
+            return response
+
+        # No group_id provided
+        if not group_id:
+            response['info'] = errors.INCOMPLETE_GROUP_INFO_ERR
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # Invalid group_id provided
+        query = " SELECT * FROM groups_info WHERE id=%s;"
+        variables = (group_id, )
+        group_result = db_handler.QueryHandler.get_results(query, variables)
+        if len(group_result) < 1:
+            response['info'] = errors.INVALID_GROUP_ID_ERR
+            response['status'] = app_settings.STATUS_404
+            return response
+
+        # User and group doesn't match
+        query = " SELECT id FROM users WHERE username=%s AND %s=ANY(member_of_groups);"
+        variables = (contact, group_id,)
+        result = db_handler.QueryHandler.get_results(query, variables)
+        if len(result) < 1:
+            response['info'] = errors.USER_GROUP_NOT_MATCH_ERR
+            response['status'] = app_settings.STATUS_404
+            return response
+
+        # If user is owner of the group
+        if group_result[0]['total_members'] > 1 and group_result[0]['owner'] == contact:
+            response['info'] = errors.DELETED_USER_IS_GROUP_OWNER_ERR
+            response['status'] = app_settings.STATUS_400
+        return response
+
+    def post(self):
+        response = {}
+        try:
+            contact = str(self.get_argument('contact', ''))
+            group_id = str(self.get_argument('group_id', ''))
+
+            # data validations
+            response = self.data_validations(contact, group_id)
+            if response['status'] not in app_settings.ERROR_CODES_LIST:
+
+                query = " SELECT total_members FROM groups_info WHERE id=%s;"
+                variables = (group_id,)
+                result = db_handler.QueryHandler.get_results(query, variables)
+                if result[0]['total_members'] == 1:
+                    # delete the group if it has only one member
+                    query = "DELETE FROM groups_info WHERE id=%s;"
+                    variables = (group_id,)
+                    db_handler.QueryHandler.execute(query, variables)
+                else:
+                    # Update group details
+                    query = " UPDATE groups_info SET members = array_remove(members, %s), admins = array_remove(admins, %s)," \
+                            "total_members = total_members - 1 WHERE id=%s;"
+                    variables = (contact, contact, group_id)
+                    db_handler.QueryHandler.execute(query, variables)
+
+                # update user's details
+                query = " UPDATE users SET member_of_groups = array_remove(member_of_groups, %s) WHERE username=%s;"
+                variables = (group_id, contact)
+                db_handler.QueryHandler.execute(query, variables)
+                response['info'] = app_settings.SUCCESS_RESPONSE
+                response['status'] = app_settings.STATUS_200
+        except Exception as e:
+            response['info'] = " Error: %" % e
+            response['status'] = app_settings.STATUS_500
+        finally:
+            self.write(response)
+
+
+class AddAdminToGroup(tornado.web.RequestHandler):
+
+    def data_validations(self, user, contact_to_add, group_id):
+        response = {'info': '', 'status': 0}
+
+        # User data not provided
+        if not user:
+            response['info'] = errors.INCOMPLETE_USER_DETAILS_ERR
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # Group id not provided
+        if not group_id:
+            response['info'] = errors.INCOMPLETE_GROUP_INFO_ERR
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # Contact to be added as admin, not provided
+        if not contact_to_add:
+            response['info'] = errors.INCOMPLETE_CONTACT_DETAILS_ERR
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # Non-registered users (either user or new added admin)
+        query = " SELECT id FROM users WHERE username=%s OR username=%s;"
+        variables = (user, contact_to_add)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) < 2 and user != contact_to_add:
+                response['info'] = errors.NON_REGISTERED_USER_CONTACT_ERR
+                response['status'] = app_settings.STATUS_404
+                return response
+        except Exception as e:
+            raise e
+
+        # Invalid Group-id
+        query = " SELECT * FROM groups_info WHERE id=%s;"
+        variables = (group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) < 1:
+                response['info'] = errors.INVALID_GROUP_ID_ERR
+                response['status'] = app_settings.STATUS_404
+                return response
+        except Exception as e:
+            raise e
+
+        # Already an admin
+        query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(admins);"
+        variables = (group_id, contact_to_add)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) > 0:
+                response['info'] = errors.ALREADY_GROUP_ADMIN_INFO
+                response['status'] = app_settings.STATUS_400
+                return response
+        except Exception as e:
+            raise e
+
+        # Ensure 'user' is an admin (has permissions to add an admin)
+        query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(admins);"
+        variables = (group_id, user)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) < 1:
+                response['info'] = errors.OUTSIDE_USER_PERMISSIONS_ERR
+                response['status'] = app_settings.STATUS_400
+                return response
+        except Exception as e:
+            raise e
+
+        # New admin not a member of the group
+        query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(members);"
+        variables = (group_id, contact_to_add)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) < 1:
+                response['info'] = errors.CONTACT_GROUP_NOT_MATCH_ERR
+                response['status'] = app_settings.STATUS_400
+            return response
+        except Exception as e:
+            raise e
+
+    def post(self):
+        response = {}
+        try:
+            user = str(self.get_argument('user', ''))
+            contact_to_add = str(self.get_argument('contact', ''))
+            group_id = str(self.get_argument('group_id', ''))
+
+            # data validation
+            response = self.data_validations(user, contact_to_add, group_id)
+
+            if response['status'] not in app_settings.ERROR_CODES_LIST:
+                # add to admins
+                query = " UPDATE groups_info SET admins = array_append(admins, %s) WHERE id=%s;"
+                variables = (contact_to_add, group_id)
+                db_handler.QueryHandler.execute(query, variables)
+
+                response['info'] = app_settings.SUCCESS_RESPONSE
+                response['status'] = app_settings.STATUS_200
+        except Exception as e:
+            response['info'] = " Error: %s" % e
+            response['status'] = app_settings.STATUS_500
+        finally:
+            self.write(response)
+
+
+class RemoveAdminFromGroup(tornado.web.RequestHandler):
+
+    def data_validations(self, user, admin_to_remove, group_id):
+        response = {'info': '', 'status': 0}
+
+        # User data not provided
+        if not user:
+            response['info'] = errors.INCOMPLETE_USER_DETAILS_ERR
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # Group id not provided
+        if not group_id:
+            response['info'] = errors.INCOMPLETE_GROUP_INFO_ERR
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # Contact to be removed is not provided
+        if not admin_to_remove:
+            response['info'] = errors.INCOMPLETE_CONTACT_DETAILS_ERR
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # Non-registered users (either user or to-be-removed-admin)
+        query = " SELECT id FROM users WHERE username=%s OR username=%s;"
+        variables = (user, admin_to_remove)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) < 2 and user != admin_to_remove:
+                response['info'] = errors.NON_REGISTERED_USER_CONTACT_ERR
+                response['status'] = app_settings.STATUS_404
+                return response
+        except Exception as e:
+            raise e
+
+        # Invalid Group-id
+        query = " SELECT * FROM groups_info WHERE id=%s;"
+        variables = (group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) < 1:
+                response['info'] = errors.INVALID_GROUP_ID_ERR
+                response['status'] = app_settings.STATUS_404
+                return response
+        except Exception as e:
+            raise e
+
+        # Already a non-admin
+        query = " SELECT id FROM groups_info WHERE id=%s AND %s = ANY(admins);"
+        variables = (group_id, admin_to_remove)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) == 0:
+                response['info'] = errors.ALREADY_NOT_ADMIN_INFO
+                response['status'] = app_settings.STATUS_400
+        except Exception as e:
+            raise e
+
+        # Ensure 'user' is an admin (has permissions to add an admin)
+        query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(admins);"
+        variables = (group_id, user)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) < 1:
+                response['info'] = errors.OUTSIDE_USER_PERMISSIONS_ERR
+                response['status'] = app_settings.STATUS_400
+                return response
+        except Exception as e:
+            raise e
+
+        # contact to be removed is not a member of the group
+        query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(members);"
+        variables = (group_id, admin_to_remove)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            if len(result) < 1:
+                response['info'] = errors.CONTACT_GROUP_NOT_MATCH_ERR
+                response['status'] = app_settings.STATUS_400
+            return response
+        except Exception as e:
+            raise e
+
+    def remove_admin(self, group_id, admin_to_remove):
+        try:
+            query = " UPDATE groups_info SET admins = array_remove(admins, %s) WHERE id=%s;"
+            variables = (admin_to_remove, group_id)
+            db_handler.QueryHandler.execute(query, variables)
+        except Exception as e:
+            raise e
+
+    def delete_group(self, group_id, user):
+        # delete the group
+        query = " DELETE FROM groups_info WHERE id=%s;"
+        variables = (group_id,)
+        db_handler.QueryHandler.execute(query, variables)
+
+        # update user details
+        query = " UPDATE users SET member_of_groups = array_remove(member_of_groups, %s) WHERE username=%s;"
+        variables = (group_id, user)
+        db_handler.QueryHandler.execute(query, variables)
+
+    def post(self):
+        response = {}
+        try:
+            user = str(self.get_argument('user', ''))
+            admin_to_remove = str(self.get_argument('contact', ''))
+            group_id = str(self.get_argument('group_id', ''))
+            single_admin = False
+
+            # data validation
+            response = self.data_validations(user, admin_to_remove, group_id)
+
+            if response['status'] not in app_settings.ERROR_CODES_LIST:
+
+                if user == admin_to_remove:
+                    query = " SELECT total_members, admins FROM groups_info WHERE id=%s;"
+                    variables = (group_id,)
+                    result = db_handler.QueryHandler.get_results(query, variables)
+                    if result[0]['total_members'] > 1:
+                        if len(result[0]['admins']) > 1:
+                            self.remove_admin(group_id, admin_to_remove)
+                        else:
+                            response['info'] = errors.DELETED_USER_IS_GROUP_OWNER_ERR
+                            response['status'] = app_settings.STATUS_400
+                            single_admin = True
+                    else:
+                        self.delete_group(group_id, user)
+                else:
+                    self.remove_admin(group_id, admin_to_remove)
+
+                if not single_admin:
+                    response['info'] = app_settings.SUCCESS_RESPONSE
+                    response['status'] = app_settings.STATUS_200
+
+        except Exception as e:
+            response['info'] = " Error: %s" % e
+            response['status'] = app_settings.STATUS_500
+        finally:
+            self.write(response)
+
 class CreateExchanges(tornado.web.RequestHandler):
 
     def get(self):

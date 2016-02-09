@@ -8,6 +8,7 @@ import tornado.escape
 import tornado.httpclient
 import tornado.ioloop
 import tornado.web
+from requests_toolbelt import MultipartDecoder
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
 import errors, media_publisher, message_publisher, utils
@@ -154,4 +155,55 @@ class SendMediaToContact(tornado.web.RequestHandler):
         except Exception, e:
             response['status'] = app_settings.STATUS_500
             response['info'] = 'Error is: %s' % e
+            self.write(response)
+
+
+class IOSMediaHandler(tornado.web.RequestHandler):
+
+    def data_validation(self, headers, body):
+        response = {'info': '', 'status': 0}
+
+        # 'Content-Type' not present in the header
+        if not headers.get('Content-Type'):
+            response['info'] = " Bad Request: 'Content-Type' field not present in the Header!"
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # 'Checksum' not present in the header
+        if response['status'] == 0 and not headers.get('Checksum'):
+            response['info'] = " Bad Request: 'Checksum' field not present in the Header!"
+            response['status'] = app_settings.STATUS_400
+            return response
+
+        # body not present
+        if response['status'] == 0 and not body:
+            response['info'] = " Bad request: Request body not present!"
+            response['status'] = app_settings.STATUS_400
+        return response
+
+    def post(self):
+        response = {}
+        try:
+            headers = self.request.headers
+            body = self.request.body
+
+            # data validation
+            response = self.data_validation(headers, body)
+
+            if response['status'] != app_settings.STATUS_400:
+                decoder = MultipartDecoder(body, content_type=headers.get('Content-Type'))
+                file_content = decoder.parts[0].content
+                file_ext = decoder.parts[0].headers.get('Content-Type').split('/')[1]
+                file_name = "media/" + headers.get('Checksum') + '.' + file_ext
+                if not os.path.isfile(file_name):
+                    media_file = open(file_name, 'w')
+                    media_file.write(file_content)
+                    media_file.flush()
+                response['status'] = app_settings.STATUS_200
+                response['info'] = app_settings.SUCCESS_RESPONSE
+
+        except Exception as e:
+            response['status'] = app_settings.STATUS_500
+            response['info'] = " Error is: %s" % e
+        finally:
             self.write(response)

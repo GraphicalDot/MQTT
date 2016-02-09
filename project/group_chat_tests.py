@@ -614,3 +614,456 @@ class AddContactToGroupTests(unittest.TestCase):
             assert_equal(result[0]['colored_double_tick'], 'done')
         except Exception as e:
             raise e
+
+
+class RemoveContactFromGroupTests(unittest.TestCase):
+    url = None
+    users = None
+    data = None
+    group_id = None
+    group_name = None
+    group_owner = None
+    group_members = None
+    user1 = 914444444444
+    user2 = 915555555555
+    user3 = 916666666666
+
+    def create_group(self, name, owner, members):
+        query = " INSERT INTO groups_info (name, owner, admins, members, total_members) VALUES (%s, %s, %s, %s, %s) RETURNING id;"
+        variables = (name, owner, [owner], members, len(members))
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            return result[0]['id']
+        except Exception as e:
+            raise e
+
+    def update_group_members(self, group_members, group_id):
+        for member in group_members:
+            query = " UPDATE users SET member_of_groups = array_append(member_of_groups, %s) WHERE username=%s;"
+            variables = (str(group_id), member)
+            try:
+                db_handler.QueryHandler.execute(query, variables)
+            except Exception as e:
+                raise e
+
+    def setUp(self):
+        self.url = app_settings.REMOVE_CONTACT_FROM_GROUP_URL
+        rabbitmq_utils.delete_exchanges(app_settings.RABBITMQ_EXCHANGES)
+        rabbitmq_utils.delete_queues()
+        test_utilities.delete_users()
+        test_utilities.delete_groups()
+        test_utilities.delete_group_messages()
+
+        self.users = [self.user1, self.user2, self.user3]
+        test_utilities.create_users(self.users)
+        self.group_name = 'test_group'
+        self.group_owner = str(self.user1)
+        self.group_members = [str(self.user1), str(self.user3)]
+        self.group_id = str(self.create_group(self.group_name, self.group_owner, self.group_members))
+        self.update_group_members(self.group_members, self.group_id)
+
+    def test_validations(self):
+
+        # No user contact provided
+        response = requests.post(self.url, data={'group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_USER_INFO_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Non-registered User provided
+        response = requests.post(self.url, data={'contact': '910000000000','group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_USER_CONTACT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+        # No group_id provided
+        response = requests.post(self.url, data={'contact': str(self.user1)})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_GROUP_INFO_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Invalid group_id provided
+        response = requests.post(self.url, data={'contact': str(self.user1), 'group_id': int(self.group_id) + 100})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_GROUP_ID_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+        # User and group doesn't match
+        response = requests.post(self.url, data={'contact': str(self.user2), 'group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.USER_GROUP_NOT_MATCH_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+        # If user is owner of the group
+        response = requests.post(self.url, data={'contact': str(self.user1), 'group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.DELETED_USER_IS_GROUP_OWNER_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+    def test_post(self):
+
+        # remove user3 from the group
+        response = requests.post(self.url, data={'contact': str(self.user3),'group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
+        query = " SELECT * FROM groups_info WHERE id=%s;"
+        variables = (self.group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(result[0]['members'], [str(self.user1)])
+            assert_equal(result[0]['total_members'], 1)
+
+            query = " SELECT member_of_groups FROM users WHERE username=%s;"
+            variables = (str(self.user3),)
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(result[0]['member_of_groups'], [])
+        except Exception as e:
+            raise e
+
+        # remove user1 from the group
+        response = requests.post(self.url, data={'contact': str(self.user1),'group_id': self.group_id})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
+        query = " SELECT * FROM groups_info WHERE id=%s;"
+        variables = (self.group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(len(result), 0)
+
+            query = " SELECT member_of_groups FROM users WHERE username=%s;"
+            variables = (str(self.user1),)
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(result[0]['member_of_groups'], [])
+        except Exception as e:
+            raise e
+
+
+class AddAdminToGroupTests(unittest.TestCase):
+    url = None
+    users = None
+    data = None
+    group_id = None
+    group_name = None
+    group_owner = None
+    group_members = None
+    user1 = 914444444444
+    user2 = 915555555555
+    user3 = 916666666666
+    user4 = 917777777777
+
+    def create_group(self, name, owner, members):
+        query = " INSERT INTO groups_info (name, owner, admins, members, total_members) VALUES (%s, %s, %s, %s, %s) RETURNING id;"
+        variables = (name, owner, [owner], members, len(members))
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            return result[0]['id']
+        except Exception as e:
+            raise e
+
+    def update_group_members(self, group_members, group_id):
+        for member in group_members:
+            query = " UPDATE users SET member_of_groups = array_append(member_of_groups, %s) WHERE username=%s;"
+            variables = (str(group_id), member)
+            try:
+                db_handler.QueryHandler.execute(query, variables)
+            except Exception as e:
+                raise e
+
+    def setUp(self):
+        self.url = app_settings.ADD_ADMIN_TO_GROUP_URL
+        rabbitmq_utils.delete_exchanges(app_settings.RABBITMQ_EXCHANGES)
+        rabbitmq_utils.delete_queues()
+        test_utilities.delete_users()
+        test_utilities.delete_groups()
+
+        self.users = [self.user1, self.user2, self.user3, self.user4]
+        test_utilities.create_users(self.users)
+        self.group_name = 'test_group'
+        self.group_owner = str(self.user1)
+        self.group_members = [str(self.user1), str(self.user2), str(self.user3)]
+        self.group_id = str(self.create_group(self.group_name, self.group_owner, self.group_members))
+        self.update_group_members(self.group_members, self.group_id)
+
+    def test_validations(self):
+
+        # User data not provided
+        self.data = {'contact': self.user3, 'group_id': self.group_id}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_USER_DETAILS_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Group id not provided
+        self.data = {'contact': self.user3, 'user': self.user1}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_GROUP_INFO_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Contact to be added as admin, not provided
+        self.data = {'user': self.user1, 'group_id': self.group_id}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_CONTACT_DETAILS_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Non-registered users (either user or new added admin)
+        self.data = {'user': '910000000000', 'group_id': self.group_id, 'contact': self.user2}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.NON_REGISTERED_USER_CONTACT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+        # Invalid Group-id
+        self.data = {'user': self.user1, 'group_id': int(self.group_id) + 200, 'contact': self.user2}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_GROUP_ID_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+        # Already an admin
+        self.data = {'user': self.user1, 'group_id': self.group_id, 'contact': self.user1}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.ALREADY_GROUP_ADMIN_INFO)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Ensure 'user' is an admin (has permissions to add an admin)
+        self.data = {'user': self.user3, 'group_id': self.group_id, 'contact': self.user2}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.OUTSIDE_USER_PERMISSIONS_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # New admin not a member of the group
+        self.data = {'user': self.user1, 'group_id': self.group_id, 'contact': self.user4}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.CONTACT_GROUP_NOT_MATCH_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+    def test_post(self):
+        self.data = {'user': self.user1, 'contact': self.user3, 'group_id': self.group_id}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
+
+        query = " SELECT admins FROM groups_info WHERE id=%s;"
+        variables = (self.group_id, )
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(result[0]['admins'], [str(self.user1), str(self.user3)])
+        except Exception as e:
+            raise e
+
+
+class RemoveAdminFromGroupTests(unittest.TestCase):
+    url = None
+    users = None
+    data = None
+    group_id = None
+    group_name = None
+    group_owner = None
+    group_members = None
+    user1 = 914444444444
+    user2 = 915555555555
+    user3 = 916666666666
+    user4 = 917777777777
+
+    def create_group(self, name, owner, admins, members):
+        query = " INSERT INTO groups_info (name, owner, admins, members, total_members) VALUES (%s, %s, %s, %s, %s) RETURNING id;"
+        variables = (name, owner, admins, members, len(members))
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            return result[0]['id']
+        except Exception as e:
+            raise e
+
+    def update_group_members(self, group_members, group_id):
+        for member in group_members:
+            query = " UPDATE users SET member_of_groups = array_append(member_of_groups, %s) WHERE username=%s;"
+            variables = (str(group_id), member)
+            try:
+                db_handler.QueryHandler.execute(query, variables)
+            except Exception as e:
+                raise e
+
+    def setUp(self):
+        self.url = app_settings.REMOVE_ADMIN_FROM_GROUP_URL
+        rabbitmq_utils.delete_exchanges(app_settings.RABBITMQ_EXCHANGES)
+        rabbitmq_utils.delete_queues()
+        test_utilities.delete_users()
+        test_utilities.delete_groups()
+
+        self.users = [self.user1, self.user2, self.user3, self.user4]
+        test_utilities.create_users(self.users)
+        self.group_name = 'test_group'
+        self.group_owner = str(self.user1)
+        self.group_members = [str(self.user1), str(self.user2), str(self.user3)]
+        self.group_id = str(self.create_group(self.group_name, self.group_owner, [self.group_owner, str(self.user2)], self.group_members))
+        self.update_group_members(self.group_members, self.group_id)
+
+    def test_validations(self):
+
+        # User data not provided
+        self.data = {'contact': self.user2, 'group_id': self.group_id}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_USER_DETAILS_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Group id not provided
+        self.data = {'contact': self.user2, 'user': self.user1}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_GROUP_INFO_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Contact to be removed is not provided
+        self.data = {'group_id': self.group_id, 'user': self.user1}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INCOMPLETE_CONTACT_DETAILS_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Non-registered users (either user or to-be-removed-admin)
+        self.data = {'group_id': self.group_id, 'user': '910000000000', 'contact': self.user2}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.NON_REGISTERED_USER_CONTACT_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+        # Invalid Group-id
+        self.data = {'group_id': int(self.group_id) + 100, 'user': self.user1, 'contact': self.user2}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.INVALID_GROUP_ID_ERR)
+        assert_equal(res['status'], app_settings.STATUS_404)
+
+        # Already a non-admin
+        self.data = {'group_id': self.group_id, 'user': self.user1, 'contact': self.user3}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.ALREADY_NOT_ADMIN_INFO)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Ensure 'user' is an admin (has permissions to add an admin)
+        self.data = {'group_id': self.group_id, 'user': self.user3, 'contact': self.user2}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.OUTSIDE_USER_PERMISSIONS_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # contact to be removed is not a member of the group
+        self.data = {'group_id': self.group_id, 'user': self.user1, 'contact': self.user4}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.CONTACT_GROUP_NOT_MATCH_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+    def test_post(self):
+
+        # when admin removes self; group has > 1 members and > 1 admins
+        self.data = {'user': self.user2, 'contact': self.user2, 'group_id': self.group_id}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
+        query = " SELECT admins FROM groups_info WHERE id=%s;"
+        variables = (self.group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(len(result[0]['admins']), 1)
+            assert_equal(result[0]['admins'], [str(self.user1)])
+        except Exception as e:
+            raise e
+
+        # when admin removes self; group has > 1 members and 1 admin
+        self.data = {'user': self.user1, 'contact': self.user1, 'group_id': self.group_id}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], errors.DELETED_USER_IS_GROUP_OWNER_ERR)
+        assert_equal(res['status'], app_settings.STATUS_400)
+        query = " SELECT admins FROM groups_info WHERE id=%s;"
+        variables = (self.group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(len(result[0]['admins']), 1)
+            assert_equal(result[0]['admins'], [str(self.user1)])
+        except Exception as e:
+            raise e
+
+        # when admin removes self; group has 1 member and 1 admin
+        query = " UPDATE groups_info SET total_members = total_members - 1, members = array_remove(members, %s) WHERE id=%s;"
+        variables = (str(self.user3), self.group_id)
+        try:
+            db_handler.QueryHandler.execute(query, variables)
+            query = " UPDATE groups_info SET total_members = total_members - 1, members = array_remove(members, %s) WHERE id=%s;"
+            variables = (str(self.user2), self.group_id)
+            db_handler.QueryHandler.execute(query, variables)
+        except Exception as e:
+            raise e
+
+        self.data = {'user': self.user1, 'contact': self.user1, 'group_id': self.group_id}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
+        query = " SELECT id FROM groups_info WHERE id=%s;"
+        variables = (self.group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(len(result), 0)
+        except Exception as e:
+            raise e
+
+        # when user and admin-to-remove are different
+        test_utilities.delete_groups()
+        self.group_id = str(self.create_group('test_group', str(self.user2), [str(self.user2), str(self.user3)],
+                          [str(self.user1), str(self.user2), str(self.user3)]))
+
+        self.data = {'user': self.user2, 'contact': self.user3, 'group_id': self.group_id}
+        response = requests.post(self.url, data=self.data)
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+        assert_equal(res['status'], app_settings.STATUS_200)
+
+        query = " SELECT admins FROM groups_info WHERE id=%s;"
+        variables = (self.group_id,)
+        try:
+            result = db_handler.QueryHandler.get_results(query, variables)
+            assert_equal(result[0]['admins'], [str(self.user2)])
+        except Exception as e:
+            raise e

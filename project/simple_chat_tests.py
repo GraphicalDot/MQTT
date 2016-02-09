@@ -1,5 +1,6 @@
 import base64
 import json
+import magic
 import os
 import random
 import requests
@@ -9,6 +10,7 @@ import sys
 import time
 import unittest
 from nose.tools import *
+from requests_toolbelt import MultipartEncoder
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
 import test_utilities as utilities
@@ -551,3 +553,59 @@ class SendMediaToContactTests(unittest.TestCase):
         query = " SELECT id FROM chat_messages WHERE double_tick='';"
         result = db_handler.QueryHandler.get_results(query)
         assert_equal(len(result), 0)
+
+
+class IOSMediaHandlerTests(unittest.TestCase):
+    url = None
+    filename = None
+
+    def setUp(self):
+        self.url = 'http://{}:{}/media_multipart'.format(app_settings.TORNADO_HOSTNAME, app_settings.TORNADO_PORT)
+        self.test_files = ['test_image.jpg', 'test_image.png', 'test_pdf.pdf', 'test_rar.rar', 'test_audio.mp3', 'test_video.mp4']
+
+    def test_validations(self):
+        self.filename = self.test_files[0]
+        mime = magic.Magic(mime=True)
+        mime_type = mime.from_file(self.filename)
+        encoder = MultipartEncoder(
+            fields={'name': 'image', 'filename': self.filename, 'Content-Disposition': 'form-data',
+                    'Content-Type': mime_type, 'file': (self.filename, open(self.filename, 'rb'), mime_type)}
+        )
+
+        # 'Content-type' not provided
+        response = requests.post(self.url, data=encoder.to_string(), headers={'Checksum': 'test_image'})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], " Bad Request: 'Content-Type' field not present in the Header!")
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # 'Checksum' not provided
+        response = requests.post(self.url, data=encoder.to_string(), headers={'Content-Type': encoder.content_type})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], " Bad Request: 'Checksum' field not present in the Header!")
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+        # Request body not provided
+        response = requests.post(self.url, headers={'Checksum': 'test_image', 'Content-Type': encoder.content_type})
+        res = json.loads(response.content)
+        assert_equal(response.status_code, app_settings.STATUS_200)
+        assert_equal(res['info'], " Bad request: Request body not present!")
+        assert_equal(res['status'], app_settings.STATUS_400)
+
+    def test_upload_media(self):
+        # test on different media files
+        for file in self.test_files:
+            self.filename = file
+            mime = magic.Magic(mime=True)
+            mime_type = mime.from_file(self.filename)
+            encoder = MultipartEncoder(
+                fields={'name': 'image', 'filename': self.filename, 'Content-Disposition': 'form-data',
+                        'Content-Type': mime_type, 'file': (self.filename, open(self.filename, 'rb'), mime_type)}
+                )
+            response = requests.post(self.url, data=encoder.to_string(),
+                                     headers={'Content-Type': encoder.content_type, 'Checksum': file})
+            res = json.loads(response.content)
+            assert_equal(response.status_code, app_settings.STATUS_200)
+            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
+            assert_equal(res['status'], app_settings.STATUS_200)

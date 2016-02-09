@@ -21,3 +21,14 @@ NO_ASSOCIATED_GROPS_ERR = "Bad Request: This user has no associated groups!"
 
 INVALID_GROUP_ID_ERR = " Error: Invalid Group Id!"
 INCOMPLETE_GROUP_INFO_ERR = " Bad Request: Please provide a group_id!"
+
+USER_GROUP_NOT_MATCH_ERR = " Error: This user is not associated with this group!"
+DELETED_USER_IS_GROUP_OWNER_ERR = " Bad Request: User is the sole admin of the group. Please make another admin before leaving!"
+
+INCOMPLETE_USER_DETAILS_ERR = " Bad Request: User Details not provided!"
+INCOMPLETE_CONTACT_DETAILS_ERR = " Bad Request: Contact to be added/removed as an admin is not provided!"
+NON_REGISTERED_USER_CONTACT_ERR = " Error: Either user or contact is not registered!"
+ALREADY_GROUP_ADMIN_INFO = " Info: Contact is already an admin of this group!"
+ALREADY_NOT_ADMIN_INFO = " Info: Contact is already not an admin of this group!"
+OUTSIDE_USER_PERMISSIONS_ERR = " Bad Request: User does not have permissions to add admin!"
+CONTACT_GROUP_NOT_MATCH_ERR = " Bad Request: Contact not a member of the group!"

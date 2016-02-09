@@ -96,6 +96,9 @@ CREATE_GROUP_URL = 'http://{}:{}/create_group'.format(TORNADO_HOSTNAME, TORNADO_
 SEND_MESSAGE_TO_GROUP_URL = 'http://{}:{}/group_send_message'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 GET_GROUPS_INFO_URL = 'http://{}:{}/get_groups'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 ADD_CONTACT_TO_GROUP_URL = 'http://{}:{}/add_contact_to_group'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+REMOVE_CONTACT_FROM_GROUP_URL = 'http://{}:{}/remove_contact_from_group'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+ADD_ADMIN_TO_GROUP_URL = 'http://{}:{}/add_admin'.format(TORNADO_HOSTNAME, TORNADO_PORT)
+REMOVE_ADMIN_FROM_GROUP_URL = 'http://{}:{}/remove_admin'.format(TORNADO_HOSTNAME, TORNADO_PORT)
 
 RABBITMQ_ALL_EXCHANGES_GET_URL = 'http://{}:{}/api/exchanges/'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)
 RABBITMQ_GET_ALL_QUEUES_URL = 'http://{}:{}/api/queues/'.format(RABBITMQ_HOSTNAME, RABBITMQ_PORT)
