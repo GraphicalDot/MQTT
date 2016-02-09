@@ -51,24 +51,15 @@ class SendMessageToContactTests(unittest.TestCase):
 
         # Invalid sender
         response = requests.post(self.url, data={'sender': '', 'receiver': self.receiver, 'message': 'test_message_1'})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_SENDER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_SENDER_SIMPLE_CHAT_ERR, app_settings.STATUS_404)
 
         # Invalid receiver
         response = requests.post(self.url, data={'sender': self.sender, 'receiver': '917777777777', 'message': ''})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_RECEIVER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_RECEIVER_SIMPLE_CHAT_ERR, app_settings.STATUS_404)
 
         # No msg present
         response = requests.post(self.url, data={'sender': self.sender, 'receiver': self.receiver})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_MESSAGE_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_MESSAGE_SIMPLE_CHAT_ERR, app_settings.STATUS_404)
 
     def test_post(self):
 
@@ -84,10 +75,7 @@ class SendMessageToContactTests(unittest.TestCase):
         time.sleep(10)
         response = requests.post(self.url, data={'sender': str(self.sender), 'receiver': str(self.receiver),
                                                  'message': 'test_message_3'})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         time.sleep(20)
         # check if message reached to the database
@@ -114,10 +102,7 @@ class SendMessageToContactTests(unittest.TestCase):
         for msg in msgs_list:
             response = requests.post(self.url, data={'sender': str(self.sender), 'receiver': str(self.receiver),
                                                      'message': msg})
-            res = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         time.sleep(20)
         # check if all messages have reached to the server and subscribers.
@@ -150,10 +135,7 @@ class SendMessageToContactTests(unittest.TestCase):
         for sender in senders_list:
             response = requests.post(self.url, data={'sender': str(sender), 'receiver': str(self.receiver),
                                                      'message': message_to_send})
-            res = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         time.sleep(20)
         # check if all messages have reached to the server and subscribers.
@@ -188,10 +170,7 @@ class SendMessageToContactTests(unittest.TestCase):
         for receiver in receivers_list:
             response = requests.post(self.url, data={'sender': str(self.sender), 'receiver': str(receiver),
                                                      'message': message_to_send})
-            res = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         time.sleep(20)
         # check if all messages have reached to the server and subscribers.
@@ -235,11 +214,7 @@ class SendMessageToContactTests(unittest.TestCase):
             message = "".join(random.choice(string.ascii_letters) for _ in range(5))
             response = requests.post(self.url, data={'sender': str(sender), 'receiver': str(receiver),
                                                      'message': message})
-
-            res = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         time.sleep(20)
         query = " SELECT id FROM chat_messages WHERE double_tick='';"
@@ -313,44 +288,30 @@ class SendMediaToContactTests(unittest.TestCase):
         # Invalid sender
         content = {'sender': '910000000000', 'receiver': str(self.receiver), 'name': self.media_files['image']}
         response = requests.post(self.url, data=json.dumps(content))
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_SENDER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_SENDER_SIMPLE_CHAT_ERR, app_settings.STATUS_404)
 
         # Invalid receiver
         content = {'sender': str(self.sender), 'receiver': '910000000000', 'name': self.media_files['image']}
         response = requests.post(self.url, data=json.dumps(content))
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_RECEIVER_SIMPLE_CHAT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_RECEIVER_SIMPLE_CHAT_ERR, app_settings.STATUS_404)
 
         # Media name not given
         content = {'sender': str(self.sender), 'receiver': str(self.receiver)}
         response = requests.post(self.url, data=json.dumps(content))
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_MEDIA_NAME_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_MEDIA_NAME_ERR, app_settings.STATUS_404)
 
         # Same media already exists
         shutil.copyfile('test_image.jpg', 'media/test_image.jpg')
         content = {'sender': str(self.sender), 'receiver': str(self.receiver), 'name': self.media_files['image']}
         response = requests.post(self.url, data=json.dumps(content))
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.SAME_NAME_MEDIA_ALREADY_EXISTS_ERR)
-        assert_equal(res['status'], app_settings.STATUS_500)
+        test_utilities.assert_info_status(response, errors.SAME_NAME_MEDIA_ALREADY_EXISTS_ERR, app_settings.STATUS_500)
 
     def test_post(self):
         # test uploading image, pdf, audio, video, rar
         for key, value in self.media_files.items():
             file_name = value
             response = self.make_post_request(file_name)
-            res = json.loads(response.content)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
         assert_equal(len(os.listdir(self.media_path)), len(self.media_files))
 
     def test_publisher_subscriber(self):
@@ -358,14 +319,11 @@ class SendMediaToContactTests(unittest.TestCase):
         media_subscriber.simple_chat_media_subscriber(client_id=test_utilities.generate_random_id(),
                                      user_data={'topic': 'simple_media_' + str(self.receiver) + '.*',
                                                 'receiver': str(self.receiver)})
-
         time.sleep(10)
 
         file_name = self.media_files['image']
         response = self.make_post_request(file_name)
-        res = json.loads(response.content)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         time.sleep(20)
         # check if media has reached to the server and subcriber.
@@ -398,10 +356,7 @@ class SendMediaToContactTests(unittest.TestCase):
             content = {'sender': str(self.sender), 'receiver': str(self.receiver), 'name': msg,
                        'body': base64.b64encode(file_content)}
             response = requests.post(self.url, data=json.dumps(content))
-            res = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
             # remove the copied media
             os.remove(msg)
@@ -443,10 +398,7 @@ class SendMediaToContactTests(unittest.TestCase):
             content = {'sender': str(sender), 'receiver': str(self.receiver), 'name': filename,
                        'body': base64.b64encode(file_content)}
             response = requests.post(self.url, data=json.dumps(content))
-            res = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
             os.remove('media/' + filename)
 
         time.sleep(20)
@@ -488,10 +440,7 @@ class SendMediaToContactTests(unittest.TestCase):
             content = {'sender': str(self.sender), 'receiver': str(receiver), 'name': filename,
                        'body': base64.b64encode(file_content)}
             response = requests.post(self.url, data=json.dumps(content))
-            res = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
             os.remove('media/' + filename)
 
         time.sleep(20)
@@ -542,10 +491,7 @@ class SendMediaToContactTests(unittest.TestCase):
             content = {'sender': str(self.sender), 'receiver': str(receiver), 'name': filename,
                        'body': base64.b64encode(file_content)}
             response = requests.post(self.url, data=json.dumps(content))
-            res = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
             os.remove(filename)
             os.remove('media/' + filename)
 

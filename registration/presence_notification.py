@@ -101,7 +101,7 @@ class StartStopApp(tornado.web.RequestHandler):
         except Exception as e:
             raise e
 
-    def get(self):
+    def post(self):
         response = {}
         try:
             user = str(self.get_argument('user', '')).strip()

@@ -1,6 +1,8 @@
+import json
 import os
 import random
 import sys
+from nose.tools import *
 from paho.mqtt.client import Client
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
@@ -76,3 +78,10 @@ def delete_group_messages():
         db_handler.QueryHandler.execute(query)
     except Exception as e:
         raise e
+
+
+def assert_info_status(response, expected_info, expected_status):
+    res = json.loads(response.content)
+    assert_equal(response.status_code, app_settings.STATUS_200)
+    assert_equal(res['info'], expected_info)
+    assert_equal(res['status'], expected_status)

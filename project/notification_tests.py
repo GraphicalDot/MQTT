@@ -23,9 +23,7 @@ class StartNotificationSubscribersTests(unittest.TestCase):
 
     def test_get(self):
         response = requests.get(self.url)
-        res = json.loads(response.content)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
 
 class SportsNotificationsTests(unittest.TestCase):
@@ -39,30 +37,22 @@ class SportsNotificationsTests(unittest.TestCase):
         rabbitmq_utils.delete_queues()
 
     def test_validations(self):
-
         # No event provided
         self.data = {'data': {"teams": "Aus Vs India", "status": "Aus won by 59 runs", "overs": "45.3"}}
         response = requests.post(self.url, data=json.dumps(self.data))
-        res = json.loads(response.content)
-        assert_equal(res['info'], errors.INVALID_EVENT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_EVENT_ERR, app_settings.STATUS_404)
 
         # Invalid event provided
         self.data = {"teams": "Aus Vs India", "status": "Aus won by 59 runs", "overs": "45.3", 'event': 'Basketball'}
         response = requests.post(self.url, data=json.dumps(self.data))
-        res = json.loads(response.content)
-        assert_equal(res['info'], errors.INVALID_EVENT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_EVENT_ERR, app_settings.STATUS_404)
 
         # data not provided
         self.data = {'event': 'cricket'}
         response = requests.post(self.url, data=json.dumps(self.data))
-        res = json.loads(response.content)
-        assert_equal(res['info'], errors.INVALID_DATA_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_DATA_ERR, app_settings.STATUS_404)
 
     def test_post(self):
-
         # start the subscriber for cricket notifications
         client_id = test_utilities.generate_random_id()
         user_data = {'topic': 'notifications.cricket.*'}
@@ -75,8 +65,5 @@ class SportsNotificationsTests(unittest.TestCase):
                           "Wood goes for the pull, mistimes it and it rolls to deep mid-wicket " \
                           "(Score after 42.2 Ov - 234)"}}
         response = requests.post(self.url, data=json.dumps(self.data))
-        res = json.loads(response.content)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
-
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
         time.sleep(10)

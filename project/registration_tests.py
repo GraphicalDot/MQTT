@@ -26,36 +26,23 @@ class RegistrationTests(unittest.TestCase):
     def test_get(self):
         # No number provided
         response = requests.get(self.url, data={'phone_number': ''})
-        res_content = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res_content['info'], registration_errors.INVALID_REGISTRATION_NUMBER_ERR)
-        assert_equal(res_content['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, registration_errors.INVALID_REGISTRATION_NUMBER_ERR, app_settings.STATUS_404)
 
         # Wrong number of digits provided
         response = requests.get(self.url, data={'phone_number': '+9199'})
-        res_content = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res_content['info'], registration_errors.WRONG_DIGITS_ERR)
-        assert_equal(res_content['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, registration_errors.WRONG_DIGITS_ERR, app_settings.STATUS_404)
 
         # Invalid Number provided
         response = requests.get(self.url, data={'phone_number': '+910000000000'})
-        res_content = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res_content['info'], registration_errors.INVALID_REGISTRATION_NUMBER_ERR)
-        assert_equal(res_content['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, registration_errors.INVALID_REGISTRATION_NUMBER_ERR, app_settings.STATUS_404)
 
         # Valid number provided
         response = requests.get(self.url, data={'phone_number': self.valid_number})
-        res_content = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res_content['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res_content['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
     def tearDown(self):
         query = " DELETE from registered_users WHERE username=%s;"
-        variables = (self.valid_number, )
-        db_handler.QueryHandler.execute(query, variables)
+        db_handler.QueryHandler.execute(query, (self.valid_number, ))
 
 
 class CreateUserTests(unittest.TestCase):
@@ -84,10 +71,7 @@ class CreateUserTests(unittest.TestCase):
 
         # User is not registered
         response = requests.get(self.url, data={'phone_number': self.valid_number, 'auth_code': self.auth_code})
-        res_content = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res_content['info'], registration_errors.PHONE_AUTH_CODE_MISMATCH_ERR)
-        assert_equal(res_content['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, registration_errors.PHONE_AUTH_CODE_MISMATCH_ERR, app_settings.STATUS_404)
 
         # Invalid auth code for the user
         query = " INSERT INTO registered_users (username, authorization_code, expiration_time) VALUES (%s, %s, %s); "
@@ -95,10 +79,7 @@ class CreateUserTests(unittest.TestCase):
         try:
             db_handler.QueryHandler.execute(query, variables)
             response = requests.get(self.url, data={'phone_number': self.valid_number, 'auth_code': self.auth_code})
-            res_content = json.loads(response.content)
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res_content['info'], registration_errors.PHONE_AUTH_CODE_MISMATCH_ERR)
-            assert_equal(res_content['status'], app_settings.STATUS_404)
+            test_utilities.assert_info_status(response, registration_errors.PHONE_AUTH_CODE_MISMATCH_ERR, app_settings.STATUS_404)
         except Exception as e:
             raise e
 
@@ -111,11 +92,7 @@ class CreateUserTests(unittest.TestCase):
         try:
             db_handler.QueryHandler.execute(query, variables)
             response = requests.get(self.url, data={'phone_number': self.valid_number, 'auth_code': self.auth_code})
-            res_content = json.loads(response.content)
-
-            assert_equal(response.status_code, app_settings.STATUS_200)
-            assert_equal(res_content['info'], app_settings.SUCCESS_RESPONSE)
-            assert_equal(res_content['status'], app_settings.STATUS_200)
+            test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
             # check if user created in 'users' table
             query = " SELECT id FROM users WHERE username=%s;"
@@ -179,18 +156,11 @@ class SaveContactsTests(unittest.TestCase):
         # Non-registered user
         response = requests.post(self.url, data={'user': self.non_registered_number_1,
                                                  'contacts': [self.non_registered_number_2]})
-        res_content = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res_content['info'], registration_errors.INVALID_USER_ERR)
-        assert_equal(res_content['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, registration_errors.INVALID_USER_ERR, app_settings.STATUS_404)
 
     def test_post(self):
         response = requests.post(self.url, data={'user': self.user_number, 'contacts': '[919999999999,910000000000]'})
-        res_content = json.loads(response.content)
-
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res_content['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res_content['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         try:
             # check if contacts saved for the user
@@ -199,7 +169,6 @@ class SaveContactsTests(unittest.TestCase):
             result = db_handler.QueryHandler.get_results(query, variables)
             assert_equal(len(result), 1)
             assert_equal(result[0]['contacts'], [str(self.contact_1), str(self.contact_2)])
-
 
             rabbitmq_api_response = requests.get(app_settings.RABBITMQ_ALL_BINDINGS_GET_URL,
                                                  auth=(app_settings.BROKER_USERNAME, app_settings.BROKER_PASSWORD))
@@ -278,24 +247,15 @@ class StartStopAppTests(unittest.TestCase):
 
         # Invalid user
         response = requests.post(self.url, data={'user': app_settings.TESTING_INVALID_CONTACT, 'event': '1'})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], registration_errors.INVALID_USER_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, registration_errors.INVALID_USER_ERR, app_settings.STATUS_404)
 
         # Invalid event type
         response = requests.post(self.url, data={'user': self.valid_user_1, 'event': '4'})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], registration_errors.INVALID_EVENT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, registration_errors.INVALID_EVENT_ERR, app_settings.STATUS_400)
 
         # Event not provided
         response = requests.post(self.url, data={'user': self.valid_user_1})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], registration_errors.EVENT_NOT_PROVIDED_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, registration_errors.EVENT_NOT_PROVIDED_ERR, app_settings.STATUS_400)
 
     def test_post(self):
         # start a subscriber for valid_user_1 presence notification
@@ -308,10 +268,7 @@ class StartStopAppTests(unittest.TestCase):
 
         # online notification
         response = requests.post(self.url, data={'user': str(self.valid_user_1), 'event': '1'})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         time.sleep(10)
         # check if status set in database
@@ -326,10 +283,7 @@ class StartStopAppTests(unittest.TestCase):
 
         # offline notification
         response = requests.post(self.url, data={'user': str(self.valid_user_1), 'event': '0'})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         time.sleep(10)
         # check if status set in database

@@ -2,6 +2,9 @@ import json
 import os
 import sys
 import random
+from chardet import test
+from jinja2.testsuite import res
+
 import requests
 import time
 import unittest
@@ -534,31 +537,19 @@ class AddContactToGroupTests(unittest.TestCase):
     def test_validations(self):
         # No group_id provided
         response = requests.post(self.url, data={'contact': str(self.user1)})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_GROUP_INFO_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_GROUP_INFO_ERR, app_settings.STATUS_400)
 
         # Invalid group_id provided
-        response = requests.post(self.url, data={'contact': str(self.user1), 'group_id': self.group_id + 200})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_GROUP_ID_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        response = requests.post(self.url, data={'contact': str(self.user1), 'group_id': int(self.group_id) + 200})
+        test_utilities.assert_info_status(response, errors.INVALID_GROUP_ID_ERR, app_settings.STATUS_404)
 
         # No user data provided
         response = requests.post(self.url, data={'group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_USER_INFO_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_USER_INFO_ERR, app_settings.STATUS_400)
 
         # Non-registered user provided
         response = requests.post(self.url, data={'contact':'910000000000', 'group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_USER_CONTACT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_USER_CONTACT_ERR, app_settings.STATUS_404)
 
     def test_post(self):
 
@@ -591,10 +582,7 @@ class AddContactToGroupTests(unittest.TestCase):
 
         # add new contact to the group
         response = requests.post(self.url, data={'contact': str(self.user3), 'group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         # send another message to the same group
         self.data = {'sender': str(self.user3), 'group_name': self.group_name, 'message': 'this is another test message!!'}
@@ -663,86 +651,57 @@ class RemoveContactFromGroupTests(unittest.TestCase):
         self.update_group_members(self.group_members, self.group_id)
 
     def test_validations(self):
-
         # No user contact provided
         response = requests.post(self.url, data={'group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_USER_INFO_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_USER_INFO_ERR, app_settings.STATUS_400)
 
         # Non-registered User provided
         response = requests.post(self.url, data={'contact': '910000000000','group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_USER_CONTACT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_USER_CONTACT_ERR, app_settings.STATUS_404)
 
         # No group_id provided
         response = requests.post(self.url, data={'contact': str(self.user1)})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_GROUP_INFO_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_GROUP_INFO_ERR, app_settings.STATUS_400)
 
         # Invalid group_id provided
         response = requests.post(self.url, data={'contact': str(self.user1), 'group_id': int(self.group_id) + 100})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_GROUP_ID_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_GROUP_ID_ERR, app_settings.STATUS_404)
 
         # User and group doesn't match
         response = requests.post(self.url, data={'contact': str(self.user2), 'group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.USER_GROUP_NOT_MATCH_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.USER_GROUP_NOT_MATCH_ERR, app_settings.STATUS_404)
 
         # If user is owner of the group
         response = requests.post(self.url, data={'contact': str(self.user1), 'group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.DELETED_USER_IS_GROUP_OWNER_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.DELETED_USER_IS_GROUP_OWNER_ERR, app_settings.STATUS_400)
 
     def test_post(self):
 
         # remove user3 from the group
         response = requests.post(self.url, data={'contact': str(self.user3),'group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
         query = " SELECT * FROM groups_info WHERE id=%s;"
-        variables = (self.group_id,)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (self.group_id,))
             assert_equal(result[0]['members'], [str(self.user1)])
             assert_equal(result[0]['total_members'], 1)
 
             query = " SELECT member_of_groups FROM users WHERE username=%s;"
-            variables = (str(self.user3),)
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (str(self.user3),))
             assert_equal(result[0]['member_of_groups'], [])
         except Exception as e:
             raise e
 
         # remove user1 from the group
         response = requests.post(self.url, data={'contact': str(self.user1),'group_id': self.group_id})
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
         query = " SELECT * FROM groups_info WHERE id=%s;"
-        variables = (self.group_id,)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (self.group_id,))
             assert_equal(len(result), 0)
 
             query = " SELECT member_of_groups FROM users WHERE username=%s;"
-            variables = (str(self.user1),)
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (str(self.user1),))
             assert_equal(result[0]['member_of_groups'], [])
         except Exception as e:
             raise e
@@ -799,79 +758,51 @@ class AddAdminToGroupTests(unittest.TestCase):
         # User data not provided
         self.data = {'contact': self.user3, 'group_id': self.group_id}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_USER_DETAILS_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_USER_DETAILS_ERR, app_settings.STATUS_400)
 
         # Group id not provided
         self.data = {'contact': self.user3, 'user': self.user1}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_GROUP_INFO_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_GROUP_INFO_ERR, app_settings.STATUS_400)
 
         # Contact to be added as admin, not provided
         self.data = {'user': self.user1, 'group_id': self.group_id}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_CONTACT_DETAILS_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_CONTACT_DETAILS_ERR, app_settings.STATUS_400)
 
         # Non-registered users (either user or new added admin)
         self.data = {'user': '910000000000', 'group_id': self.group_id, 'contact': self.user2}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.NON_REGISTERED_USER_CONTACT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.NON_REGISTERED_USER_CONTACT_ERR, app_settings.STATUS_404)
 
         # Invalid Group-id
         self.data = {'user': self.user1, 'group_id': int(self.group_id) + 200, 'contact': self.user2}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_GROUP_ID_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_GROUP_ID_ERR, app_settings.STATUS_404)
 
         # Already an admin
         self.data = {'user': self.user1, 'group_id': self.group_id, 'contact': self.user1}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.ALREADY_GROUP_ADMIN_INFO)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.ALREADY_GROUP_ADMIN_INFO, app_settings.STATUS_400)
 
         # Ensure 'user' is an admin (has permissions to add an admin)
         self.data = {'user': self.user3, 'group_id': self.group_id, 'contact': self.user2}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.OUTSIDE_USER_PERMISSIONS_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.OUTSIDE_USER_PERMISSIONS_ERR, app_settings.STATUS_400)
 
         # New admin not a member of the group
         self.data = {'user': self.user1, 'group_id': self.group_id, 'contact': self.user4}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.CONTACT_GROUP_NOT_MATCH_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.CONTACT_GROUP_NOT_MATCH_ERR, app_settings.STATUS_400)
 
     def test_post(self):
         self.data = {'user': self.user1, 'contact': self.user3, 'group_id': self.group_id}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
 
         query = " SELECT admins FROM groups_info WHERE id=%s;"
-        variables = (self.group_id, )
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (self.group_id, ))
             assert_equal(result[0]['admins'], [str(self.user1), str(self.user3)])
         except Exception as e:
             raise e
@@ -928,80 +859,52 @@ class RemoveAdminFromGroupTests(unittest.TestCase):
         # User data not provided
         self.data = {'contact': self.user2, 'group_id': self.group_id}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_USER_DETAILS_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_USER_DETAILS_ERR, app_settings.STATUS_400)
 
         # Group id not provided
         self.data = {'contact': self.user2, 'user': self.user1}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_GROUP_INFO_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_GROUP_INFO_ERR, app_settings.STATUS_400)
 
         # Contact to be removed is not provided
         self.data = {'group_id': self.group_id, 'user': self.user1}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INCOMPLETE_CONTACT_DETAILS_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.INCOMPLETE_CONTACT_DETAILS_ERR, app_settings.STATUS_400)
 
         # Non-registered users (either user or to-be-removed-admin)
         self.data = {'group_id': self.group_id, 'user': '910000000000', 'contact': self.user2}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.NON_REGISTERED_USER_CONTACT_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.NON_REGISTERED_USER_CONTACT_ERR, app_settings.STATUS_404)
 
         # Invalid Group-id
         self.data = {'group_id': int(self.group_id) + 100, 'user': self.user1, 'contact': self.user2}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.INVALID_GROUP_ID_ERR)
-        assert_equal(res['status'], app_settings.STATUS_404)
+        test_utilities.assert_info_status(response, errors.INVALID_GROUP_ID_ERR, app_settings.STATUS_404)
 
         # Already a non-admin
         self.data = {'group_id': self.group_id, 'user': self.user1, 'contact': self.user3}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.ALREADY_NOT_ADMIN_INFO)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.ALREADY_NOT_ADMIN_INFO, app_settings.STATUS_400)
 
         # Ensure 'user' is an admin (has permissions to add an admin)
         self.data = {'group_id': self.group_id, 'user': self.user3, 'contact': self.user2}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.OUTSIDE_USER_PERMISSIONS_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.OUTSIDE_USER_PERMISSIONS_ERR, app_settings.STATUS_400)
 
         # contact to be removed is not a member of the group
         self.data = {'group_id': self.group_id, 'user': self.user1, 'contact': self.user4}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.CONTACT_GROUP_NOT_MATCH_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.CONTACT_GROUP_NOT_MATCH_ERR, app_settings.STATUS_400)
 
     def test_post(self):
 
         # when admin removes self; group has > 1 members and > 1 admins
         self.data = {'user': self.user2, 'contact': self.user2, 'group_id': self.group_id}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
         query = " SELECT admins FROM groups_info WHERE id=%s;"
-        variables = (self.group_id,)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (self.group_id,))
             assert_equal(len(result[0]['admins']), 1)
             assert_equal(result[0]['admins'], [str(self.user1)])
         except Exception as e:
@@ -1010,14 +913,10 @@ class RemoveAdminFromGroupTests(unittest.TestCase):
         # when admin removes self; group has > 1 members and 1 admin
         self.data = {'user': self.user1, 'contact': self.user1, 'group_id': self.group_id}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], errors.DELETED_USER_IS_GROUP_OWNER_ERR)
-        assert_equal(res['status'], app_settings.STATUS_400)
+        test_utilities.assert_info_status(response, errors.DELETED_USER_IS_GROUP_OWNER_ERR, app_settings.STATUS_400)
         query = " SELECT admins FROM groups_info WHERE id=%s;"
-        variables = (self.group_id,)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (self.group_id,))
             assert_equal(len(result[0]['admins']), 1)
             assert_equal(result[0]['admins'], [str(self.user1)])
         except Exception as e:
@@ -1025,25 +924,19 @@ class RemoveAdminFromGroupTests(unittest.TestCase):
 
         # when admin removes self; group has 1 member and 1 admin
         query = " UPDATE groups_info SET total_members = total_members - 1, members = array_remove(members, %s) WHERE id=%s;"
-        variables = (str(self.user3), self.group_id)
         try:
-            db_handler.QueryHandler.execute(query, variables)
+            db_handler.QueryHandler.execute(query, (str(self.user3), self.group_id))
             query = " UPDATE groups_info SET total_members = total_members - 1, members = array_remove(members, %s) WHERE id=%s;"
-            variables = (str(self.user2), self.group_id)
-            db_handler.QueryHandler.execute(query, variables)
+            db_handler.QueryHandler.execute(query, (str(self.user2), self.group_id))
         except Exception as e:
             raise e
 
         self.data = {'user': self.user1, 'contact': self.user1, 'group_id': self.group_id}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
         query = " SELECT id FROM groups_info WHERE id=%s;"
-        variables = (self.group_id,)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (self.group_id,))
             assert_equal(len(result), 0)
         except Exception as e:
             raise e
@@ -1055,15 +948,10 @@ class RemoveAdminFromGroupTests(unittest.TestCase):
 
         self.data = {'user': self.user2, 'contact': self.user3, 'group_id': self.group_id}
         response = requests.post(self.url, data=self.data)
-        res = json.loads(response.content)
-        assert_equal(response.status_code, app_settings.STATUS_200)
-        assert_equal(res['info'], app_settings.SUCCESS_RESPONSE)
-        assert_equal(res['status'], app_settings.STATUS_200)
-
+        test_utilities.assert_info_status(response, app_settings.SUCCESS_RESPONSE, app_settings.STATUS_200)
         query = " SELECT admins FROM groups_info WHERE id=%s;"
-        variables = (self.group_id,)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (self.group_id,))
             assert_equal(result[0]['admins'], [str(self.user2)])
         except Exception as e:
             raise e

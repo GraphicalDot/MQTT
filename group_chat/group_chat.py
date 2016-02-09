@@ -245,8 +245,7 @@ class AddContactToGroup(tornado.web.RequestHandler):
         try:
             if user:
                 query = " SELECT id FROM users WHERE username=%s;"
-                variables = (user,)
-                result = db_handler.QueryHandler.get_results(query, variables)
+                result = db_handler.QueryHandler.get_results(query, (user,))
                 if not result:      # Non-registered user
                     response['info'] = errors.INVALID_USER_CONTACT_ERR
                     response['status'] = app_settings.STATUS_404
@@ -257,8 +256,7 @@ class AddContactToGroup(tornado.web.RequestHandler):
             if response['status'] == 0:
                 if group_id:    # Invalid group_id
                     query = " SELECT * FROM groups_info WHERE id=%s;"
-                    variables = (group_id,)
-                    result = db_handler.QueryHandler.get_results(query, variables)
+                    result = db_handler.QueryHandler.get_results(query, (group_id,))
                     if not result:
                         response['info'] = errors.INVALID_GROUP_ID_ERR
                         response['status'] = app_settings.STATUS_404
@@ -303,10 +301,7 @@ class AddContactToGroup(tornado.web.RequestHandler):
 
                 # start subscriber for the user in this group
                 result = self.get_group_details(group_id)
-                group_owner = str(result[0]['owner'])
-                group_name = str(result[0]['name'])
-                topic = 'group_chat.' + group_owner + '.' + group_name + '.*'
-                user_data = {'topic': topic}
+                user_data = {'topic': 'group_chat.' + str(result[0]['owner']) + '.' + str(result[0]['name']) + '.*'}
                 client_id = 'sub_' + group_id + utils.generate_random_client_id(len('sub_' + group_id))
                 mqtt_subscriber.group_chat_subscriber(client_id, user_data)
 
@@ -380,13 +375,11 @@ class RemoveContactFromGroup(tornado.web.RequestHandler):
             if response['status'] not in app_settings.ERROR_CODES_LIST:
 
                 query = " SELECT total_members FROM groups_info WHERE id=%s;"
-                variables = (group_id,)
-                result = db_handler.QueryHandler.get_results(query, variables)
+                result = db_handler.QueryHandler.get_results(query, (group_id,))
                 if result[0]['total_members'] == 1:
                     # delete the group if it has only one member
                     query = "DELETE FROM groups_info WHERE id=%s;"
-                    variables = (group_id,)
-                    db_handler.QueryHandler.execute(query, variables)
+                    db_handler.QueryHandler.execute(query, (group_id,))
                 else:
                     # Update group details
                     query = " UPDATE groups_info SET members = array_remove(members, %s), admins = array_remove(admins, %s)," \
@@ -432,9 +425,8 @@ class AddAdminToGroup(tornado.web.RequestHandler):
 
         # Non-registered users (either user or new added admin)
         query = " SELECT id FROM users WHERE username=%s OR username=%s;"
-        variables = (user, contact_to_add)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (user, contact_to_add))
             if len(result) < 2 and user != contact_to_add:
                 response['info'] = errors.NON_REGISTERED_USER_CONTACT_ERR
                 response['status'] = app_settings.STATUS_404
@@ -444,9 +436,8 @@ class AddAdminToGroup(tornado.web.RequestHandler):
 
         # Invalid Group-id
         query = " SELECT * FROM groups_info WHERE id=%s;"
-        variables = (group_id,)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (group_id,))
             if len(result) < 1:
                 response['info'] = errors.INVALID_GROUP_ID_ERR
                 response['status'] = app_settings.STATUS_404
@@ -456,9 +447,8 @@ class AddAdminToGroup(tornado.web.RequestHandler):
 
         # Already an admin
         query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(admins);"
-        variables = (group_id, contact_to_add)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (group_id, contact_to_add))
             if len(result) > 0:
                 response['info'] = errors.ALREADY_GROUP_ADMIN_INFO
                 response['status'] = app_settings.STATUS_400
@@ -468,9 +458,8 @@ class AddAdminToGroup(tornado.web.RequestHandler):
 
         # Ensure 'user' is an admin (has permissions to add an admin)
         query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(admins);"
-        variables = (group_id, user)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (group_id, user))
             if len(result) < 1:
                 response['info'] = errors.OUTSIDE_USER_PERMISSIONS_ERR
                 response['status'] = app_settings.STATUS_400
@@ -480,9 +469,8 @@ class AddAdminToGroup(tornado.web.RequestHandler):
 
         # New admin not a member of the group
         query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(members);"
-        variables = (group_id, contact_to_add)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (group_id, contact_to_add))
             if len(result) < 1:
                 response['info'] = errors.CONTACT_GROUP_NOT_MATCH_ERR
                 response['status'] = app_settings.STATUS_400
@@ -503,8 +491,7 @@ class AddAdminToGroup(tornado.web.RequestHandler):
             if response['status'] not in app_settings.ERROR_CODES_LIST:
                 # add to admins
                 query = " UPDATE groups_info SET admins = array_append(admins, %s) WHERE id=%s;"
-                variables = (contact_to_add, group_id)
-                db_handler.QueryHandler.execute(query, variables)
+                db_handler.QueryHandler.execute(query, (contact_to_add, group_id))
 
                 response['info'] = app_settings.SUCCESS_RESPONSE
                 response['status'] = app_settings.STATUS_200
@@ -540,9 +527,8 @@ class RemoveAdminFromGroup(tornado.web.RequestHandler):
 
         # Non-registered users (either user or to-be-removed-admin)
         query = " SELECT id FROM users WHERE username=%s OR username=%s;"
-        variables = (user, admin_to_remove)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (user, admin_to_remove))
             if len(result) < 2 and user != admin_to_remove:
                 response['info'] = errors.NON_REGISTERED_USER_CONTACT_ERR
                 response['status'] = app_settings.STATUS_404
@@ -552,9 +538,8 @@ class RemoveAdminFromGroup(tornado.web.RequestHandler):
 
         # Invalid Group-id
         query = " SELECT * FROM groups_info WHERE id=%s;"
-        variables = (group_id,)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (group_id,))
             if len(result) < 1:
                 response['info'] = errors.INVALID_GROUP_ID_ERR
                 response['status'] = app_settings.STATUS_404
@@ -564,9 +549,8 @@ class RemoveAdminFromGroup(tornado.web.RequestHandler):
 
         # Already a non-admin
         query = " SELECT id FROM groups_info WHERE id=%s AND %s = ANY(admins);"
-        variables = (group_id, admin_to_remove)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (group_id, admin_to_remove))
             if len(result) == 0:
                 response['info'] = errors.ALREADY_NOT_ADMIN_INFO
                 response['status'] = app_settings.STATUS_400
@@ -575,9 +559,8 @@ class RemoveAdminFromGroup(tornado.web.RequestHandler):
 
         # Ensure 'user' is an admin (has permissions to add an admin)
         query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(admins);"
-        variables = (group_id, user)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (group_id, user))
             if len(result) < 1:
                 response['info'] = errors.OUTSIDE_USER_PERMISSIONS_ERR
                 response['status'] = app_settings.STATUS_400
@@ -587,9 +570,8 @@ class RemoveAdminFromGroup(tornado.web.RequestHandler):
 
         # contact to be removed is not a member of the group
         query = " SELECT * FROM groups_info WHERE id=%s AND %s = ANY(members);"
-        variables = (group_id, admin_to_remove)
         try:
-            result = db_handler.QueryHandler.get_results(query, variables)
+            result = db_handler.QueryHandler.get_results(query, (group_id, admin_to_remove))
             if len(result) < 1:
                 response['info'] = errors.CONTACT_GROUP_NOT_MATCH_ERR
                 response['status'] = app_settings.STATUS_400
@@ -600,21 +582,18 @@ class RemoveAdminFromGroup(tornado.web.RequestHandler):
     def remove_admin(self, group_id, admin_to_remove):
         try:
             query = " UPDATE groups_info SET admins = array_remove(admins, %s) WHERE id=%s;"
-            variables = (admin_to_remove, group_id)
-            db_handler.QueryHandler.execute(query, variables)
+            db_handler.QueryHandler.execute(query, (admin_to_remove, group_id))
         except Exception as e:
             raise e
 
     def delete_group(self, group_id, user):
         # delete the group
         query = " DELETE FROM groups_info WHERE id=%s;"
-        variables = (group_id,)
-        db_handler.QueryHandler.execute(query, variables)
+        db_handler.QueryHandler.execute(query, (group_id,))
 
         # update user details
         query = " UPDATE users SET member_of_groups = array_remove(member_of_groups, %s) WHERE username=%s;"
-        variables = (group_id, user)
-        db_handler.QueryHandler.execute(query, variables)
+        db_handler.QueryHandler.execute(query, (group_id, user))
 
     def post(self):
         response = {}
@@ -628,11 +607,9 @@ class RemoveAdminFromGroup(tornado.web.RequestHandler):
             response = self.data_validations(user, admin_to_remove, group_id)
 
             if response['status'] not in app_settings.ERROR_CODES_LIST:
-
                 if user == admin_to_remove:
                     query = " SELECT total_members, admins FROM groups_info WHERE id=%s;"
-                    variables = (group_id,)
-                    result = db_handler.QueryHandler.get_results(query, variables)
+                    result = db_handler.QueryHandler.get_results(query, (group_id,))
                     if result[0]['total_members'] > 1:
                         if len(result[0]['admins']) > 1:
                             self.remove_admin(group_id, admin_to_remove)
